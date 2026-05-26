@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>ACTION DIGIY — Oreille transversale DIGIYLYFE</title>
+  <meta name="theme-color" content="#10160f" />
+  <meta name="description" content="ACTION DIGIY — Le pro parle, DIGIY reconnaît le métier, prépare l’action et route vers le bon module. Rien n’est confirmé sans validation humaine." />
+
+  <style>
+    :root{
+      --bg:#0d130c;
+      --bg2:#142014;
+      --card:rgba(255,255,255,.08);
+      --card2:rgba(255,255,255,.12);
+      --text:#fff8e8;
+      --muted:rgba(255,248,232,.76);
+      --gold:#f4c86a;
+      --gold2:#ffe3a0;
+      --green:#2ee58b;
+      --danger:#ff8d7a;
+      --line:rgba(255,255,255,.14);
+      --shadow:0 24px 70px rgba(0,0,0,.42);
+      --radius:28px;
+      --max:1080px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(244,200,106,.22), transparent 34%),
+        radial-gradient(circle at 85% 18%, rgba(46,229,139,.16), transparent 32%),
+        linear-gradient(135deg,var(--bg),#081008 54%,var(--bg2));
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size:38px 38px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.88),transparent 85%);
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,textarea,input{font:inherit}
+
+    .wrap{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(18px);
+      background:rgba(8,16,8,.72);
+      border-bottom:1px solid var(--line);
+    }
+
+    .topbar-inner{
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      font-weight:1000;
+      color:#17200f;
+      background:linear-gradient(135deg,var(--gold2),var(--gold),#b98921);
+      box-shadow:0 14px 34px rgba(244,200,106,.22);
+      flex:0 0 auto;
+    }
+
+    .brand strong{
+      display:block;
+      font-size:16px;
+      letter-spacing:.03em;
+      white-space:nowrap;
+    }
+
+    .brand small{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:54vw;
+    }
+
+    .nav{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .nav a{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:850;
+      font-size:13px;
+    }
+
+    .hero{
+      padding:34px 0 18px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.055));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .hero-main{
+      padding:28px;
+      position:relative;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(244,200,106,.35);
+      background:rgba(244,200,106,.12);
+      color:var(--gold2);
+      padding:9px 12px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:13px;
+      margin-bottom:18px;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(42px,7vw,78px);
+      line-height:.92;
+      letter-spacing:-.06em;
+    }
+
+    .lead{
+      color:var(--muted);
+      font-size:clamp(18px,2.4vw,24px);
+      line-height:1.35;
+      max-width:760px;
+      margin:20px 0 0;
+      font-weight:650;
+    }
+
+    .bigline{
+      margin-top:22px;
+      padding:18px;
+      border-radius:24px;
+      border:1px solid rgba(46,229,139,.24);
+      background:rgba(46,229,139,.08);
+      color:#eafff3;
+      font-size:20px;
+      line-height:1.35;
+      font-weight:900;
+    }
+
+    .hero-side{
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      justify-content:center;
+    }
+
+    .truth{
+      padding:16px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+    }
+
+    .truth b{
+      display:block;
+      color:var(--gold2);
+      font-size:15px;
+      margin-bottom:5px;
+    }
+
+    .truth span{
+      display:block;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+      font-weight:650;
+    }
+
+    .voice-zone{
+      padding:18px 0 34px;
+    }
+
+    .voice-card{
+      padding:20px;
+    }
+
+    .voice-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .voice-head h2{
+      margin:0;
+      font-size:clamp(26px,4vw,42px);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .voice-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.38;
+      font-weight:650;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 13px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      font-weight:900;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:99px;
+      background:var(--gold);
+      box-shadow:0 0 0 5px rgba(244,200,106,.12);
+    }
+
+    .status-pill.listening .dot{
+      background:var(--green);
+      box-shadow:0 0 0 8px rgba(46,229,139,.12);
+      animation:pulse 1.1s infinite;
+    }
+
+    @keyframes pulse{
+      0%{transform:scale(1)}
+      50%{transform:scale(1.28)}
+      100%{transform:scale(1)}
+    }
+
+    .command-box{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    .textarea-wrap{
+      position:relative;
+    }
+
+    textarea{
+      width:100%;
+      min-height:132px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:24px;
+      outline:none;
+      color:var(--text);
+      background:rgba(0,0,0,.22);
+      padding:18px;
+      line-height:1.42;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    textarea::placeholder{color:rgba(255,248,232,.46)}
+
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+    }
+
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius:20px;
+      padding:15px 14px;
+      font-weight:1000;
+      color:#10160f;
+      background:linear-gradient(135deg,var(--gold2),var(--gold));
+      box-shadow:0 12px 30px rgba(244,200,106,.16);
+      transition:.16s transform ease,.16s filter ease;
+      min-height:58px;
+    }
+
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+    .btn:active{transform:translateY(1px) scale(.99)}
+
+    .btn.dark{
+      color:var(--text);
+      background:rgba(255,255,255,.09);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+
+    .btn.green{
+      color:#041207;
+      background:linear-gradient(135deg,#aaffcd,var(--green));
+    }
+
+    .btn.danger{
+      color:#240a06;
+      background:linear-gradient(135deg,#ffd1ca,var(--danger));
+    }
+
+    .result{
+      display:none;
+      margin-top:14px;
+      border:1px solid rgba(244,200,106,.26);
+      background:rgba(244,200,106,.08);
+      border-radius:26px;
+      padding:16px;
+    }
+
+    .result.show{display:block}
+
+    .result h3{
+      margin:0 0 10px;
+      font-size:22px;
+      letter-spacing:-.03em;
+    }
+
+    .preview-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin:12px 0;
+    }
+
+    .mini{
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.18);
+      border-radius:18px;
+      padding:12px;
+      min-height:78px;
+    }
+
+    .mini small{
+      display:block;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:5px;
+    }
+
+    .mini b{
+      display:block;
+      font-size:18px;
+      overflow-wrap:anywhere;
+    }
+
+    .notice{
+      margin-top:12px;
+      padding:14px;
+      border-radius:20px;
+      border:1px solid rgba(46,229,139,.24);
+      background:rgba(46,229,139,.08);
+      color:#eafff3;
+      font-weight:800;
+      line-height:1.38;
+    }
+
+    .examples{
+      padding:22px 0 54px;
+    }
+
+    .section-title{
+      font-size:clamp(26px,4vw,42px);
+      margin:0 0 14px;
+      letter-spacing:-.04em;
+    }
+
+    .example-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .example{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.07);
+      border-radius:24px;
+      padding:17px;
+      cursor:pointer;
+      transition:.16s transform ease,.16s border-color ease;
+    }
+
+    .example:hover{
+      transform:translateY(-2px);
+      border-color:rgba(244,200,106,.42);
+    }
+
+    .example b{
+      display:block;
+      color:var(--gold2);
+      font-size:16px;
+      margin-bottom:8px;
+    }
+
+    .example p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.35;
+      font-weight:700;
+    }
+
+    .footer{
+      border-top:1px solid var(--line);
+      padding:22px 0 32px;
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.45;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(20px);
+      opacity:0;
+      pointer-events:none;
+      z-index:50;
+      width:min(520px, calc(100% - 28px));
+      background:rgba(10,16,10,.92);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:14px 16px;
+      color:var(--text);
+      box-shadow:var(--shadow);
+      font-weight:850;
+      transition:.22s ease;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    @media(max-width:860px){
+      .hero-grid{grid-template-columns:1fr}
+      .actions{grid-template-columns:1fr 1fr}
+      .preview-grid{grid-template-columns:1fr 1fr}
+      .example-grid{grid-template-columns:1fr}
+      .voice-head{display:block}
+      .status-pill{margin-top:12px}
+      .nav a{font-size:12px;padding:9px 10px}
+      .hero-main{padding:22px}
+    }
+
+    @media(max-width:520px){
+      .topbar-inner{align-items:flex-start;flex-direction:column}
+      .nav{justify-content:flex-start}
+      .actions{grid-template-columns:1fr}
+      .preview-grid{grid-template-columns:1fr}
+      h1{font-size:46px}
+      .lead{font-size:18px}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="./" aria-label="Accueil ACTION DIGIY">
+        <div class="logo">AD</div>
+        <div>
+          <strong>🎙️ ACTION DIGIY</strong>
+          <small>À l’oral : “Action diji i”</small>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Navigation">
+        <a href="https://digiylyfe.com/">🌍 Site</a>
+        <a href="https://digiy-hub.digiylyfe.com/">🧭 HUB</a>
+        <a href="https://tarifs.digiylyfe.com/">📦 Tarifs</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <article class="panel hero-main">
+          <div class="badge">🎙️ Oreille transversale DIGIYLYFE</div>
+          <h1>Le métier parle.<br>DIGIY prépare.</h1>
+          <p class="lead">
+            ACTION DIGIY est la porte vocale commune des modules métier.
+            Le pro parle, DIGIY reconnaît le métier, prépare un brouillon,
+            puis ouvre la bonne porte pour validation.
+          </p>
+
+          <div class="bigline">
+            L’Oreille Transversale ne remplace pas les modules.
+            Elle les réveille.
+          </div>
+        </article>
+
+        <aside class="panel hero-side">
+          <div class="truth">
+            <b>Commande volontaire</b>
+            <span>On dit “Action diji i” pour lancer une action. DIGIY seul reste la marque, la voix, l’esprit.</span>
+          </div>
+          <div class="truth">
+            <b>Pas d’écoute cachée</b>
+            <span>Le micro se lance par geste clair. Le terrain doit avoir confiance, pas se sentir surveillé.</span>
+          </div>
+          <div class="truth">
+            <b>Validation obligatoire</b>
+            <span>Rien n’est payé, envoyé, publié, réservé ou confirmé sans validation humaine.</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="voice-zone">
+      <div class="wrap">
+        <article class="panel voice-card">
+          <div class="voice-head">
+            <div>
+              <h2>🎙️ Parler à DIGIY</h2>
+              <p>
+                Dis par exemple : “Action diji i, note vente savon 15 000 Wave.”
+                Tu peux aussi écrire si le micro n’est pas disponible.
+              </p>
+            </div>
+            <div id="statusPill" class="status-pill">
+              <span class="dot"></span>
+              <span id="statusText">Prêt</span>
+            </div>
+          </div>
+
+          <div class="command-box">
+            <div class="textarea-wrap">
+              <textarea id="voiceText" placeholder="Action diji i, note vente savon 15 000 Wave..."></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="btn green" id="startBtn" type="button">🎙️ Écouter</button>
+              <button class="btn danger" id="stopBtn" type="button">⏹ Stop</button>
+              <button class="btn" id="prepareBtn" type="button">⚡ Préparer</button>
+              <button class="btn dark" id="clearBtn" type="button">🧹 Effacer</button>
+            </div>
+          </div>
+
+          <div id="result" class="result" aria-live="polite">
+            <h3>Action préparée</h3>
+
+            <div class="preview-grid">
+              <div class="mini">
+                <small>Module réveillé</small>
+                <b id="rModule">—</b>
+              </div>
+              <div class="mini">
+                <small>Action</small>
+                <b id="rAction">—</b>
+              </div>
+              <div class="mini">
+                <small>Montant</small>
+                <b id="rAmount">—</b>
+              </div>
+              <div class="mini">
+                <small>Confiance</small>
+                <b id="rConfidence">—</b>
+              </div>
+            </div>
+
+            <div class="notice" id="rSummary">
+              DIGIY prépare seulement le brouillon. Le pro valide avant toute confirmation.
+            </div>
+
+            <div class="actions" style="margin-top:12px;">
+              <button class="btn green" id="openModuleBtn" type="button">🚪 Ouvrir la validation</button>
+              <button class="btn" id="saveDraftBtn" type="button">💾 Garder le brouillon</button>
+              <button class="btn dark" id="copyBtn" type="button">📋 Copier</button>
+              <button class="btn danger" id="cancelDraftBtn" type="button">✖ Annuler</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="examples">
+      <div class="wrap">
+        <h2 class="section-title">Exemples terrain</h2>
+
+        <div class="example-grid">
+          <article class="example" data-example="Action diji i, note vente savon 15 000 Wave">
+            <b>PAY / POS</b>
+            <p>Action diji i, note vente savon 15 000 Wave</p>
+          </article>
+
+          <article class="example" data-example="Action diji i, ajoute dépense emballage 3 000 cash">
+            <b>PAY</b>
+            <p>Action diji i, ajoute dépense emballage 3 000 cash</p>
+          </article>
+
+          <article class="example" data-example="Action diji i, note course demain 8h Saly Dakar client Mamadou">
+            <b>DRIVER</b>
+            <p>Action diji i, note course demain 8h Saly Dakar client Mamadou</p>
+          </article>
+
+          <article class="example" data-example="Action diji i, ferme mes réservations du 25 au 27">
+            <b>RESA / LOC</b>
+            <p>Action diji i, ferme mes réservations du 25 au 27</p>
+          </article>
+
+          <article class="example" data-example="Action diji i, prépare une annonce réseau pour mon cabinet cette semaine">
+            <b>RÉSEAU DIGIY</b>
+            <p>Action diji i, prépare une annonce réseau pour mon cabinet cette semaine</p>
+          </article>
+
+          <article class="example" data-example="Action diji i, prépare devis réparation plomberie chez client">
+            <b>BUILD</b>
+            <p>Action diji i, prépare devis réparation plomberie chez client</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <strong>ACTION DIGIY — BY DIGIYLYFE</strong><br>
+      Le pro parle. DIGIY reconnaît le métier. Le bon module prépare. Le terrain valide.
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    /*
+      ACTION DIGIY — index autonome V1
+      Doctrine :
+      - Bouton visible : ACTION DIGIY
+      - Déclencheur oral : action diji i
+      - Pas d’écoute cachée permanente
+      - Rien n’est confirmé sans validation humaine
+    */
+
+    const DIGIY_ACTION = {
+      storageKey: "DIGIY_ACTION_QUEUE",
+      latestKey: "DIGIY_PENDING_ACTION",
+
+      /*
+        Routes à ajuster si un sous-domaine change.
+        L’action est déposée en localStorage avant ouverture.
+        Le module peut ensuite lire DIGIY_PENDING_ACTION / DIGIY_ACTION_QUEUE.
+      */
+      routes: {
+        PAY: "https://pro-pay.digiylyfe.com/oreille.html",
+        POS: "https://commerce-pro.digiylyfe.com/oreille.html",
+        MARKET: "https://market.digiylyfe.com/",
+        DRIVER: "https://pro-driver.digiylyfe.com/oreille.html",
+        LOC: "https://pro-loc.digiylyfe.com/oreille.html",
+        RESA: "https://pro-resa-resto.digiylyfe.com/oreille.html",
+        RESEAU_DIGIY: "https://reseau-digiy.digiylyfe.com/",
+        BUILD: "https://pro-build.digiylyfe.com/oreille.html",
+        JOBS: "https://jobs.digiylyfe.com/",
+        HUB: "https://digiy-hub.digiylyfe.com/"
+      }
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const els = {
+      voiceText: $("voiceText"),
+      startBtn: $("startBtn"),
+      stopBtn: $("stopBtn"),
+      prepareBtn: $("prepareBtn"),
+      clearBtn: $("clearBtn"),
+      statusPill: $("statusPill"),
+      statusText: $("statusText"),
+      result: $("result"),
+      rModule: $("rModule"),
+      rAction: $("rAction"),
+      rAmount: $("rAmount"),
+      rConfidence: $("rConfidence"),
+      rSummary: $("rSummary"),
+      openModuleBtn: $("openModuleBtn"),
+      saveDraftBtn: $("saveDraftBtn"),
+      copyBtn: $("copyBtn"),
+      cancelDraftBtn: $("cancelDraftBtn"),
+      toast: $("toast")
+    };
+
+    let recognition = null;
+    let currentDraft = null;
+
+    function toast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      window.clearTimeout(toast._t);
+      toast._t = window.setTimeout(() => els.toast.classList.remove("show"), 2600);
+    }
+
+    function setStatus(text, listening = false) {
+      els.statusText.textContent = text;
+      els.statusPill.classList.toggle("listening", listening);
+    }
+
+    function normalizeText(text) {
+      return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[’']/g, " ")
+        .replace(/[.,;:!?]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function stripTrigger(text) {
+      return normalizeText(text)
+        .replace(/^action\s+digi\s+i\s*/i, "")
+        .replace(/^action\s+diji\s+i\s*/i, "")
+        .replace(/^action\s+digiy\s*/i, "")
+        .replace(/^digiy\s*/i, "")
+        .trim();
+    }
+
+    function hasIntentionalTrigger(text) {
+      const n = normalizeText(text);
+      return (
+        n.includes("action digi i") ||
+        n.includes("action diji i") ||
+        n.includes("action digiy")
+      );
+    }
+
+    function includesAny(text, words) {
+      return words.some((w) => text.includes(w));
+    }
+
+    function extractAmount(text) {
+      const clean = normalizeText(text);
+      const matches = clean.match(/(\d[\d\s.,]{1,14})\s*(fcfa|cfa|xof|f)?/i);
+      if (!matches) return null;
+
+      const raw = matches[1].replace(/[^\d]/g, "");
+      const value = Number(raw);
+      if (!Number.isFinite(value) || value <= 0) return null;
+
+      return value;
+    }
+
+    function extractChannel(text) {
+      const n = normalizeText(text);
+      if (n.includes("wave") || n.includes("ouve") || n.includes("oueve")) return "Wave";
+      if (n.includes("orange money") || n.includes("om ")) return "Orange Money";
+      if (n.includes("cash") || n.includes("espece") || n.includes("liquide")) return "Cash";
+      if (n.includes("virement")) return "Virement";
+      return "";
+    }
+
+    function detectModule(text) {
+      const n = normalizeText(text);
+      const scores = {
+        PAY: 0,
+        POS: 0,
+        MARKET: 0,
+        DRIVER: 0,
+        LOC: 0,
+        RESA: 0,
+        RESEAU_DIGIY: 0,
+        BUILD: 0,
+        JOBS: 0
+      };
+
+      const add = (module, points) => { scores[module] += points; };
+
+      if (includesAny(n, ["vente", "vendu", "encaisse", "encaissement", "depense", "dette", "credit", "paiement", "paye", "facture", "recu", "wave", "cash", "orange money"])) add("PAY", 4);
+      if (includesAny(n, ["stock", "produit", "prix", "boutique", "caisse", "quantite", "article", "commerce", "savon", "sac"])) add("POS", 3);
+      if (includesAny(n, ["market", "annonce produit", "publier produit", "vendre sur market"])) add("MARKET", 4);
+      if (includesAny(n, ["course", "trajet", "chauffeur", "taxi", "driver", "depart", "arrivee", "aeroport", "client", "saly dakar", "dakar saly"])) add("DRIVER", 4);
+      if (includesAny(n, ["location", "louer", "villa", "maison", "appartement", "chambre", "logement", "loc"])) add("LOC", 4);
+      if (includesAny(n, ["reservation", "reserver", "planning", "ferme", "fermer", "dispo", "indisponible", "creneau", "calendrier", "du 25 au 27"])) add("RESA", 4);
+      if (includesAny(n, ["reseau", "visibilite", "notoriete", "annonce", "faire circuler", "publie", "publier", "cabinet", "fiche", "qr"])) add("RESEAU_DIGIY", 4);
+      if (includesAny(n, ["build", "chantier", "devis", "artisan", "reparation", "depannage", "plomberie", "electricite", "travaux", "intervention"])) add("BUILD", 4);
+      if (includesAny(n, ["job", "emploi", "poste", "candidat", "cv", "recrute", "recruter", "travail"])) add("JOBS", 4);
+
+      if (scores.PAY > 0 && scores.POS > 0 && includesAny(n, ["vente", "vendu", "encaisse"])) {
+        scores.PAY += 2;
+      }
+
+      let winner = "HUB";
+      let best = 0;
+
+      Object.entries(scores).forEach(([module, score]) => {
+        if (score > best) {
+          best = score;
+          winner = module;
+        }
+      });
+
+      return {
+        module: winner,
+        score: best,
+        scores
+      };
+    }
+
+    function detectAction(text, module) {
+      const n = normalizeText(text);
+
+      if (module === "PAY" || module === "POS") {
+        if (includesAny(n, ["depense", "sortie", "achat", "paye fournisseur"])) return "ADD_EXPENSE";
+        if (includesAny(n, ["dette", "credit", "a recevoir", "doit"])) return "ADD_RECEIVABLE";
+        if (includesAny(n, ["vente", "vendu", "encaisse", "paiement", "recu"])) return "ADD_SALE";
+        return "ADD_MOVEMENT";
+      }
+
+      if (module === "DRIVER") {
+        if (includesAny(n, ["course", "trajet", "depart", "arrivee", "client"])) return "PREPARE_TRIP";
+        return "DRIVER_NOTE";
+      }
+
+      if (module === "RESA" || module === "LOC") {
+        if (includesAny(n, ["ferme", "fermer", "indisponible", "bloque", "bloquer"])) return "CLOSE_AVAILABILITY";
+        if (includesAny(n, ["reservation", "reserver", "booking"])) return "PREPARE_BOOKING";
+        return "PLANNING_NOTE";
+      }
+
+      if (module === "RESEAU_DIGIY") {
+        if (includesAny(n, ["annonce", "publie", "publier", "faire circuler"])) return "PREPARE_ANNOUNCEMENT";
+        if (includesAny(n, ["fiche", "qr", "visibilite"])) return "PREPARE_VISIBILITY";
+        return "NETWORK_NOTE";
+      }
+
+      if (module === "BUILD") {
+        if (includesAny(n, ["devis"])) return "PREPARE_QUOTE";
+        if (includesAny(n, ["reparation", "depannage", "intervention", "chantier"])) return "PREPARE_SERVICE_REQUEST";
+        return "BUILD_NOTE";
+      }
+
+      if (module === "JOBS") {
+        if (includesAny(n, ["poste", "recrute", "recruter"])) return "PREPARE_JOB_POST";
+        if (includesAny(n, ["candidat", "cv"])) return "CANDIDATE_NOTE";
+        return "JOBS_NOTE";
+      }
+
+      if (module === "MARKET") return "PREPARE_MARKET_LISTING";
+      return "GENERAL_NOTE";
+    }
+
+    function confidenceLabel(score, triggered) {
+      if (score >= 6 && triggered) return "Forte";
+      if (score >= 4) return "Bonne";
+      if (score >= 2) return "Moyenne";
+      return "À préciser";
+    }
+
+    function moduleLabel(module) {
+      const labels = {
+        PAY: "PAY",
+        POS: "POS / Commerce",
+        MARKET: "MARKET",
+        DRIVER: "DRIVER",
+        LOC: "LOC",
+        RESA: "RESA",
+        RESEAU_DIGIY: "RÉSEAU DIGIY",
+        BUILD: "BUILD",
+        JOBS: "JOBS",
+        HUB: "HUB"
+      };
+      return labels[module] || module;
+    }
+
+    function actionLabel(action) {
+      const labels = {
+        ADD_EXPENSE: "Ajouter dépense",
+        ADD_RECEIVABLE: "Noter dette client",
+        ADD_SALE: "Ajouter vente",
+        ADD_MOVEMENT: "Ajouter mouvement",
+        PREPARE_TRIP: "Préparer course",
+        DRIVER_NOTE: "Note chauffeur",
+        CLOSE_AVAILABILITY: "Fermer disponibilité",
+        PREPARE_BOOKING: "Préparer réservation",
+        PLANNING_NOTE: "Note planning",
+        PREPARE_ANNOUNCEMENT: "Préparer annonce",
+        PREPARE_VISIBILITY: "Préparer visibilité",
+        NETWORK_NOTE: "Note réseau",
+        PREPARE_QUOTE: "Préparer devis",
+        PREPARE_SERVICE_REQUEST: "Préparer intervention",
+        BUILD_NOTE: "Note artisan",
+        PREPARE_JOB_POST: "Préparer offre d’emploi",
+        CANDIDATE_NOTE: "Note candidat",
+        JOBS_NOTE: "Note emploi",
+        PREPARE_MARKET_LISTING: "Préparer annonce produit",
+        GENERAL_NOTE: "Note générale"
+      };
+      return labels[action] || action;
+    }
+
+    function buildDraft(rawText) {
+      const original = String(rawText || "").trim();
+      const triggered = hasIntentionalTrigger(original);
+      const command = stripTrigger(original);
+      const detected = detectModule(command || original);
+      const module = detected.module;
+      const action = detectAction(command || original, module);
+      const amount = extractAmount(command || original);
+      const channel = extractChannel(command || original);
+
+      const draft = {
+        source: "ACTION_DIGIY",
+        version: "v1-index-20260526",
+        triggerWritten: "ACTION DIGIY",
+        triggerSpoken: "action diji i",
+        status: "draft",
+        requiresHumanValidation: true,
+        module,
+        moduleLabel: moduleLabel(module),
+        action,
+        actionLabel: actionLabel(action),
+        rawText: original,
+        commandText: command || original,
+        amount,
+        currency: amount ? "XOF" : "",
+        channel,
+        confidence: confidenceLabel(detected.score, triggered),
+        triggerDetected: triggered,
+        route: DIGIY_ACTION.routes[module] || DIGIY_ACTION.routes.HUB,
+        createdAt: new Date().toISOString(),
+        safety: {
+          noAutoSend: true,
+          noAutoPayment: true,
+          noAutoPublish: true,
+          noAutoBooking: true,
+          noAutoConfirmation: true
+        }
+      };
+
+      return draft;
+    }
+
+    function renderDraft(draft) {
+      currentDraft = draft;
+
+      els.rModule.textContent = draft.moduleLabel;
+      els.rAction.textContent = draft.actionLabel;
+      els.rAmount.textContent = draft.amount ? `${draft.amount.toLocaleString("fr-FR")} FCFA` : "—";
+      els.rConfidence.textContent = draft.confidence;
+
+      const channelText = draft.channel ? ` · ${draft.channel}` : "";
+      const triggerText = draft.triggerDetected
+        ? "Commande volontaire reconnue : “Action diji i”."
+        : "Commande préparée depuis le bouton micro/texte. Pour l’usage vocal futur, dire “Action diji i”.";
+
+      els.rSummary.textContent =
+        `${triggerText} DIGIY prépare ${draft.actionLabel.toLowerCase()} dans ${draft.moduleLabel}${channelText}. Rien ne part sans validation.`;
+
+      els.result.classList.add("show");
+    }
+
+    function readQueue() {
+      try {
+        const raw = localStorage.getItem(DIGIY_ACTION.storageKey);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function saveDraft(draft) {
+      const queue = readQueue();
+      queue.unshift(draft);
+      localStorage.setItem(DIGIY_ACTION.storageKey, JSON.stringify(queue.slice(0, 50)));
+      localStorage.setItem(DIGIY_ACTION.latestKey, JSON.stringify(draft));
+      return queue;
+    }
+
+    function prepareCurrent() {
+      const text = els.voiceText.value.trim();
+
+      if (!text) {
+        toast("Parle ou écris une action d’abord, frérot.");
+        els.voiceText.focus();
+        return;
+      }
+
+      const draft = buildDraft(text);
+      saveDraft(draft);
+      renderDraft(draft);
+      toast("Brouillon ACTION DIGIY préparé.");
+    }
+
+    function openModule() {
+      if (!currentDraft) {
+        prepareCurrent();
+      }
+
+      if (!currentDraft) return;
+
+      saveDraft(currentDraft);
+
+      const url = currentDraft.route || DIGIY_ACTION.routes.HUB;
+      window.location.href = url;
+    }
+
+    function copyDraft() {
+      if (!currentDraft) {
+        prepareCurrent();
+      }
+
+      if (!currentDraft) return;
+
+      const text = JSON.stringify(currentDraft, null, 2);
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => toast("Brouillon copié."))
+          .catch(() => {
+            window.prompt("Copie le brouillon :", text);
+          });
+      } else {
+        window.prompt("Copie le brouillon :", text);
+      }
+    }
+
+    function clearAll() {
+      els.voiceText.value = "";
+      els.result.classList.remove("show");
+      currentDraft = null;
+      setStatus("Prêt", false);
+      toast("Action effacée.");
+    }
+
+    function cancelDraft() {
+      currentDraft = null;
+      localStorage.removeItem(DIGIY_ACTION.latestKey);
+      els.result.classList.remove("show");
+      toast("Brouillon annulé.");
+    }
+
+    function setupSpeech() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        els.startBtn.disabled = true;
+        els.startBtn.textContent = "🎙️ Micro non dispo";
+        setStatus("Texte manuel", false);
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "fr-FR";
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        setStatus("J’écoute...", true);
+        toast("Parle maintenant : “Action diji i...”");
+      };
+
+      recognition.onresult = (event) => {
+        let finalText = "";
+        let interimText = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) finalText += transcript;
+          else interimText += transcript;
+        }
+
+        const current = (finalText || interimText || "").trim();
+        if (current) {
+          els.voiceText.value = current;
+        }
+
+        if (finalText.trim()) {
+          setStatus("Parole reçue", false);
+          window.setTimeout(prepareCurrent, 250);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        setStatus("Micro arrêté", false);
+        if (event.error === "not-allowed") {
+          toast("Permission micro refusée. Tu peux écrire l’action dans la zone.");
+        } else {
+          toast("Micro fragile ici. Écris l’action, DIGIY prépare pareil.");
+        }
+      };
+
+      recognition.onend = () => {
+        setStatus("Prêt", false);
+      };
+    }
+
+    els.startBtn.addEventListener("click", () => {
+      if (!recognition) {
+        toast("Micro non disponible ici. Utilise l’écriture.");
+        return;
+      }
+
+      try {
+        recognition.start();
+      } catch (_) {
+        toast("Micro déjà lancé ou bloqué par le navigateur.");
+      }
+    });
+
+    els.stopBtn.addEventListener("click", () => {
+      if (recognition) recognition.stop();
+      setStatus("Stop", false);
+    });
+
+    els.prepareBtn.addEventListener("click", prepareCurrent);
+    els.clearBtn.addEventListener("click", clearAll);
+    els.openModuleBtn.addEventListener("click", openModule);
+    els.saveDraftBtn.addEventListener("click", () => {
+      if (!currentDraft) prepareCurrent();
+      if (currentDraft) {
+        saveDraft(currentDraft);
+        toast("Brouillon gardé dans ACTION DIGIY.");
+      }
+    });
+    els.copyBtn.addEventListener("click", copyDraft);
+    els.cancelDraftBtn.addEventListener("click", cancelDraft);
+
+    document.querySelectorAll("[data-example]").forEach((card) => {
+      card.addEventListener("click", () => {
+        els.voiceText.value = card.getAttribute("data-example") || "";
+        prepareCurrent();
+        window.scrollTo({ top: document.querySelector(".voice-zone").offsetTop - 80, behavior: "smooth" });
+      });
+    });
+
+    setupSpeech();
+  </script>
+</body>
+</html>
