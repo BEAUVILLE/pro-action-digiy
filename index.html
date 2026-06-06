@@ -14,7 +14,7 @@
 <header class="top"><div class="wrap topin"><a class="brand" href="./"><div class="logo">🎙️</div><div><strong>La Voix du Business</strong><small>DIGIYLYFE · public et pros réunis</small></div></a><nav class="nav"><a href="https://digiylyfe.com/">🌍 Site</a><a href="https://digiy-hub.digiylyfe.com/">🧭 HUB</a><a href="./pin.html">🔒 Espace pro</a></nav></div></header>
 <main>
 <section class="hero"><div class="wrap grid"><article class="panel main"><div class="badge">Voix publique ouverte · sans IA lourde</div><h1>Tu demandes.<br>Les fiches remontent.<br>Le contact est direct.</h1><p class="lead">La Voix du Business relie la demande du public à l’action des professionnels. Le client parle ou écrit son besoin. DIGIY oriente par règles simples et montre les fiches utiles.</p><div class="hero-actions"><a class="btn primary" href="#voix">🎙️ Demander</a><a class="btn green" href="./pin.html">🔒 Entrée pro</a><a class="btn dark" href="https://wa.me/221771342889?text=Bonjour%2C%20je%20viens%20de%20La%20Voix%20du%20Business%20DIGIY.%20J%27ai%20un%20besoin%20%C3%A0%20orienter." target="_blank" rel="noopener noreferrer">WhatsApp DIGIY</a></div></article><aside class="panel side"><div class="truth"><b>Public</b><span>Cherche, formule, voit les fiches, contacte directement.</span></div><div class="truth"><b>Professionnel</b><span>Reçoit, prépare, organise, valide dans son module protégé.</span></div><div class="truth"><b>DIGIY</b><span>Unifie public et pros sans captation : fiche, QR, WhatsApp, SMS, appel.</span></div></aside></div></section>
-<section class="section" id="voix"><div class="wrap"><article class="panel voice"><h2>🎙️ Demande ton besoin</h2><p class="muted">Exemples : “je cherche un magasin de serviettes à Saly”, “je cherche un chauffeur pour AIBD”, “j’ai une fuite salle de bain”.</p><textarea id="q" placeholder="Écris ou dicte ton besoin ici..."></textarea><div class="chips"><button class="chip" data-q="Je cherche un chauffeur pour AIBD demain matin">🚗 Chauffeur AIBD</button><button class="chip" data-q="Je veux une sortie pêche sur la Petite Côte">🎣 Sortie pêche</button><button class="chip" data-q="J’ai une fuite dans ma salle de bain">🧰 Fuite / artisan</button><button class="chip" data-q="Je cherche une chambre ce week-end à Saly">🏠 Chambre Saly</button><button class="chip" data-q="Je veux réserver une table ce soir">🍽️ Table resto</button><button class="chip" data-q="Je cherche un produit dans une boutique">🛍️ Market</button><button class="chip" data-q="Je veux payer ou envoyer une preuve Wave">💳 PAY</button><button class="chip" data-q="Je cherche un emploi ou une mission">💼 JOBS</button><button class="chip" data-q="Je veux publier une annonce dans le réseau">📣 Réseau</button></div><div class="actionbar"><button class="greenBtn" id="listenBtn">🎙️ Parler</button><button class="primaryBtn" id="searchBtn">🔎 Voir les fiches</button><button class="darkBtn" id="msgBtn">💬 Message prêt</button><button class="dangerBtn" id="clearBtn">🧹 Effacer</button></div><div class="status" id="status">Prêt.</div></article></div></section>
+<section class="section" id="voix"><div class="wrap"><article class="panel voice"><h2>🎙️ Demande ton besoin</h2><p class="muted">Exemples : “je cherche un chauffeur pour AIBD”, “je veux une sortie pêche”, “j’ai une fuite salle de bain”, “je cherche une chambre ce week-end”, “je cherche un magasin de serviettes à Saly”.</p><textarea id="q" placeholder="Écris ou dicte ton besoin ici..."></textarea><div class="chips"><button class="chip" data-q="Je cherche un chauffeur pour AIBD demain matin">🚗 Chauffeur AIBD</button><button class="chip" data-q="Je veux une sortie pêche sur la Petite Côte">🎣 Sortie pêche</button><button class="chip" data-q="J’ai une fuite dans ma salle de bain">🧰 Fuite / artisan</button><button class="chip" data-q="Je cherche une chambre ce week-end à Saly">🏠 Chambre Saly</button><button class="chip" data-q="Je veux réserver une table ce soir">🍽️ Table resto</button><button class="chip" data-q="Je cherche un magasin de serviettes à Saly">🧺 Serviettes Saly</button><button class="chip" data-q="Je veux payer ou envoyer une preuve Wave">💳 PAY</button><button class="chip" data-q="Je cherche un emploi ou une mission">💼 JOBS</button><button class="chip" data-q="Je veux publier une annonce dans le réseau">📣 Réseau</button></div><div class="actionbar"><button class="greenBtn" id="listenBtn">🎙️ Parler</button><button class="primaryBtn" id="searchBtn">🔎 Voir les fiches</button><button class="darkBtn" id="msgBtn">💬 Message prêt</button><button class="dangerBtn" id="clearBtn">🧹 Effacer</button></div><div class="status" id="status">Prêt.</div></article></div></section>
 <section class="section"><div class="wrap"><article class="panel results"><h2>Fiches qui remontent</h2><p class="muted" id="resultIntro">Les résultats se filtrent selon l’intention. La fiche est la réponse principale.</p><div class="empty" id="empty">Aucune fiche exacte pour cette demande. DIGIY peut préparer un message WhatsApp pour orienter le besoin.</div><div class="cards" id="cards"></div></article></div></section>
 <section class="section"><div class="wrap"><article class="panel doctrine"><h2>Doctrine</h2><p class="muted"><strong>On n’a pas séparé deux mondes.</strong> On a unifié le public et les pros dans l’écosystème métiers DIGIY. Côté public : la voix fait remonter les fiches. Côté pro : ACTION DIGIY prépare l’action dans un espace protégé. L’humain valide.</p></article></div></section>
 </main>
@@ -22,55 +22,160 @@
 <script src="./assets/js/action-digiy-public.js?v=action-digiy-public-official-20260606"></script>
 <script src="./assets/js/action-digiy-voice-float.js?v=voice-float-20260606"></script>
 
-<script>
+<script id="digiy-precision-serviettes-saly-inline">
 (function(){
   "use strict";
+  var DIGIY_WHATSAPP = "221771342889";
 
-  function cleanVoiceWords(){
-    var btn = document.getElementById("listenBtn");
-    if(btn){
-      var t = btn.textContent || "";
-      if(/J[’']?écoute|J[’']?ecoute/i.test(t)){
-        btn.textContent = "🎙️ Je vous écoute… parlez naturellement";
-      }else if(/Écouter|Ecouter/i.test(t)){
-        btn.textContent = "🎙️ Parler";
-      }
-    }
-
-    var status = document.getElementById("status");
-    if(status){
-      var s = status.textContent || "";
-      if(/J[’']?écoute/i.test(s)){
-        status.textContent = "Parlez naturellement : dites votre recherche.";
-      }
-      if(/Je t[’']?écoute encore/i.test(s)){
-        status.textContent = "Je vous écoute encore… vous pouvez compléter.";
-      }
-      if(/Voix captée/i.test(s)){
-        status.textContent = "Recherche captée. Les cartes remontent.";
-      }
-    }
+  function norm(v){
+    return String(v || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+  function hasAny(text, words){
+    return words.some(function(w){ return text.indexOf(norm(w)) >= 0; });
+  }
+  function wa(text){
+    return "https://wa.me/" + DIGIY_WHATSAPP + "?text=" + encodeURIComponent(text);
+  }
+  function isServietteSalyQuery(raw){
+    var n = norm(raw);
+    var product = hasAny(n, ["serviette", "serviettes", "linge", "drap", "draps", "bain", "toilette"]);
+    var shop = hasAny(n, ["magasin", "magasi", "boutique", "commerce", "acheter", "cherche", "trouver"]);
+    var zone = hasAny(n, ["saly", "petite cote", "ngaparou", "somone", "mbour"]);
+    return product && shop && zone;
   }
 
-  function init(){
-    cleanVoiceWords();
-    var btn = document.getElementById("listenBtn");
-    var status = document.getElementById("status");
-    if(window.MutationObserver){
-      if(btn) new MutationObserver(cleanVoiceWords).observe(btn,{childList:true,characterData:true,subtree:true});
-      if(status) new MutationObserver(cleanVoiceWords).observe(status,{childList:true,characterData:true,subtree:true});
+  var preciseCards = [
+    {
+      icon:"🧺",
+      tag:"#boutique · #linge · #Saly",
+      title:"Boutiques serviettes & linge — Saly",
+      zone:"Saly · Petite Côte",
+      desc:"Serviettes, draps, linge de bain et linge maison. La demande va directement vers le contact, pas vers la vitrine générale.",
+      cta:"Demander serviettes",
+      url:wa("Bonjour, je cherche un magasin de serviettes / linge à Saly via DIGIY."),
+      second:"WhatsApp direct",
+      secondUrl:wa("Bonjour, je cherche un magasin de serviettes / linge à Saly via DIGIY.")
+    },
+    {
+      icon:"🛍️",
+      tag:"#commerce local",
+      title:"Astou Boutique — linge & serviettes",
+      zone:"Saly",
+      desc:"Carte boutique locale pour serviettes, draps et linge maison. Le client contacte directement.",
+      cta:"Contacter la boutique",
+      url:wa("Bonjour, je cherche des serviettes / du linge à Saly. Je souhaite contacter Astou Boutique via DIGIY."),
+      second:"Message prêt",
+      secondUrl:wa("Bonjour, je cherche des serviettes / du linge à Saly. Je souhaite contacter Astou Boutique via DIGIY.")
     }
-    var tries = 0;
-    var timer = setInterval(function(){
-      cleanVoiceWords();
-      tries++;
-      if(tries > 80) clearInterval(timer);
-    },250);
+  ];
+
+  function renderCards(cards, raw){
+    var cardsEl = document.getElementById("cards");
+    var status = document.getElementById("status");
+    var empty = document.getElementById("empty");
+    if(!cardsEl) return;
+    cardsEl.innerHTML = "";
+    if(empty) empty.style.display = "none";
+    cards.forEach(function(f){
+      var article = document.createElement("article");
+      article.className = "card";
+
+      var cover = document.createElement("div");
+      cover.className = "cover";
+      cover.textContent = f.icon;
+
+      var body = document.createElement("div");
+      body.className = "body";
+
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = f.tag + " · " + f.zone;
+
+      var title = document.createElement("h3");
+      title.textContent = f.title;
+
+      var desc = document.createElement("p");
+      desc.textContent = f.desc;
+
+      var actions = document.createElement("div");
+      actions.className = "card-actions";
+
+      var a1 = document.createElement("a");
+      a1.className = "btn primary";
+      a1.href = f.url;
+      a1.target = "_blank";
+      a1.rel = "noopener noreferrer";
+      a1.textContent = f.cta;
+
+      var a2 = document.createElement("a");
+      a2.className = "btn green";
+      a2.href = f.secondUrl;
+      a2.target = "_blank";
+      a2.rel = "noopener noreferrer";
+      a2.textContent = f.second;
+
+      actions.appendChild(a1);
+      actions.appendChild(a2);
+      body.appendChild(tag);
+      body.appendChild(title);
+      body.appendChild(desc);
+      body.appendChild(actions);
+      article.appendChild(cover);
+      article.appendChild(body);
+      cardsEl.appendChild(article);
+    });
+    if(status) status.textContent = "Recherche précise captée : boutiques serviettes & linge à Saly.";
   }
 
-  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
+  function install(){
+    var q = document.getElementById("q");
+    var searchBtn = document.getElementById("searchBtn");
+    var listenBtn = document.getElementById("listenBtn");
+    if(listenBtn && /écouter/i.test(listenBtn.textContent || "")) listenBtn.textContent = "🎙️ Parler";
+
+    var oldRender = window.DIGIY_ACTION_PUBLIC && window.DIGIY_ACTION_PUBLIC.render;
+
+    function smartRender(){
+      var raw = q ? q.value : "";
+      if(isServietteSalyQuery(raw)){
+        renderCards(preciseCards, raw);
+        return;
+      }
+      if(typeof oldRender === "function") oldRender();
+      if(listenBtn && /écouter/i.test(listenBtn.textContent || "")) listenBtn.textContent = "🎙️ Parler";
+    }
+
+    if(window.DIGIY_ACTION_PUBLIC){
+      window.DIGIY_ACTION_PUBLIC.render = smartRender;
+    }
+    if(searchBtn) searchBtn.onclick = smartRender;
+    if(q){
+      q.addEventListener("input", function(){
+        if(isServietteSalyQuery(q.value)) smartRender();
+      });
+    }
+    document.querySelectorAll("[data-q]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        setTimeout(smartRender, 0);
+      });
+    });
+    smartRender();
+  }
+
+  function wait(){
+    if(window.DIGIY_ACTION_PUBLIC && document.getElementById("cards")) install();
+    else setTimeout(wait, 120);
+  }
+  wait();
 })();
 </script>
+
 </body>
 </html>
+
