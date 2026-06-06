@@ -6,7 +6,7 @@
 (function(){
   "use strict";
 
-  var VERSION = "action-digiy-public-fuzzy-rich-20260606";
+  var VERSION = "action-digiy-public-fuzzy-build-v2-20260606";
   var DIGIY_CONTACT = "221771342889";
   var LISTEN_MAX_MS = 18000;
   var SILENCE_AFTER_RESULT_MS = 5200;
@@ -41,9 +41,14 @@
             "build","travaux","chantier","depannage","dépannage","maçon","macon","carrelage","peinture",
             "peintre","menuisier","menuiserie","soudure","soudeur","climatisation","clim","electrique","électrique",
             "installation","branchement","coupure","panne","robinet","wc","toilette","tuyau","canalisation",
-            "toiture","toit","dalle","fondation","renovation","rénovation","entretien","maintenance"],
+            "toiture","toit","dalle","fondation","renovation","rénovation","entretien","maintenance",
+            "entrepreneur","construire","construction","batir","bâtir","bâtiment","batiment","gros oeuvre",
+            "gros œuvre","maison","villa","immeuble","local","bungalow","structure","plan","devis",
+            "architecte","ingenieur","ingénieur","terrassement","terrassier","ferrailleur","coffreur",
+            "cloture","clôture","mur","ciment","beton","béton","parpaing","agglo","amenagement","aménagement",
+            "finition","carreleur","piscine","garage","extension","agrandissement","saly","petite cote","petite côte"],
       url:"https://build.digiylyfe.com/",cta:"Décrire le besoin",
-      wa:"Bonjour, j'ai besoin d'un artisan / dépannage via DIGIY BUILD."
+      wa:"Bonjour, j'ai besoin d'un artisan / entrepreneur / dépannage via DIGIY BUILD."
     },
     {
       module:"LOC",icon:"🏠",tag:"#logement",title:"Chez Baptiste — Saly",zone:"Saly · Petite Côte",
