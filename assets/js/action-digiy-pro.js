@@ -6,7 +6,7 @@
 (function(){
   "use strict";
 
-  var VERSION = "action-digiy-pro-official-20260606";
+  var VERSION = "action-digiy-pro-say-action-20260606";
   var CONFIG = {
     storageKey: "DIGIY_ACTION_QUEUE",
     latestKey: "DIGIY_PENDING_ACTION",
@@ -51,6 +51,9 @@
   function setStatus(text, live){
     els.statusText.textContent = text;
     els.statusPill.classList.toggle("on", !!live);
+  }
+  function setStartLabel(text){
+    if(els.startBtn) els.startBtn.textContent = text;
   }
   function fixMojibake(t){
     return String(t || "")
@@ -251,19 +254,25 @@
     els.result.classList.remove("show");
     currentDraft = null;
     localStorage.removeItem(CONFIG.latestKey);
+    setStartLabel("🎙️ Dites votre action métier");
     setStatus("Prêt", false);
   }
   function cancelDraft(){ currentDraft = null; localStorage.removeItem(CONFIG.latestKey); els.result.classList.remove("show"); }
 
   function setupSpeech(){
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SR){ els.startBtn.disabled = true; els.startBtn.textContent = "🎙️ Micro non dispo"; return; }
+    setStartLabel("🎙️ Dites votre action métier");
+    if(!SR){ els.startBtn.disabled = true; els.startBtn.textContent = "🎙️ Micro non disponible"; return; }
     recognition = new SR();
     recognition.lang = "fr-FR";
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
-    recognition.onstart = function(){ listenBuffer = ""; setStatus("J’écoute...", true); };
+    recognition.onstart = function(){
+      listenBuffer = "";
+      setStartLabel("🎙️ Je vous écoute… dites l’action");
+      setStatus("Je vous écoute… dites votre action métier.", true);
+    };
     recognition.onresult = function(e){
       var final = "", interim = "";
       for(var i = e.resultIndex; i < e.results.length; i++){
@@ -277,8 +286,8 @@
       clearTimeout(prepareTimer);
       prepareTimer = setTimeout(function(){ if(els.voiceText.value.trim().length > 3) prepareCurrent(); }, 900);
     };
-    recognition.onerror = function(){ setStatus("Micro fragile", false); };
-    recognition.onend = function(){ setStatus("Prêt", false); };
+    recognition.onerror = function(){ setStartLabel("🎙️ Dites votre action métier"); setStatus("Micro fragile", false); };
+    recognition.onend = function(){ setStartLabel("🎙️ Dites votre action métier"); setStatus("Prêt", false); };
   }
 
   function bind(){
@@ -287,7 +296,7 @@
       listenBuffer = ""; clearTimeout(prepareTimer); els.voiceText.value = ""; els.result.classList.remove("show"); currentDraft = null;
       try{ recognition.start(); }catch(_){ toast("Micro déjà lancé."); }
     });
-    els.stopBtn.addEventListener("click", function(){ try{ if(recognition) recognition.stop(); }catch(_){ } setStatus("Stop", false); });
+    els.stopBtn.addEventListener("click", function(){ try{ if(recognition) recognition.stop(); }catch(_){ } setStartLabel("🎙️ Dites votre action métier"); setStatus("Stop", false); });
     els.prepareBtn.addEventListener("click", prepareCurrent);
     els.clearBtn.addEventListener("click", clearAll);
     els.openModuleBtn.addEventListener("click", openModule);
