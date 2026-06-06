@@ -6,187 +6,23 @@
 <title>La Voix du Business — DIGIYLYFE</title>
 <meta name="description" content="La Voix du Business DIGIYLYFE — le public exprime un besoin, les fiches métiers remontent, le contact reste direct."/>
 <meta name="theme-color" content="#fff9ea"/>
+<meta name="robots" content="index,follow"/>
+<meta name="digiy-build" content="index-action-src-clean-20260606"/>
 <style>
-:root{--bg:#fff9ea;--bg2:#f3fbec;--card:rgba(255,253,246,.96);--line:rgba(18,60,45,.13);--text:#102f24;--muted:rgba(32,55,45,.72);--gold:#f6c453;--gold2:#fff2bf;--green:#168143;--red:#f7b7ae;--shadow:0 20px 54px rgba(18,60,45,.11);--max:1160px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at top left,rgba(246,196,83,.28),transparent 34%),radial-gradient(circle at top right,rgba(22,129,67,.12),transparent 28%),linear-gradient(135deg,var(--bg),#fffdf6,var(--bg2));color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 28px));margin:auto}.top{position:sticky;top:0;z-index:20;background:rgba(255,253,246,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.topin{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}.brand{display:flex;align-items:center;gap:12px;font-weight:1000}.logo{width:50px;height:50px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#102015}.brand small{display:block;color:var(--muted);font-size:12px}.nav{display:flex;gap:8px;flex-wrap:wrap}.btn,.nav a,button{font-family:inherit}.nav a,.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 15px;border-radius:999px;border:1px solid var(--line);font-weight:950;font-size:14px;background:rgba(18,60,45,.045)}.btn.primary{color:#0c1a10;background:linear-gradient(135deg,var(--gold2),var(--gold));border:0}.btn.green{color:#062515;background:linear-gradient(135deg,#d8ffe6,#7ee6a7);border:0}.btn.dark{background:rgba(18,60,45,.055)}.hero{padding:36px 0 18px}.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}.panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,252,240,.80));border-radius:28px;box-shadow:var(--shadow);overflow:hidden}.main,.side,.voice,.results,.doctrine{padding:24px}.badge{display:inline-flex;padding:9px 13px;border-radius:999px;border:1px solid rgba(246,196,83,.32);background:rgba(246,196,83,.16);color:#6b4b08;font-weight:1000;font-size:13px;margin-bottom:16px}h1{margin:0;font-size:clamp(40px,7vw,76px);line-height:.92;letter-spacing:-.06em}.lead{color:var(--muted);font-size:clamp(18px,2.2vw,23px);line-height:1.45;font-weight:760;margin:18px 0 0}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.truth{padding:15px;border-radius:20px;border:1px solid var(--line);background:rgba(18,60,45,.045);margin-bottom:12px}.truth b{display:block;color:#6b4b08;margin-bottom:5px}.truth span{display:block;color:var(--muted);font-weight:760;line-height:1.45}.section{padding:18px 0}.voice h2,.results h2,.doctrine h2{font-size:clamp(28px,4vw,44px);margin:0 0 8px;letter-spacing:-.04em}.muted{color:var(--muted);font-weight:760;line-height:1.55}textarea{width:100%;min-height:128px;border-radius:24px;border:1px solid var(--line);background:rgba(255,255,255,.82);color:var(--text);padding:18px;line-height:1.45;font-size:18px;font-weight:800;outline:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.65)}.actionbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.actionbar button{border:0;cursor:pointer;border-radius:19px;min-height:56px;padding:13px 12px;font-weight:1000}.primaryBtn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0d170d}.greenBtn{background:linear-gradient(135deg,#d8ffe6,#7ee6a7);color:#062515}.darkBtn{background:rgba(18,60,45,.06);color:var(--text);border:1px solid var(--line)!important}.dangerBtn{background:#ffd7d2;color:#5d1616}.status{margin-top:12px;padding:13px 15px;border-radius:18px;border:1px solid rgba(246,196,83,.30);background:rgba(246,196,83,.14);font-weight:900}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.card{background:rgba(255,255,255,.70);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-direction:column}.cover{height:132px;background:linear-gradient(135deg,rgba(246,196,83,.24),rgba(22,129,67,.11));display:grid;place-items:center;font-size:46px}.body{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}.tag{display:inline-flex;width:max-content;max-width:100%;padding:7px 10px;border-radius:999px;border:1px solid rgba(246,196,83,.28);background:rgba(246,196,83,.14);color:#6b4b08;font-size:12px;font-weight:1000}.card h3{margin:0;font-size:21px;line-height:1.15}.card p{margin:0;color:var(--muted);line-height:1.55;font-weight:760}.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}.card-actions .btn{flex:1 1 130px;border-radius:16px;min-height:46px}.empty{display:none;margin-top:14px;padding:18px;border:1px solid var(--line);background:rgba(255,255,255,.70);border-radius:22px;color:var(--muted);font-weight:800}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{cursor:pointer;border-radius:999px;border:1px solid var(--line);background:rgba(18,60,45,.045);color:var(--text);padding:10px 13px;font-weight:900}.foot{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--muted);font-weight:760}@media(max-width:900px){.grid,.cards{grid-template-columns:1fr}.actionbar{grid-template-columns:1fr 1fr}.topin{align-items:flex-start;flex-direction:column}.nav{width:100%}.nav a,.btn{width:100%}}@media(max-width:520px){.actionbar{grid-template-columns:1fr}h1{font-size:45px}.hero-actions{flex-direction:column}.hero-actions .btn{width:100%}}
+:root{--bg:#fff9ea;--bg2:#f3fbec;--card:rgba(255,253,246,.96);--line:rgba(18,60,45,.13);--text:#102f24;--muted:rgba(32,55,45,.72);--gold:#f6c453;--gold2:#fff2bf;--green:#168143;--shadow:0 20px 54px rgba(18,60,45,.11);--max:1160px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at top left,rgba(246,196,83,.28),transparent 34%),radial-gradient(circle at top right,rgba(22,129,67,.12),transparent 28%),linear-gradient(135deg,var(--bg),#fffdf6,var(--bg2));color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 28px));margin:auto}.top{position:sticky;top:0;z-index:20;background:rgba(255,253,246,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.topin{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}.brand{display:flex;align-items:center;gap:12px;font-weight:1000}.logo{width:50px;height:50px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#102015}.brand small{display:block;color:var(--muted);font-size:12px}.nav{display:flex;gap:8px;flex-wrap:wrap}.btn,.nav a,button{font-family:inherit}.nav a,.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 15px;border-radius:999px;border:1px solid var(--line);font-weight:950;font-size:14px;background:rgba(18,60,45,.045)}.btn.primary{color:#0c1a10;background:linear-gradient(135deg,var(--gold2),var(--gold));border:0}.btn.green{color:#062515;background:linear-gradient(135deg,#d8ffe6,#7ee6a7);border:0}.btn.dark{background:rgba(18,60,45,.055)}.hero{padding:36px 0 18px}.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}.panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,252,240,.80));border-radius:28px;box-shadow:var(--shadow);overflow:hidden}.main,.side,.voice,.results,.doctrine{padding:24px}.badge{display:inline-flex;padding:9px 13px;border-radius:999px;border:1px solid rgba(246,196,83,.32);background:rgba(246,196,83,.16);color:#6b4b08;font-weight:1000;font-size:13px;margin-bottom:16px}h1{margin:0;font-size:clamp(40px,7vw,76px);line-height:.92;letter-spacing:-.06em}.lead{color:var(--muted);font-size:clamp(18px,2.2vw,23px);line-height:1.45;font-weight:760;margin:18px 0 0}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.truth{padding:15px;border-radius:20px;border:1px solid var(--line);background:rgba(18,60,45,.045);margin-bottom:12px}.truth b{display:block;color:#6b4b08;margin-bottom:5px}.truth span{display:block;color:var(--muted);font-weight:760;line-height:1.45}.section{padding:18px 0}.voice h2,.results h2,.doctrine h2{font-size:clamp(28px,4vw,44px);margin:0 0 8px;letter-spacing:-.04em}.muted{color:var(--muted);font-weight:760;line-height:1.55}textarea{width:100%;min-height:128px;border-radius:24px;border:1px solid var(--line);background:rgba(255,255,255,.82);color:var(--text);padding:18px;line-height:1.45;font-size:18px;font-weight:800;outline:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.65)}.actionbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.actionbar button{border:0;cursor:pointer;border-radius:19px;min-height:56px;padding:13px 12px;font-weight:1000}.primaryBtn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0d170d}.greenBtn{background:linear-gradient(135deg,#d8ffe6,#7ee6a7);color:#062515}.darkBtn{background:rgba(18,60,45,.06);color:var(--text);border:1px solid var(--line)!important}.dangerBtn{background:#ffd7d2;color:#5d1616}.status{margin-top:12px;padding:13px 15px;border-radius:18px;border:1px solid rgba(246,196,83,.30);background:rgba(246,196,83,.14);font-weight:900}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.card{background:rgba(255,255,255,.70);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-direction:column}.cover{height:132px;background:linear-gradient(135deg,rgba(246,196,83,.24),rgba(22,129,67,.11));display:grid;place-items:center;font-size:46px}.body{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}.tag{display:inline-flex;width:max-content;max-width:100%;padding:7px 10px;border-radius:999px;border:1px solid rgba(246,196,83,.28);background:rgba(246,196,83,.14);color:#6b4b08;font-size:12px;font-weight:1000}.card h3{margin:0;font-size:21px;line-height:1.15}.card p{margin:0;color:var(--muted);line-height:1.55;font-weight:760}.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}.card-actions .btn{flex:1 1 130px;border-radius:16px;min-height:46px}.empty{display:none;margin-top:14px;padding:18px;border:1px solid var(--line);background:rgba(255,255,255,.70);border-radius:22px;color:var(--muted);font-weight:800}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{cursor:pointer;border-radius:999px;border:1px solid var(--line);background:rgba(18,60,45,.045);color:var(--text);padding:10px 13px;font-weight:900}.foot{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--muted);font-weight:760}@media(max-width:900px){.grid,.cards{grid-template-columns:1fr}.actionbar{grid-template-columns:1fr 1fr}.topin{align-items:flex-start;flex-direction:column}.nav{width:100%}.nav a,.btn{width:100%}}@media(max-width:520px){.actionbar{grid-template-columns:1fr}h1{font-size:45px}.hero-actions{flex-direction:column}.hero-actions .btn{width:100%}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap topin"><a class="brand" href="./"><div class="logo">🎙️</div><div><strong>La Voix du Business</strong><small>DIGIYLYFE · public et pros réunis</small></div></a><nav class="nav"><a href="https://digiylyfe.com/">🌍 Site</a><a href="https://digiy-hub.digiylyfe.com/">🧭 HUB</a><a href="./pin.html">🔒 Espace pro</a></nav></div></header>
 <main>
 <section class="hero"><div class="wrap grid"><article class="panel main"><div class="badge">Voix publique ouverte · sans IA lourde</div><h1>Tu demandes.<br>Les fiches remontent.<br>Le contact est direct.</h1><p class="lead">La Voix du Business relie la demande du public à l’action des professionnels. Le client parle ou écrit son besoin. DIGIY oriente par règles simples et montre les fiches utiles.</p><div class="hero-actions"><a class="btn primary" href="#voix">🎙️ Demander</a><a class="btn green" href="./pin.html">🔒 Entrée pro</a><a class="btn dark" href="https://wa.me/221771342889?text=Bonjour%2C%20je%20viens%20de%20La%20Voix%20du%20Business%20DIGIY.%20J%27ai%20un%20besoin%20%C3%A0%20orienter." target="_blank" rel="noopener noreferrer">WhatsApp DIGIY</a></div></article><aside class="panel side"><div class="truth"><b>Public</b><span>Cherche, formule, voit les fiches, contacte directement.</span></div><div class="truth"><b>Professionnel</b><span>Reçoit, prépare, organise, valide dans son module protégé.</span></div><div class="truth"><b>DIGIY</b><span>Unifie public et pros sans captation : fiche, QR, WhatsApp, SMS, appel.</span></div></aside></div></section>
-<section class="section" id="voix"><div class="wrap"><article class="panel voice"><h2>🎙️ Demande ton besoin</h2><p class="muted">Exemples : “je cherche un chauffeur pour AIBD”, “je veux une sortie pêche”, “j’ai une fuite salle de bain”, “je cherche une chambre ce week-end”.</p><textarea id="q" placeholder="Écris ou dicte ton besoin ici..."></textarea><div class="chips"><button class="chip" data-q="Je cherche un chauffeur pour AIBD demain matin">🚗 Chauffeur AIBD</button><button class="chip" data-q="Je veux une sortie pêche sur la Petite Côte">🎣 Sortie pêche</button><button class="chip" data-q="J’ai une fuite dans ma salle de bain">🧰 Fuite / artisan</button><button class="chip" data-q="Je cherche une chambre ce week-end à Saly">🏠 Chambre Saly</button><button class="chip" data-q="Je veux réserver une table ce soir">🍽️ Table resto</button><button class="chip" data-q="Je cherche un produit dans une boutique">🛍️ Market</button><button class="chip" data-q="Je veux payer ou envoyer une preuve Wave">💳 PAY</button><button class="chip" data-q="Je cherche un emploi ou une mission">💼 JOBS</button><button class="chip" data-q="Je veux publier une annonce dans le réseau">📣 Réseau</button></div><div class="actionbar"><button class="greenBtn" id="listenBtn">🎙️ Parler</button><button class="primaryBtn" id="searchBtn">🔎 Voir les fiches</button><button class="darkBtn" id="msgBtn">💬 Message prêt</button><button class="dangerBtn" id="clearBtn">🧹 Effacer</button></div><div class="status" id="status">Prêt.</div></article></div></section>
+<section class="section" id="voix"><div class="wrap"><article class="panel voice"><h2>🎙️ Demande ton besoin</h2><p class="muted">Exemples : “je cherche un chauffeur pour AIBD”, “je veux une sortie pêche”, “j’ai une fuite salle de bain”, “je cherche une chambre ce week-end”.</p><textarea id="q" placeholder="Écris ou dicte ton besoin ici..."></textarea><div class="chips"><button class="chip" data-q="Je cherche un chauffeur pour AIBD demain matin">🚗 Chauffeur AIBD</button><button class="chip" data-q="Je veux une sortie pêche sur la Petite Côte">🎣 Sortie pêche</button><button class="chip" data-q="J’ai une fuite dans ma salle de bain">🧰 Fuite / artisan</button><button class="chip" data-q="Je cherche une chambre ce week-end à Saly">🏠 Chambre Saly</button><button class="chip" data-q="Je veux réserver une table ce soir">🍽️ Table resto</button><button class="chip" data-q="Je cherche un produit dans une boutique">🛍️ Market</button><button class="chip" data-q="Je veux payer ou envoyer une preuve Wave">💳 PAY</button><button class="chip" data-q="Je cherche un emploi ou une mission">💼 JOBS</button><button class="chip" data-q="Je veux publier une annonce dans le réseau">📣 Réseau</button></div><div class="actionbar"><button class="greenBtn" id="listenBtn" type="button">🎙️ Parler</button><button class="primaryBtn" id="searchBtn" type="button">🔎 Voir les fiches</button><button class="darkBtn" id="msgBtn" type="button">💬 Message prêt</button><button class="dangerBtn" id="clearBtn" type="button">🧹 Effacer</button></div><div class="status" id="status">Prêt.</div></article></div></section>
 <section class="section"><div class="wrap"><article class="panel results"><h2>Fiches qui remontent</h2><p class="muted" id="resultIntro">Les résultats se filtrent selon l’intention. La fiche est la réponse principale.</p><div class="empty" id="empty">Aucune fiche exacte pour cette demande. DIGIY peut préparer un message WhatsApp pour orienter le besoin.</div><div class="cards" id="cards"></div></article></div></section>
 <section class="section"><div class="wrap"><article class="panel doctrine"><h2>Doctrine</h2><p class="muted"><strong>On n’a pas séparé deux mondes.</strong> On a unifié le public et les pros dans l’écosystème métiers DIGIY. Côté public : la voix fait remonter les fiches. Côté pro : ACTION DIGIY prépare l’action dans un espace protégé. L’humain valide.</p></article></div></section>
 </main>
 <footer class="foot"><div class="wrap"><strong>La Voix du Business — BY DIGIYLYFE</strong><br>Public ouvert · Routes publiques seulement · Pro protégé · Contact direct · 0% commission.</div></footer>
-<script src="./assets/js/action-digiy-public.js?v=action-digiy-public-official-20260606"></script>
-<script src="./assets/js/action-digiy-voice-float.js?v=voice-float-20260606"></script>
-
-<script>
-/* DIGIY — correctif direct : Astou Boutique doit remonter en une seule fiche publique, sans doublon MARKET/POS.
-   Pourquoi ce script existe : le moteur public externe garde son rendu interne.
-   Ce correctif reprend donc directement le rendu des cartes quand la recherche parle
-   de serviettes / linge / draps + magasin / boutique + Saly.
-*/
-(function(){
-  "use strict";
-
-  var ASTOU_URL = "https://astou-boutique.digiylyfe.com/";
-  var DIGIY_CONTACT = "221771342889";
-
-  function $(id){ return document.getElementById(id); }
-
-  function norm(v){
-    return String(v || "")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim();
-  }
-
-  function hasAny(text, words){
-    return words.some(function(w){ return text.indexOf(norm(w)) >= 0; });
-  }
-
-  function waLink(text){
-    return "https://wa.me/" + DIGIY_CONTACT + "?text=" + encodeURIComponent(text);
-  }
-
-  function isAstouSearch(raw){
-    var n = norm(raw);
-    var product = hasAny(n, ["serviette","serviettes","linge","drap","draps","bain","peignoir","peignoirs","fouta","foutas"]);
-    var shop = hasAny(n, ["magasin","boutique","commerce","acheter","je cherche","je veux","ou trouver","où trouver"]);
-    var zone = hasAny(n, ["saly","petite cote","petite côte"]);
-    return product && shop && zone;
-  }
-
-  function cardHTML(card, originalSearch){
-    var msg = card.wa + (originalSearch ? "\n\nRecherche client : " + originalSearch : "");
-    return [
-      '<article class="card">',
-        '<div class="cover">' + card.icon + '</div>',
-        '<div class="body">',
-          '<span class="tag">' + card.tag + ' · ' + card.zone + '</span>',
-          '<h3>' + card.title + '</h3>',
-          '<p>' + card.desc + '</p>',
-          '<div class="card-actions">',
-            '<a class="btn primary" href="' + card.url + '" target="_blank" rel="noopener noreferrer">' + card.cta + '</a>',
-            '<a class="btn green" href="' + waLink(msg) + '" target="_blank" rel="noopener noreferrer">WhatsApp direct</a>',
-          '</div>',
-        '</div>',
-      '</article>'
-    ].join("");
-  }
-
-  function renderAstouCards(raw){
-    var cards = $("cards");
-    var status = $("status");
-    var empty = $("empty");
-    if(!cards) return false;
-
-    var astouCard = {
-      icon:"🛍️",
-      tag:"#boutique locale · #linge · #serviettes · Saly",
-      title:"Astou Boutique — linge & serviettes",
-      zone:"Saly · Petite Côte",
-      desc:"Serviettes, draps, peignoirs, foutas, linge maison, plage, tenues et crèmes. Une seule fiche publique : MARKET montre la boutique, Mon Commerce/POS reste la caisse interne du pro.",
-      url:ASTOU_URL,
-      cta:"Voir Astou Boutique",
-      wa:"Bonjour, je cherche des serviettes / du linge à Saly. Je souhaite contacter Astou Boutique via DIGIY."
-    };
-
-    cards.innerHTML = cardHTML(astouCard, raw);
-
-    if(empty) empty.style.display = "none";
-    if(status) status.textContent = "Recherche précise captée : Astou Boutique — serviettes et linge à Saly.";
-    return true;
-  }
-
-  function renderSmart(){
-    var q = $("q");
-    var raw = q ? q.value.trim() : "";
-    if(isAstouSearch(raw)) return renderAstouCards(raw);
-
-    if(window.DIGIY_ACTION_PUBLIC && typeof window.DIGIY_ACTION_PUBLIC.render === "function"){
-      window.DIGIY_ACTION_PUBLIC.render();
-      return true;
-    }
-    return false;
-  }
-
-  function keepLabelsClean(){
-    var listen = $("listenBtn");
-    if(listen && /écouter|ecouter/i.test(listen.textContent || "")){
-      listen.textContent = "🎙️ Parler";
-    }
-  }
-
-  function install(){
-    keepLabelsClean();
-
-    var q = $("q");
-    var searchBtn = $("searchBtn");
-    var listenBtn = $("listenBtn");
-    var chips = Array.prototype.slice.call(document.querySelectorAll("[data-q]"));
-
-    chips.forEach(function(chip){
-      var old = chip.getAttribute("data-q") || "";
-      if(/produit|boutique|market/i.test(old)){
-        chip.setAttribute("data-q", "Je cherche un magasin de serviettes à Saly");
-        chip.textContent = "🧺 Serviettes Saly";
-      }
-      chip.addEventListener("click", function(){
-        setTimeout(renderSmart, 60);
-      });
-    });
-
-    if(searchBtn){
-      searchBtn.onclick = function(ev){
-        if(ev && ev.preventDefault) ev.preventDefault();
-        renderSmart();
-      };
-    }
-
-    if(q){
-      q.addEventListener("input", function(){
-        if(isAstouSearch(q.value)) renderAstouCards(q.value.trim());
-      });
-    }
-
-    if(listenBtn){
-      listenBtn.addEventListener("click", function(){
-        setTimeout(function(){
-          keepLabelsClean();
-          renderSmart();
-        }, 900);
-      });
-    }
-
-    setInterval(function(){
-      keepLabelsClean();
-      var qNow = $("q");
-      if(qNow && isAstouSearch(qNow.value)){
-        var firstTitle = document.querySelector("#cards .card h3");
-        if(!firstTitle || !/Astou Boutique/i.test(firstTitle.textContent || "")){
-          renderAstouCards(qNow.value.trim());
-        }
-      }
-    }, 500);
-
-    // Exemple par défaut utile pour test rapide sans robotiser le client.
-    if(q && !q.value.trim()){
-      q.placeholder = "Exemple naturel : je cherche un magasin de serviettes à Saly";
-    }
-  }
-
-  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", install);
-  else install();
-
-  window.DIGIY_ASTOU_PRECISION_READY = true;
-})();
-</script>
-
+<script src="./assets/js/action-digiy-public.js?v=action-digiy-public-official-20260606" defer></script>
+<script src="./assets/js/action-digiy-astou-override.js?v=astou-src-20260606" defer></script>
+<script src="./assets/js/action-digiy-voice-float.js?v=voice-float-20260606" defer></script>
 </body>
 </html>
-
-
