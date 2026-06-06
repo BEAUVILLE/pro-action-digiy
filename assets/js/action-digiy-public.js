@@ -94,7 +94,7 @@
             "cosmétique","cosmetique","tissu","pagne","vetement","vêtement","chaussure","accessoire","bijou",
             "electronique","électronique","telephone","téléphone","informatique","fourniture","materiel","matériel",
             "alimentaire","alimentation","eau","boisson","huile","riz","farine","condiment","locale","local"],
-      url:"https://digiylyfe.com/",cta:"Voir MARKET",
+      url:"https://market.digiylyfe.com/",cta:"Voir MARKET",
       wa:"Bonjour, je cherche un produit ou une boutique via DIGIY MARKET."
     },
     {
@@ -131,7 +131,7 @@
             "freelance","prestation","service","technicien","agent","gardien","veileur","cuisinier","cuisinière",
             "receptionniste","réceptionniste","femme chambre","femme de chambre","lingere","lingère","animateur",
             "commerciale","commercial","vendeur","vendeuse","chauffeur emploi","livreur"],
-      url:"https://digiylyfe.com/",cta:"Voir JOBS",
+      url:"https://jobs.digiylyfe.com/",cta:"Voir JOBS",
       wa:"Bonjour, je cherche une information JOBS via DIGIY."
     }
   ];
@@ -369,4 +369,5 @@
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
   else bind();
 })();
+
 
