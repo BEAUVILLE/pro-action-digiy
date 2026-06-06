@@ -23,7 +23,7 @@
 <script src="./assets/js/action-digiy-voice-float.js?v=voice-float-20260606"></script>
 
 <script>
-/* DIGIY — correctif direct : Astou Boutique doit remonter avant MARKET générique.
+/* DIGIY — correctif direct : Astou Boutique doit remonter en une seule fiche publique, sans doublon MARKET/POS.
    Pourquoi ce script existe : le moteur public externe garde son rendu interne.
    Ce correctif reprend donc directement le rendu des cartes quand la recherche parle
    de serviettes / linge / draps + magasin / boutique + Saly.
@@ -84,35 +84,21 @@
     var empty = $("empty");
     if(!cards) return false;
 
-    var preciseCards = [
-      {
-        icon:"🛍️",
-        tag:"#boutique locale",
-        title:"Astou Boutique — linge & serviettes",
-        zone:"Saly",
-        desc:"Serviettes, draps, peignoirs, foutas, linge maison, plage, tenues et crèmes. Contact direct avec la boutique.",
-        url:ASTOU_URL,
-        cta:"Voir Astou Boutique",
-        wa:"Bonjour, je cherche des serviettes / du linge à Saly. Je souhaite contacter Astou Boutique via DIGIY."
-      },
-      {
-        icon:"🧺",
-        tag:"#linge · #serviettes",
-        title:"Boutiques serviettes & linge — Saly",
-        zone:"Saly · Petite Côte",
-        desc:"Recherche précise : serviettes, draps, linge de bain et linge maison autour de Saly.",
-        url:ASTOU_URL,
-        cta:"Voir les serviettes",
-        wa:"Bonjour, je cherche un magasin de serviettes / linge à Saly via DIGIY."
-      }
-    ];
+    var astouCard = {
+      icon:"🛍️",
+      tag:"#boutique locale · #linge · #serviettes · Saly",
+      title:"Astou Boutique — linge & serviettes",
+      zone:"Saly · Petite Côte",
+      desc:"Serviettes, draps, peignoirs, foutas, linge maison, plage, tenues et crèmes. Une seule fiche publique : MARKET montre la boutique, Mon Commerce/POS reste la caisse interne du pro.",
+      url:ASTOU_URL,
+      cta:"Voir Astou Boutique",
+      wa:"Bonjour, je cherche des serviettes / du linge à Saly. Je souhaite contacter Astou Boutique via DIGIY."
+    };
 
-    cards.innerHTML = preciseCards.map(function(card){
-      return cardHTML(card, raw);
-    }).join("");
+    cards.innerHTML = cardHTML(astouCard, raw);
 
     if(empty) empty.style.display = "none";
-    if(status) status.textContent = "Recherche précise captée : Astou Boutique / serviettes / linge à Saly.";
+    if(status) status.textContent = "Recherche précise captée : Astou Boutique — serviettes et linge à Saly.";
     return true;
   }
 
