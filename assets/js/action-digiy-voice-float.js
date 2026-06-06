@@ -6,10 +6,10 @@
     var css = document.createElement("style");
     css.id = "digiyVoiceFloatCss";
     css.textContent = [
-      ".digiyVoiceFloat{position:fixed;right:16px;bottom:16px;z-index:80;min-height:58px;padding:0 18px;border:0;border-radius:999px;background:linear-gradient(135deg,#fff2bf,#f6c453,#7ee6a7);color:#102015;font:1000 15px system-ui,-apple-system,Segoe UI,sans-serif;box-shadow:0 18px 46px rgba(18,60,45,.22);display:inline-flex;align-items:center;gap:9px;cursor:pointer}",
-      ".digiyVoiceFloatIcon{font-size:22px}",
-      ".digiyVoiceFloatSmall{display:block;font-size:10px;font-weight:900;opacity:.76;line-height:1}",
-      "@media(max-width:560px){.digiyVoiceFloat{left:12px;right:12px;bottom:12px;justify-content:center;min-height:62px;font-size:16px}.foot{padding-bottom:92px}}"
+      ".digiyVoiceFloat{position:fixed;right:16px;bottom:16px;z-index:80;min-height:68px;padding:0 22px;border:0;border-radius:999px;background:linear-gradient(135deg,#fff2bf,#f6c453,#7ee6a7);color:#102015;font:1000 17px system-ui,-apple-system,Segoe UI,sans-serif;box-shadow:0 20px 52px rgba(18,60,45,.26);display:inline-flex;align-items:center;gap:11px;cursor:pointer}",
+      ".digiyVoiceFloatIcon{font-size:28px}",
+      ".digiyVoiceFloatSmall{display:block;font-size:11px;font-weight:900;opacity:.78;line-height:1.05;margin-top:2px}",
+      "@media(max-width:560px){.digiyVoiceFloat{left:12px;right:12px;bottom:12px;justify-content:center;min-height:72px;font-size:17px}.foot{padding-bottom:104px}}"
     ].join("\n");
     document.head.appendChild(css);
   }
@@ -20,18 +20,18 @@
     btn.type = "button";
     btn.id = "digiyVoiceFloat";
     btn.className = "digiyVoiceFloat";
-    btn.setAttribute("aria-label", "Parler à DIGIY sur la vitrine publique");
+    btn.setAttribute("aria-label", "Dites votre recherche à DIGIY sur la vitrine publique");
 
     var icon = document.createElement("span");
     icon.className = "digiyVoiceFloatIcon";
     icon.textContent = "🎙️";
 
     var label = document.createElement("span");
-    label.textContent = "Parler à DIGIY";
+    label.textContent = "Dites votre recherche";
 
     var small = document.createElement("small");
     small.className = "digiyVoiceFloatSmall";
-    small.textContent = "vitrine publique";
+    small.textContent = "parler à DIGIY";
     label.appendChild(small);
 
     btn.appendChild(icon);
