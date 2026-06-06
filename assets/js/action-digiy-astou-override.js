@@ -1,7 +1,8 @@
+
 /* DIGIYLYFE ACTION — correctif Astou chargé par SRC.
    Doctrine : Astou s'ajoute APRÈS le moteur public — ne jamais écraser #cards.
-   Fix 20260606 : délai porté à 200ms, lecture textarea au moment d'exécution,
-   injection en prepend (pas innerHTML) pour ne pas effacer les fiches publiques.
+   Fix 20260606-v2 : suppression MutationObserver (cause boucle flash).
+   Hook sur window.DIGIY_ACTION_PUBLIC.render uniquement.
 */
 (function(){
   "use strict";
@@ -15,7 +16,7 @@
   function match(v){
     var t = clean(v);
     return has(t,["serviette","linge","drap","bain","peignoir","fouta"])
-      && has(t,["saly","petite cote","petite cote"])
+      && has(t,["saly","petite cote","petite côte"])
       && has(t,["boutique","magasin","acheter","commerce","market","cherche","veux"]);
   }
 
@@ -24,16 +25,18 @@
   }
 
   function inject(){
-    /* Lit le textarea AU MOMENT de l'exécution (pas avant) */
     var q   = el("q");
     var raw = q ? q.value.trim() : "";
+
+    /* Supprimer ancienne carte Astou si elle existe */
+    var old = document.getElementById("astou-card");
+    if(old) old.parentNode.removeChild(old);
+
+    /* Si pas de match → on sort, les cartes publiques restent intactes */
     if(!match(raw)) return;
 
     var box = el("cards");
     if(!box) return;
-
-    /* Ne pas injecter deux fois */
-    if(document.getElementById("astou-card")) return;
 
     var msg = "Bonjour, je cherche des serviettes ou du linge à Saly via DIGIY."
             + (raw ? "\n\nRecherche client : " + raw : "");
@@ -53,38 +56,40 @@
         '</div>' +
       '</div>';
 
-    /* Ajoute EN PREMIER sans toucher aux autres cartes */
     box.insertBefore(article, box.firstChild);
 
     var status = el("status");
     if(status) status.textContent = "Fiche Astou Boutique + fiches DIGIY remontées.";
   }
 
-  /* Délai 200ms — laisse le moteur public finir son render avant d'ajouter */
   function scheduleInject(){
-    setTimeout(inject, 200);
+    setTimeout(inject, 180);
+  }
+
+  function hookPublicRender(){
+    var pub = window.DIGIY_ACTION_PUBLIC;
+    if(pub && pub.render && !pub.__astouHooked){
+      var orig = pub.render;
+      pub.render = function(){
+        orig();
+        scheduleInject();
+      };
+      pub.__astouHooked = true;
+    }
   }
 
   function init(){
-    ["searchBtn"].forEach(function(id){
-      var b = el(id);
-      if(b) b.addEventListener("click", scheduleInject);
-    });
+    /* Bind sur searchBtn et chips */
+    var searchBtn = el("searchBtn");
+    if(searchBtn) searchBtn.addEventListener("click", scheduleInject);
 
     document.querySelectorAll(".chip").forEach(function(b){
       b.addEventListener("click", scheduleInject);
     });
 
-    /* Voix : render() est appelé dans onend, on s'y accroche via MutationObserver */
-    var box = el("cards");
-    if(box && window.MutationObserver){
-      var obs = new MutationObserver(function(){
-        /* Quand #cards est modifié par le moteur public, on vérifie si Astou doit s'ajouter */
-        clearTimeout(obs._t);
-        obs._t = setTimeout(inject, 80);
-      });
-      obs.observe(box, {childList: true});
-    }
+    /* Hook render public — tenter immédiatement puis après chargement */
+    hookPublicRender();
+    setTimeout(hookPublicRender, 300);
   }
 
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
