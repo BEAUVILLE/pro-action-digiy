@@ -74,7 +74,7 @@
       keys:["resa","réservation","reservation","reserver","réserver","dispo","disponible","creneau","créneau",
             "date","heure","planning","rendez-vous","rdv","agenda","booker","booking","calendrier","place",
             "confirmer","confirmation","retenir","retient","bloquer"],
-      url:"https://digiylyfe.com/digiy-resto/",cta:"Demander une réservation",
+      url:"https://resto.digiylyfe.com/",cta:"Demander une réservation",
       wa:"Bonjour, je souhaite faire une demande de réservation via DIGIY."
     },
     {
@@ -83,7 +83,7 @@
       keys:["resto","restaurant","table","menu","manger","dejeuner","déjeuner","diner","dîner","repas","commande",
             "nourriture","cuisine","gastronomie","chef","plat","grillades","fruits de mer","brochette","poisson grille",
             "soir","midi","brunch","buffet","lunch","snack","bar","terrasse","grillades","brasserie","cantine"],
-      url:"https://digiylyfe.com/digiy-resto/",cta:"Voir RESTO",
+      url:"https://resto.digiylyfe.com/",cta:"Voir RESTO",
       wa:"Bonjour, je cherche un restaurant / une table via DIGIY RESTO."
     },
     {
