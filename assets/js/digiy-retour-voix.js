@@ -16,7 +16,7 @@
     var style = document.createElement("style");
     style.textContent = [
       "#"+ID+"{",
-        "position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:999;",
+        "position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:999999;",
         "display:inline-flex;align-items:center;gap:8px;",
         "min-height:50px;padding:0 22px;border-radius:999px;",
         "background:linear-gradient(135deg,#fff2bf,#f6c453);",
