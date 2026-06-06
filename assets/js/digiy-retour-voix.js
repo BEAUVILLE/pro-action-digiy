@@ -16,7 +16,7 @@
     var style = document.createElement("style");
     style.textContent = [
       "#"+ID+"{",
-        "position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:999999;",
+        "position:fixed;bottom:18px;right:18px;z-index:999999;",
         "display:inline-flex;align-items:center;gap:8px;",
         "min-height:50px;padding:0 22px;border-radius:999px;",
         "background:linear-gradient(135deg,#fff2bf,#f6c453);",
@@ -31,7 +31,7 @@
         "box-shadow:0 16px 40px rgba(18,60,45,.38);",
       "}",
       "@media(max-width:520px){",
-        "#"+ID+"{left:12px;right:12px;transform:none;justify-content:center;bottom:12px;}",
+        "#"+ID+"{right:12px;bottom:12px;}",
       "}"
     ].join("");
     document.head.appendChild(style);
