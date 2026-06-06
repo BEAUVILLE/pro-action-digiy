@@ -5,8 +5,10 @@
 (function(){
   "use strict";
 
-  var VERSION = "action-digiy-public-official-20260606";
+  var VERSION = "action-digiy-public-long-listen-20260606";
   var DIGIY_CONTACT = "221771342889";
+  var LISTEN_MAX_MS = 18000;
+  var SILENCE_AFTER_RESULT_MS = 5200;
 
   var FICHES = [
     {module:"DRIVER",icon:"🚗",tag:"#chauffeur",title:"Chauffeur / transfert AIBD",zone:"Saly · Dakar · AIBD",desc:"Demande de trajet, transfert, horaire et contact direct.",keys:["chauffeur","driver","taxi","aibd","aeroport","aéroport","course","trajet","dakar","saly"],url:"https://galerie-chauffeurs.digiylyfe.com/",cta:"Voir chauffeurs",wa:"Bonjour, je cherche un chauffeur / transfert AIBD via DIGIY."},
@@ -60,21 +62,50 @@
   function setupSpeech(){
     var btn = $("listenBtn"), q = $("q"), status = $("status");
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recog = null, hardTimer = null, silenceTimer = null, listening = false;
+    function setListening(on){
+      listening = !!on;
+      if(btn) btn.textContent = on ? "🎙️ J’écoute… parle tranquillement" : "🎙️ Écouter";
+      if(btn) btn.classList.toggle("isListening", on);
+    }
+    function stopTimers(){ clearTimeout(hardTimer); clearTimeout(silenceTimer); }
+    function stopListen(){ try{ if(recog) recog.stop(); }catch(_){} }
     if(!btn) return;
     if(!SR){ btn.textContent = "🎙️ Micro indispo"; return; }
-    var recog = new SR();
+    recog = new SR();
     recog.lang = "fr-FR";
     recog.interimResults = true;
-    recog.continuous = false;
-    recog.onstart = function(){ if(status) status.textContent = "J’écoute..."; };
+    recog.continuous = true;
+    recog.maxAlternatives = 1;
+    recog.onstart = function(){
+      setListening(true);
+      if(status) status.textContent = "J’écoute… prends ton temps, parle naturellement.";
+      stopTimers();
+      hardTimer = setTimeout(stopListen, LISTEN_MAX_MS);
+    };
     recog.onresult = function(e){
       var txt = "";
       for(var i=0;i<e.results.length;i++) txt += e.results[i][0].transcript;
-      if(q) q.value = txt;
+      if(q) q.value = txt.trim();
+      if(status) status.textContent = "Je t’écoute encore… tu peux compléter.";
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(stopListen, SILENCE_AFTER_RESULT_MS);
     };
-    recog.onend = function(){ if(status) status.textContent = "Voix captée. Tu peux voir les fiches."; render(); };
-    recog.onerror = function(){ if(status) status.textContent = "Micro fragile. Écris le besoin."; };
-    btn.onclick = function(){ try{ recog.start(); }catch(_){ if(status) status.textContent = "Micro déjà lancé."; } };
+    recog.onend = function(){
+      stopTimers();
+      setListening(false);
+      if(status) status.textContent = q && q.value.trim() ? "Voix captée. Les fiches remontent." : "Micro fermé. Tu peux recommencer ou écrire le besoin.";
+      render();
+    };
+    recog.onerror = function(){
+      stopTimers();
+      setListening(false);
+      if(status) status.textContent = "Micro fragile. Tu peux écrire le besoin.";
+    };
+    btn.onclick = function(){
+      if(listening){ stopListen(); return; }
+      try{ recog.start(); }catch(_){ if(status) status.textContent = "Micro déjà lancé."; }
+    };
   }
   function bind(){
     var searchBtn = $("searchBtn"), msgBtn = $("msgBtn"), clearBtn = $("clearBtn"), q = $("q"), status = $("status");
