@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-business-oreille-jecoute-bilingue-20260607"/>
+<meta name="digiy-build" content="voix-business-exemples-publics-tous-modules-20260607"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -137,40 +137,61 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 }
 .chip:active,.actionbar button:active,.navIcon:active,.iconBtn:active{transform:scale(.98)}
 .examplesToggle{
-  min-height:44px;
-  border-radius:18px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.72);
-  box-shadow:0 10px 26px rgba(18,60,45,.07);
-  font-size:14px;
+  min-height:58px;
+  border-radius:22px;
+  border:2px solid rgba(210,32,32,.72);
+  background:linear-gradient(135deg,#ffe3df,#ffb7ad);
+  box-shadow:0 14px 34px rgba(210,32,32,.18);
+  font-size:17px;
   font-weight:1000;
-  letter-spacing:.06em;
-  color:#6b4b08;
+  letter-spacing:.045em;
+  color:#6d0d0d;
+  text-transform:uppercase;
 }
+.examplesToggle:active{transform:scale(.985)}
 .examplesPanel{
   display:grid;
-  gap:7px;
-  max-height:230px;
+  grid-template-columns:1fr;
+  gap:8px;
+  max-height:min(56svh,430px);
   overflow:auto;
-  padding:8px;
-  border-radius:20px;
-  border:1px solid rgba(246,196,83,.28);
-  background:rgba(255,255,255,.66);
+  padding:10px;
+  border-radius:24px;
+  border:2px solid rgba(210,32,32,.58);
+  background:
+    radial-gradient(circle at top left,rgba(255,80,70,.18),transparent 42%),
+    rgba(255,247,244,.94);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),0 14px 34px rgba(210,32,32,.10);
   -webkit-overflow-scrolling:touch;
 }
 .examplesPanel[hidden]{display:none!important}
 .examplePhrase{
   width:100%;
-  min-height:42px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:rgba(18,60,45,.045);
+  min-height:58px;
+  border-radius:18px;
+  border:1px solid rgba(210,32,32,.22);
+  background:rgba(255,255,255,.82);
   color:var(--text);
   text-align:left;
-  padding:9px 11px;
+  padding:10px 11px;
   font-size:13px;
-  line-height:1.25;
+  line-height:1.22;
   font-weight:900;
+  box-shadow:0 8px 18px rgba(18,60,45,.055);
+}
+.examplePhrase .mod{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  padding:0 8px;
+  margin:0 0 6px;
+  border-radius:999px;
+  background:#d22020;
+  color:#fff;
+  font-size:10px;
+  font-weight:1000;
+  letter-spacing:.07em;
+  text-transform:uppercase;
 }
 .examplePhrase .fr{display:block;color:#102f24;font-weight:1000}
 .examplePhrase .wo{display:block;margin-top:3px;color:#000;font-weight:850;opacity:.78;font-size:12px}
@@ -331,31 +352,43 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
       <label class="sr-only" for="q">Parler ici ou dicter ton besoin</label>
       <textarea id="q" autocomplete="off" rows="2" placeholder="PARLER ICI" aria-label="Parler ici ou dicter ton besoin"></textarea>
 
-      <div class="quickGrid" aria-label="Choix rapides">
-        <button class="chip" type="button" data-q="Je cherche un chauffeur pour AIBD demain matin" aria-label="Chauffeur AIBD">🚗</button>
-        <button class="chip" type="button" data-q="Je veux une sortie pêche sur la Petite Côte" aria-label="Sortie pêche">🎣</button>
-        <button class="chip" type="button" data-q="J’ai une fuite dans ma salle de bain" aria-label="Artisan fuite">🧰</button>
-        <button class="chip" type="button" data-q="Je cherche une chambre ce week-end à Saly" aria-label="Chambre logement">🏠</button>
-        <button class="chip" type="button" data-q="Je veux réserver une table ce soir" aria-label="Restaurant réservation">🍽️</button>
-        <button class="chip" type="button" data-q="Je cherche un produit dans une boutique" aria-label="Boutique market">🛍️</button>
-        <button class="chip" type="button" data-q="Je veux payer ou envoyer une preuve Wave" aria-label="Paiement Wave">💳</button>
-        <button class="chip" type="button" data-q="Je cherche un emploi ou une mission" aria-label="Emploi mission">💼</button>
-        <button class="chip" type="button" data-q="Je veux publier une annonce dans le réseau" aria-label="Annonce réseau">📣</button>
-        <button class="chip" type="button" data-q="Je veux une idée de sortie" aria-label="Idée de sortie">✨</button>
+      <div class="quickGrid" aria-label="Choix rapides — portes publiques">
+        <button class="chip" type="button" data-q="Je veux dire ma recherche à DIGIY" aria-label="VOIX">🎙️</button>
+        <button class="chip" type="button" data-q="Je veux une idée de sortie sur la Petite Côte" aria-label="EXPLORE">🗺️</button>
+        <button class="chip" type="button" data-q="Je cherche un chauffeur pour AIBD demain matin" aria-label="DRIVER">🚗</button>
+        <button class="chip" type="button" data-q="Je veux voir les chauffeurs disponibles" aria-label="GALERIE CHAUFFEURS">👑</button>
+        <button class="chip" type="button" data-q="Je cherche une chambre ce week-end à Saly" aria-label="LOC">🏠</button>
+        <button class="chip" type="button" data-q="Je veux réserver une table ce soir" aria-label="RESA">📅</button>
+        <button class="chip" type="button" data-q="J’ai besoin d’un artisan pour une réparation" aria-label="BUILD">🏗️</button>
+        <button class="chip" type="button" data-q="Je veux voir les commerces locaux" aria-label="COMMERCE">👜</button>
+        <button class="chip" type="button" data-q="Je cherche un produit dans une boutique" aria-label="MARKET">🛍️</button>
+        <button class="chip" type="button" data-q="Je cherche un emploi ou une mission" aria-label="JOBS">💼</button>
+        <button class="chip" type="button" data-q="Je veux publier une annonce dans le réseau" aria-label="RÉSEAU">📣</button>
+        <button class="chip" type="button" data-q="Je veux envoyer une preuve Wave" aria-label="PAY">💳</button>
+        <button class="chip" type="button" data-q="Je veux venir chez DIGIY ou trouver la route" aria-label="VENIR CHEZ DIGIY">📍</button>
+        <button class="chip" type="button" data-q="Je cherche un logement avec option solidaire" aria-label="NDIMBAL LOC">🤝</button>
+        <button class="chip" type="button" data-q="Je veux écouter la vision DIGIYLYFE" aria-label="AUDIO">🎵</button>
+        <button class="chip" type="button" data-q="Je veux être guidé par l’assistant DIGIY" aria-label="ASSISTANT">♾️</button>
       </div>
 
-      <button class="examplesToggle" id="examplesToggle" type="button" aria-expanded="false" aria-controls="examplesPanel">📋 EXEMPLES</button>
-      <div class="examplesPanel" id="examplesPanel" hidden aria-label="Exemples de phrases bilingues français et wolof">
-        <button class="examplePhrase" type="button" data-q="Je cherche un chauffeur pour AIBD demain matin"><span class="fr">Je cherche un chauffeur pour AIBD demain matin</span><span class="wo">Damaa bëgg chauffeur bu ma yóbbu AIBD ëllëg suba.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je veux une sortie pêche sur la Petite Côte"><span class="fr">Je veux une sortie pêche sur la Petite Côte</span><span class="wo">Damaa bëgg sortie pêche ci Petite Côte.</span></button>
-        <button class="examplePhrase" type="button" data-q="J’ai une fuite dans ma salle de bain"><span class="fr">J’ai une fuite dans ma salle de bain</span><span class="wo">Ndox mi dafay daw ci salle de bain.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je cherche une chambre ce week-end à Saly"><span class="fr">Je cherche une chambre ce week-end à Saly</span><span class="wo">Damaa wut chambre ci Saly weekend bii.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je veux réserver une table ce soir"><span class="fr">Je veux réserver une table ce soir</span><span class="wo">Damaa bëgg réserver table ngoon sii.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je cherche un produit dans une boutique"><span class="fr">Je cherche un produit dans une boutique</span><span class="wo">Damaa wut produit ci boutique.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je veux envoyer une preuve Wave"><span class="fr">Je veux envoyer une preuve Wave</span><span class="wo">Damaa bëgg yónnee preuve Wave.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je cherche un emploi ou une mission"><span class="fr">Je cherche un emploi ou une mission</span><span class="wo">Damaa wut liggéey walla mission.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je veux publier une annonce dans le réseau"><span class="fr">Je veux publier une annonce dans le réseau</span><span class="wo">Damaa bëgg publier annonce ci réseau.</span></button>
-        <button class="examplePhrase" type="button" data-q="Je veux une idée de sortie"><span class="fr">Je veux une idée de sortie</span><span class="wo">Damaa bëgg idée sortie.</span></button>
+      <button class="examplesToggle" id="examplesToggle" type="button" aria-expanded="false" aria-controls="examplesPanel">🟥 EXEMPLES POUR PARLER</button>
+      <div class="examplesPanel" id="examplesPanel" hidden aria-label="Exemples de phrases bilingues français et wolof pour chaque porte publique DIGIY">
+        <button class="examplePhrase" type="button" data-q="Je veux dire ma recherche à DIGIY"><span class="mod">🎙️ VOIX</span><span class="fr">Dites votre recherche, les fiches remontent</span><span class="wo">Waxal sa soxla, DIGIY dina yëkkati fiches yi.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux une idée de sortie sur la Petite Côte"><span class="mod">🗺️ EXPLORE</span><span class="fr">Je veux une idée de sortie sur la Petite Côte</span><span class="wo">Damaa bëgg idée sortie ci Petite Côte.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un chauffeur pour AIBD demain matin"><span class="mod">🚗 DRIVER</span><span class="fr">Je cherche un chauffeur pour AIBD demain matin</span><span class="wo">Damaa bëgg chauffeur bu ma yóbbu AIBD ëllëg suba.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux voir les chauffeurs disponibles"><span class="mod">👑 GALERIE CHAUFFEURS</span><span class="fr">Je veux voir les chauffeurs disponibles</span><span class="wo">Damaa bëgg gis chauffeurs yi am.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche une chambre ce week-end à Saly"><span class="mod">🏠 LOC</span><span class="fr">Je cherche une chambre ce week-end à Saly</span><span class="wo">Damaa wut chambre ci Saly weekend bii.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux réserver une table ce soir"><span class="mod">📅 RESA</span><span class="fr">Je veux réserver une table ce soir</span><span class="wo">Damaa bëgg réserver table ngoon sii.</span></button>
+        <button class="examplePhrase" type="button" data-q="J’ai besoin d’un artisan pour une réparation"><span class="mod">🏗️ BUILD</span><span class="fr">J’ai besoin d’un artisan pour une réparation</span><span class="wo">Damaa soxla artisan ngir defar dara.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux voir les commerces locaux"><span class="mod">👜 COMMERCE</span><span class="fr">Je veux voir les commerces locaux</span><span class="wo">Damaa bëgg gis commerces yi ci dëkk bi.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un produit dans une boutique"><span class="mod">🛍️ MARKET</span><span class="fr">Je cherche un produit dans une boutique</span><span class="wo">Damaa wut produit ci boutique.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un emploi ou une mission"><span class="mod">💼 JOBS</span><span class="fr">Je cherche un emploi ou une mission</span><span class="wo">Damaa wut liggéey walla mission.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux publier une annonce dans le réseau"><span class="mod">📣 RÉSEAU</span><span class="fr">Je veux publier une annonce dans le réseau</span><span class="wo">Damaa bëgg publier annonce ci réseau.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux envoyer une preuve Wave"><span class="mod">💳 PAY</span><span class="fr">Je veux envoyer une preuve Wave</span><span class="wo">Damaa bëgg yónnee preuve Wave.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux venir chez DIGIY ou trouver la route"><span class="mod">📍 VENIR CHEZ DIGIY</span><span class="fr">Je veux venir chez DIGIY ou trouver la route</span><span class="wo">Damaa bëgg dem chez DIGIY walla xam yoon wi.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un logement avec option solidaire"><span class="mod">🤝 NDIMBAL LOC</span><span class="fr">Je cherche un logement avec option solidaire</span><span class="wo">Damaa wut logement ak ndimbal bu baax.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux écouter la vision DIGIYLYFE"><span class="mod">🎵 AUDIO</span><span class="fr">Je veux écouter la vision DIGIYLYFE</span><span class="wo">Damaa bëgg déglu vision DIGIYLYFE.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je veux être guidé par l’assistant DIGIY"><span class="mod">♾️ ASSISTANT</span><span class="fr">Je veux être guidé par l’assistant DIGIY</span><span class="wo">Damaa bëgg ndimbal assistant DIGIY.</span></button>
       </div>
 
       <div class="actionbar" aria-label="Actions">
@@ -384,7 +417,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 <button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter l’explication">🎧</button>
 
 <p id="audioText" class="sr-only">
-La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvre les exemples bilingues si tu veux une phrase modèle en français et en wolof. Le public exprime son besoin. Les fiches métiers remontent directement, sans long scroll. Le contact reste direct par WhatsApp, appel, fiche ou Q R. Côté professionnel, l’action reste protégée. DIGIY prépare, le professionnel valide. Le terrain garde la main.
+La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvre le grand cadre rouge Exemples pour parler. Il y a maintenant une phrase modèle pour chaque porte publique : chauffeur, explore, logement, réservation, artisan, commerce, market, jobs, réseau, pay, venir chez DIGIY, ndimbal, audio et assistant. Le visiteur peut découvrir le site sans long scroll : il clique une phrase, les fiches remontent, puis il ouvre la bonne porte. DIGIY prépare, les fichiers se passent le relais, et le professionnel garde la main.
 </p>
 
 <script>
@@ -401,15 +434,22 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
   const audioText = ($("audioText")?.textContent || "").trim();
 
   const DATA = [
-    {keys:["chauffeur","aibd","taxi","driver","course","conduire","trajet","yobbu","yóbbu"], icon:"🚗", title:"DRIVER", url:"https://galerie-chauffeurs.digiylyfe.com/", wa:"Bonjour, je cherche un chauffeur via DIGIY."},
-    {keys:["sortie","pêche","peche","explore","visite","activité","activite","découvrir","decouvrir","idée","idee","genn","génn"], icon:"🎣", title:"EXPLORE", url:"https://explore.digiylyfe.com/", wa:"Bonjour, je cherche une sortie via DIGIY."},
-    {keys:["resto","restaurant","table","réserver","reserver","dîner","diner","manger","ngoon","lekk"], icon:"🍽️", title:"RESA", url:"https://resa-table-resto.digiylyfe.com/", wa:"Bonjour, je veux réserver une table via DIGIY."},
-    {keys:["chambre","logement","maison","studio","appartement","louer","location","saly","nuit"], icon:"🏠", title:"LOC", url:"https://loc.digiylyfe.com/", wa:"Bonjour, je cherche un logement via DIGIY."},
-    {keys:["fuite","artisan","plombier","électricien","electricien","travaux","réparer","reparer","build","ndox","daw"], icon:"🧰", title:"BUILD", url:"https://build.digiylyfe.com/", wa:"Bonjour, je cherche un artisan via DIGIY."},
-    {keys:["produit","boutique","acheter","market","article","commande","shop"], icon:"🛍️", title:"MARKET", url:"https://market.digiylyfe.com/", wa:"Bonjour, je cherche un produit via DIGIY."},
-    {keys:["payer","paiement","wave","preuve","pay","argent","reçu","recu"], icon:"💳", title:"PAY", url:"https://pay.digiylyfe.com/", wa:"Bonjour, je veux envoyer une preuve de paiement via DIGIY."},
+    {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"https://pro-action-digiy.digiylyfe.com/", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
+    {keys:["sortie","pêche","peche","explore","visite","activité","activite","découvrir","decouvrir","idée","idee","territoire","petite cote","petite côte","genn","génn"], icon:"🗺️", title:"EXPLORE", url:"https://explore.digiylyfe.com/", wa:"Bonjour, je cherche une sortie ou une idée de découverte via DIGIY."},
+    {keys:["chauffeur","aibd","taxi","driver","course","conduire","trajet","mobilite","mobilité","yobbu","yóbbu"], icon:"🚗", title:"DRIVER", url:"https://driver-client.digiylyfe.com/", wa:"Bonjour, je cherche un chauffeur via DIGIY."},
+    {keys:["chauffeurs disponibles","galerie chauffeur","chauffeurs","nos chauffeurs","visage","conducteur"], icon:"👑", title:"GALERIE", url:"https://galerie-chauffeurs.digiylyfe.com/", wa:"Bonjour, je veux voir les chauffeurs disponibles via DIGIY."},
+    {keys:["chambre","logement","maison","studio","appartement","louer","location","saly","nuit","dormir"], icon:"🏠", title:"LOC", url:"https://loc.digiylyfe.com/", wa:"Bonjour, je cherche un logement via DIGIY."},
+    {keys:["resa","réservation","reservation","resto","restaurant","table","réserver","reserver","dîner","diner","manger","ngoon","lekk"], icon:"📅", title:"RESA", url:"https://resa-table-resto.digiylyfe.com/", wa:"Bonjour, je veux réserver via DIGIY."},
+    {keys:["fuite","artisan","plombier","électricien","electricien","travaux","réparer","reparer","build","réparation","reparation","ndox","daw"], icon:"🏗️", title:"BUILD", url:"https://build.digiylyfe.com/", wa:"Bonjour, je cherche un artisan via DIGIY."},
+    {keys:["commerce","commerces","commerce local","mon commerce","magasin","local"], icon:"👜", title:"COMMERCE", url:"https://mon-commerce.digiylyfe.com/", wa:"Bonjour, je veux voir les commerces locaux via DIGIY."},
+    {keys:["produit","boutique","acheter","market","article","commande","shop","marché","marche"], icon:"🛍️", title:"MARKET", url:"https://market.digiylyfe.com/", wa:"Bonjour, je cherche un produit via DIGIY."},
     {keys:["emploi","job","mission","travail","recrute","postuler","jobs","liggeey","liggéey"], icon:"💼", title:"JOBS", url:"https://jobs.digiylyfe.com/", wa:"Bonjour, je cherche une mission ou un emploi via DIGIY."},
-    {keys:["réseau","reseau","annonce","publier","visibilité","visibilite","fiche"], icon:"📣", title:"RÉSEAU", url:"https://reseau-digiy.digiylyfe.com/hub.html", wa:"Bonjour, je veux publier une annonce dans le réseau DIGIY."}
+    {keys:["réseau","reseau","annonce","publier","visibilité","visibilite","fiche","com au clic"], icon:"📣", title:"RÉSEAU", url:"https://reseau-digiy.digiylyfe.com/", wa:"Bonjour, je veux publier une annonce dans le réseau DIGIY."},
+    {keys:["payer","paiement","wave","preuve","pay","argent","reçu","recu","paiement direct"], icon:"💳", title:"PAY", url:"https://pay.digiylyfe.com/", wa:"Bonjour, je veux envoyer une preuve de paiement via DIGIY."},
+    {keys:["venir","route","chez digiy","adresse","localisation","vas chez","trouver la route"], icon:"📍", title:"VENIR", url:"https://vas-chez-digiy.digiylyfe.com/", wa:"Bonjour, je veux venir chez DIGIY ou trouver la route."},
+    {keys:["ndimbal","solidaire","solidarité","solidarite","loc solidaire"], icon:"🤝", title:"NDIMBAL", url:"https://ndimbal-loc.digiylyfe.com/", wa:"Bonjour, je cherche une option logement solidaire via DIGIY."},
+    {keys:["audio","écouter","ecouter","vision","article","revue","son","déglu","deglu"], icon:"🎵", title:"AUDIO", url:"https://digiy-audio.digiylyfe.com/", wa:"Bonjour, je veux écouter la vision DIGIYLYFE."},
+    {keys:["assistant","aide","guidé","guide","knowledge","infini","avancer"], icon:"♾️", title:"ASSISTANT", url:"https://knowledge.digiylyfe.com/widget/", wa:"Bonjour, je veux être guidé par l’assistant DIGIY."}
   ];
 
   function clean(s){
@@ -495,6 +535,11 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
     if(!panel || !toggle) return;
     panel.hidden = !panel.hidden;
     toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+    if(!panel.hidden){
+      setTimeout(() => {
+        panel.scrollIntoView({behavior:"smooth", block:"nearest"});
+      }, 40);
+    }
   });
 
   $("searchBtn")?.addEventListener("click", searchNow);
@@ -629,4 +674,5 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
 </script>
 </body>
 </html>
+
 
