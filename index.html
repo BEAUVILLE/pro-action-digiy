@@ -431,6 +431,8 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
   const empty = $("empty");
   const introBtn = $("introBtn");
   const audioFloat = $("audioFloat");
+  const resultsPanel = document.querySelector(".results");
+  const askPanel = document.querySelector(".ask");
   const audioText = ($("audioText")?.textContent || "").trim();
 
   const DATA = [
@@ -511,15 +513,28 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
     setStatus("✅", "Résultat direct");
   }
 
-  function searchNow(){
+  function bringResultsIntoView(){
+    const target = resultsPanel || cards || askPanel;
+    if(!target) return;
+    setTimeout(() => {
+      try{
+        target.scrollIntoView({behavior:"smooth", block:"start", inline:"nearest"});
+      }catch(e){
+        target.scrollIntoView();
+      }
+    }, 90);
+  }
+
+  function searchNow(move){
     const val = q ? q.value.trim() : "";
     render(matchCards(val));
+    if(move) bringResultsIntoView();
   }
 
   document.querySelectorAll(".chip[data-q], .examplePhrase[data-q]").forEach(btn => {
     btn.addEventListener("click", () => {
       if(q) q.value = btn.getAttribute("data-q") || "";
-      searchNow();
+      searchNow(true);
       if(btn.classList.contains("examplePhrase")){
         const panel = $("examplesPanel");
         const toggle = $("examplesToggle");
@@ -542,7 +557,7 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
     }
   });
 
-  $("searchBtn")?.addEventListener("click", searchNow);
+  $("searchBtn")?.addEventListener("click", () => searchNow(true));
 
   $("clearBtn")?.addEventListener("click", () => {
     if(q) q.value = "";
@@ -583,7 +598,7 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
 
     if(activeRecognition){
       stopRecognition();
-      if(q && q.value.trim()) searchNow();
+      if(q && q.value.trim()) searchNow(true);
       setStatus(q?.value ? "✅" : "•", q?.value ? "Résultat direct" : "Prêt");
       return;
     }
@@ -627,7 +642,7 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
         listenButton?.classList.remove("listening");
         activeRecognition = null;
         if(q && q.value.trim()){
-          searchNow();
+          searchNow(true);
           setStatus("✅", "Résultat direct");
         }else{
           setStatus("•", "Prêt");
@@ -674,5 +689,7 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
 </script>
 </body>
 </html>
+
+
 
 
