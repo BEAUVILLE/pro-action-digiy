@@ -1,12 +1,12 @@
 /* DIGIYLYFE — La Voix du Business PUBLIC
    Rôle : moteur public de mise en relation.
    Doctrine : le public exprime un besoin, DIGIY fait remonter des fiches, contact direct. Aucun hub pro ouvert.
-   Version : action-digiy-public-fuzzy-rich-20260606
+   Version : action-digiy-public-wolof-v1-20260607
 */
 (function(){
   "use strict";
 
-  var VERSION = "action-digiy-public-fuzzy-build-v2-20260606";
+  var VERSION = "action-digiy-public-wolof-v1-20260607";
   var DIGIY_CONTACT = "221771342889";
   var LISTEN_MAX_MS = 18000;
   var SILENCE_AFTER_RESULT_MS = 5200;
@@ -21,7 +21,10 @@
       keys:["chauffeur","driver","taxi","aibd","aeroport","aéroport","course","trajet","dakar","saly",
             "conduire","conduite","voiture","vehicule","véhicule","transport","transfert","navette",
             "aller","partir","emmener","ride","moto","mototaxi","sept places","7 places","vdm","diamniadio",
-            "mbour","thiès","thies","ziguinchor"],
+            "mbour","thiès","thies","ziguinchor",
+            /* wolof */
+            "jëridkat","jëride","shirfer","wecckat","dem","dem ci","wëcc","dem ak","bëgg dem",
+            "dem aibd","dem dakar","dem saly","dem mbour","maa ngi dem","jaambur","dëkk"],
       url:"https://galerie-chauffeurs.digiylyfe.com/",cta:"Voir chauffeurs",
       wa:"Bonjour, je cherche un chauffeur / transfert AIBD via DIGIY."
     },
@@ -30,7 +33,10 @@
       desc:"Le public demande, DIGIY oriente, le contact terrain reste direct.",
       keys:["peche","pêche","sortie","mer","pirogue","petite cote","petite côte","explore","visite","excursion","balade",
             "activite","activité","loisir","bateau","plage","ocean","océan","poisson","sport nautique","kayak",
-            "promenade","detente","détente","tourisme","decouverte","découverte","week-end","weekend","vacances"],
+            "promenade","detente","détente","tourisme","decouverte","découverte","week-end","weekend","vacances",
+            /* wolof */
+            "fegël","fegëlkat","liggeey reew","dem géej","géej","pirogue","jën","jën bi","dëkk bu bees",
+            "yégëlef","dem ci géej","wuute","bokk ci","ñëw fegël"],
       url:"https://explore.digiylyfe.com/",cta:"Voir EXPLORE",
       wa:"Bonjour, je souhaite des informations sur une sortie pêche Petite Côte via DIGIY EXPLORE."
     },
@@ -46,7 +52,10 @@
             "gros œuvre","maison","villa","immeuble","local","bungalow","structure","plan","devis",
             "architecte","ingenieur","ingénieur","terrassement","terrassier","ferrailleur","coffreur",
             "cloture","clôture","mur","ciment","beton","béton","parpaing","agglo","amenagement","aménagement",
-            "finition","carreleur","piscine","garage","extension","agrandissement","saly","petite cote","petite côte"],
+            "finition","carreleur","piscine","garage","extension","agrandissement","saly","petite cote","petite côte",
+            /* wolof */
+            "wallufkat","liggeey","xam-xam","dem liggeey","jeex","jeex na","dëkkë liggeey",
+            "artisan wolof","réparer","répare","yëgël devis","wàcc","kër","kër bi","tuyau bi"],
       url:"https://build.digiylyfe.com/",cta:"Décrire le besoin",
       wa:"Bonjour, j'ai besoin d'un artisan / entrepreneur / dépannage via DIGIY BUILD."
     },
@@ -54,7 +63,9 @@
       module:"LOC",icon:"🏠",tag:"#logement",title:"Chez Baptiste — Saly",zone:"Saly · Petite Côte",
       desc:"Fiche logement démo : contact direct propriétaire, 0% commission DIGIY.",
       keys:["chez baptiste","baptiste","logement saly","chambre saly","maison saly","villa saly",
-            "dormir saly","saly","petite cote","petite côte","loc","location","logement","chambre","villa","maison"],
+            "dormir saly","saly","petite cote","petite côte","loc","location","logement","chambre","villa","maison",
+            /* wolof */
+            "kër","kër bi","dëkk","joxeel kër","joxeel","guddi","nekk saly","dëkk saly"],
       url:"https://loc.digiylyfe.com/",cta:"Voir Chez Baptiste",
       wa:"Bonjour, je cherche un logement à Saly. Je souhaite voir Chez Baptiste via DIGIY LOC."
     },
@@ -64,7 +75,10 @@
       keys:["chambre","logement","villa","maison","nuit","week-end","weekend","reservation","réservation",
             "loc","saly","location","studio","appartement","appart","hebergement","hébergement","dormir",
             "coucher","séjour","sejour","louer","loue","disponible","dispo","airbnb","gite","gîte",
-            "mbour","ngaparou","somone","saloum","nianing"],
+            "mbour","ngaparou","somone","saloum","nianing",
+            /* wolof */
+            "kër","kër bi","joxeel kër","joxeel ak xaalis","guddi bu nekk","dugg","génn",
+            "bëgg nekk","dëkk ci","yégël kër","mën a jënd","nekk ci kër"],
       url:"https://loc.digiylyfe.com/",cta:"Voir LOC",
       wa:"Bonjour, je cherche un logement / une chambre via DIGIY LOC."
     },
@@ -73,7 +87,10 @@
       desc:"Le public formule une intention. Le pro confirme ensuite côté module protégé.",
       keys:["resa","réservation","reservation","reserver","réserver","dispo","disponible","creneau","créneau",
             "date","heure","planning","rendez-vous","rdv","agenda","booker","booking","calendrier","place",
-            "confirmer","confirmation","retenir","retient","bloquer"],
+            "confirmer","confirmation","retenir","retient","bloquer",
+            /* wolof */
+            "yégël","yégël bi","bés bi","waxt","dégël","taxawal","mën a yégël","soxor na","bëgg a suur",
+            "wax ci kanam","ci kanam","yégël ci kanam"],
       url:"https://resto.digiylyfe.com/",cta:"Demander une réservation",
       wa:"Bonjour, je souhaite faire une demande de réservation via DIGIY."
     },
@@ -82,7 +99,10 @@
       desc:"Besoin de table, restaurant, menu, information ou contact direct.",
       keys:["resto","restaurant","table","menu","manger","dejeuner","déjeuner","diner","dîner","repas","commande",
             "nourriture","cuisine","gastronomie","chef","plat","grillades","fruits de mer","brochette","poisson grille",
-            "soir","midi","brunch","buffet","lunch","snack","bar","terrasse","grillades","brasserie","cantine"],
+            "soir","midi","brunch","buffet","lunch","snack","bar","terrasse","grillades","brasserie","cantine",
+            /* wolof */
+            "lekk","lekk bi","dëkk bu lekk","bëgg lekk","jën ak ceeb","ceeb","thiéboudienne","thiep","yassa",
+            "mafé","ceebu jën","lekkal","nekk ci restau","table bi","jënd lekk","liggey restau"],
       url:"https://resto.digiylyfe.com/",cta:"Voir RESTO",
       wa:"Bonjour, je cherche un restaurant / une table via DIGIY RESTO."
     },
@@ -93,7 +113,10 @@
             "vendre","vente","magasin","epicerie","épicerie","superette","supérette","parapharmacie","pharmacie",
             "cosmétique","cosmetique","tissu","pagne","vetement","vêtement","chaussure","accessoire","bijou",
             "electronique","électronique","telephone","téléphone","informatique","fourniture","materiel","matériel",
-            "alimentaire","alimentation","eau","boisson","huile","riz","farine","condiment","locale","local"],
+            "alimentaire","alimentation","eau","boisson","huile","riz","farine","condiment","locale","local",
+            /* wolof */
+            "jaay","jaaykat","jënd","jëndkat","njëg","njëg bi","marché","listu jaay","dagga",
+            "bëgg jënd","jënd ci","nettali","nettali bi","boutik","boutik bi","riz bi","huil","saawur"],
       url:"https://market.digiylyfe.com/",cta:"Voir MARKET",
       wa:"Bonjour, je cherche un produit ou une boutique via DIGIY MARKET."
     },
@@ -101,7 +124,10 @@
       module:"POS",icon:"🧾",tag:"#commerce",title:"Commerce / caisse POS",zone:"Professionnels",
       desc:"Information POS côté public. La caisse réelle reste côté pro protégé.",
       keys:["pos","caisse","ticket","vente","vendre","encaisser","boutique","commerce","marchandise",
-            "tpe","terminal","recu","reçu","facture","tva","compte","gestion","inventaire","stock"],
+            "tpe","terminal","recu","reçu","facture","tva","compte","gestion","inventaire","stock",
+            /* wolof */
+            "ndefarati xaalis","ndefarati","papier jaay","jaay bi","jënd bi","yëgël bu jëm",
+            "caisse wolof","fay ci caisse","encaisse"],
       url:"https://commencer-a-payer.digiylyfe.com/?module=POS",cta:"Activer POS",
       wa:"Bonjour, je souhaite des informations sur DIGIY POS / caisse commerce."
     },
@@ -110,7 +136,10 @@
       desc:"Question paiement, activation, preuve ou mise en relation PAY.",
       keys:["pay","paiement","payer","wave","orange money","cash","preuve","recu","reçu","abonnement","activer",
             "virement","transfert","envoyer argent","recevoir argent","solde","mobile money","free money",
-            "e-money","eMoney","carte","depot","dépôt","retrait","transaction","règlement","reglement"],
+            "e-money","eMoney","carte","depot","dépôt","retrait","transaction","règlement","reglement",
+            /* wolof */
+            "xaalis","fay","fay bi","yégël waxtu","xaalis bi","dooro","ndëy","solde wolof",
+            "yëgëlef fay","xaalis bu des","yégël waxtu bi","teral","tëral","wave bi","envoye xaalis"],
       url:"https://commencer-a-payer.digiylyfe.com/?module=PAY",cta:"Voir PAY",
       wa:"Bonjour, je souhaite une information PAY / paiement DIGIY."
     },
@@ -119,7 +148,10 @@
       desc:"Annonce, fiche, QR, partage et visibilité dans le réseau.",
       keys:["reseau","réseau","annonce","visibilite","visibilité","fiche","qr","partage","publier","promotion",
             "communiquer","communication","affichage","flyer","prospectus","pub","publicite","publicité",
-            "mettre en avant","référencer","referencer","notoriete","notoriété","connu","trouver"],
+            "mettre en avant","référencer","referencer","notoriete","notoriété","connu","trouver",
+            /* wolof */
+            "mbokk ak mbokk","dëkk ak dëkk","jëf liggeeykat","xibaar liggeey","bokk ci","wax ci",
+            "fegël moom","yëgëlef","visible","digiy reseau","réseau digiy"],
       url:"https://reseau-digiy.digiylyfe.com/",cta:"Voir RÉSEAU",
       wa:"Bonjour, je souhaite une information sur RÉSEAU DIGIY / annonce."
     },
@@ -130,7 +162,11 @@
             "stage","stagiaire","embauche","embaucher","poste","contrat","cdi","cdd","interim","intérim",
             "freelance","prestation","service","technicien","agent","gardien","veileur","cuisinier","cuisinière",
             "receptionniste","réceptionniste","femme chambre","femme de chambre","lingere","lingère","animateur",
-            "commerciale","commercial","vendeur","vendeuse","chauffeur emploi","livreur"],
+            "commerciale","commercial","vendeur","vendeuse","chauffeur emploi","livreur",
+            /* wolof */
+            "bëgg liggeey","liggeeykat","liggeyéef","bëgg liggeeykat","soppiku liggeeykat",
+            "xibaar moom","dox fii","wax ak rekk","jël nit","liggeey bi","xam-xam bi",
+            "maa ngi bëgg liggeey","mission wolof","recruter wolof"],
       url:"https://jobs.digiylyfe.com/",cta:"Voir JOBS",
       wa:"Bonjour, je cherche une information JOBS via DIGIY."
     }
@@ -369,5 +405,6 @@
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
   else bind();
 })();
+
 
 
