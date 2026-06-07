@@ -211,7 +211,9 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 #listenBtn{background:linear-gradient(135deg,#d8ffe6,#7ee6a7);color:#000}
 #listenBtn.talkBtn{font-size:17px;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
 #listenBtn.talkBtn span{font-weight:1000;color:#000}
-#searchBtn{background:linear-gradient(135deg,var(--gold2),var(--gold))}
+#searchBtn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000}
+#searchBtn.viewBtn{font-size:15px;letter-spacing:.03em;display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+#searchBtn.viewBtn span{font-weight:1000;color:#000}
 #msgBtn{background:rgba(255,255,255,.76)}
 #clearBtn{background:#ffd7d2}
 .status{
@@ -393,7 +395,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <div class="actionbar" aria-label="Actions">
         <button id="listenBtn" class="talkBtn" type="button" aria-label="Parler ici">👂 <span>PARLER ICI</span></button>
-        <button id="searchBtn" type="button" aria-label="Voir les fiches">🔎</button>
+        <button id="searchBtn" class="viewBtn" type="button" aria-label="Voir les fiches">🔎 <span>VOIR</span></button>
         <button id="msgBtn" type="button" aria-label="Préparer un message WhatsApp">💬</button>
         <button id="clearBtn" type="button" aria-label="Effacer">🧹 <span>EFFACER</span></button>
       </div>
@@ -417,7 +419,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 <button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter l’explication">🎧</button>
 
 <p id="audioText" class="sr-only">
-La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvre le grand cadre rouge Exemples pour parler. Il y a maintenant une phrase modèle pour chaque porte publique : chauffeur, explore, logement, réservation, artisan, commerce, market, jobs, réseau, pay, venir chez DIGIY, ndimbal, audio et assistant. Le visiteur peut découvrir le site sans long scroll : il clique une phrase, les fiches remontent, puis il ouvre la bonne porte. DIGIY prépare, les fichiers se passent le relais, et le professionnel garde la main.
+Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur J’écoute et parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, artisan, commerce, market, jobs, réseau, pay, audio ou assistant. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. Ce sont des fichiers connectés qui se passent le relais : la voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 
 <script>
@@ -689,6 +691,8 @@ La Voix du Business DIGIYLYFE. Appuie sur J’écoute, parle simplement, ou ouvr
 </script>
 </body>
 </html>
+
+
 
 
 
