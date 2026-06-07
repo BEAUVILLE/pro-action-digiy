@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-business-zero-texte-mobile-20260607"/>
+<meta name="digiy-build" content="voix-business-zero-texte-parler-effacer-20260607"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -95,18 +95,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .ask{
   padding:12px;
   display:grid;
-  gap:10px;
-}
-.mark{
-  height:86px;
-  border-radius:24px;
-  display:grid;
-  place-items:center;
-  font-size:54px;
-  background:
-    radial-gradient(circle,rgba(246,196,83,.34),transparent 54%),
-    linear-gradient(135deg,rgba(255,242,191,.80),rgba(216,255,230,.72));
-  border:1px solid rgba(246,196,83,.30);
+  gap:9px;
 }
 textarea{
   width:100%;
@@ -124,6 +113,7 @@ textarea{
   outline:none;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.65);
 }
+textarea::placeholder{color:rgba(16,47,36,.42);font-weight:1000;letter-spacing:.08em;text-align:center}
 textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,196,83,.18)}
 .quickGrid{
   display:grid;
@@ -141,7 +131,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 .chip:active,.actionbar button:active,.navIcon:active,.iconBtn:active{transform:scale(.98)}
 .actionbar{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:2fr 1fr 1fr 1fr;
   gap:8px;
 }
 .actionbar button{
@@ -151,17 +141,30 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   font-weight:1000;
 }
 #listenBtn{background:linear-gradient(135deg,#d8ffe6,#7ee6a7)}
+#listenBtn.talkBtn{font-size:17px;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+#listenBtn.talkBtn span{font-weight:1000}
 #searchBtn{background:linear-gradient(135deg,var(--gold2),var(--gold))}
 #msgBtn{background:rgba(255,255,255,.76)}
 #clearBtn{background:#ffd7d2}
 .status{
-  height:5px;
+  min-height:34px;
   border-radius:999px;
-  background:rgba(246,196,83,.28);
-  overflow:hidden;
-  font-size:0;
-  line-height:0;
-  color:transparent;
+  background:rgba(246,196,83,.22);
+  border:1px solid rgba(246,196,83,.28);
+  display:grid;
+  place-items:center;
+  font-size:18px;
+  line-height:1;
+  color:#6b4b08;
+  font-weight:1000;
+}
+#listenBtn.listening{
+  animation:digiyPulse 1s infinite;
+  outline:3px solid rgba(22,129,67,.20);
+}
+@keyframes digiyPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.035)}
 }
 .results{
   padding:10px;
@@ -278,10 +281,8 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
   <main class="stage">
     <section class="panel ask" id="voix" aria-label="Demande vocale ou écrite">
-      <div class="mark" aria-hidden="true">🎙️</div>
-
-      <label class="sr-only" for="q">Écris ou dicte ton besoin</label>
-      <textarea id="q" autocomplete="off" rows="2" placeholder="" aria-label="Écris ou dicte ton besoin"></textarea>
+      <label class="sr-only" for="q">Parler ici ou dicter ton besoin</label>
+      <textarea id="q" autocomplete="off" rows="2" placeholder="PARLER ICI" aria-label="Parler ici ou dicter ton besoin"></textarea>
 
       <div class="quickGrid" aria-label="Choix rapides">
         <button class="chip" type="button" data-q="Je cherche un chauffeur pour AIBD demain matin" aria-label="Chauffeur AIBD">🚗</button>
@@ -297,13 +298,13 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
       </div>
 
       <div class="actionbar" aria-label="Actions">
-        <button id="listenBtn" type="button" aria-label="Parler">🎙️</button>
+        <button id="listenBtn" class="talkBtn" type="button" aria-label="Parler ici">🎙️ <span>PARLER ICI</span></button>
         <button id="searchBtn" type="button" aria-label="Voir les fiches">🔎</button>
         <button id="msgBtn" type="button" aria-label="Préparer un message WhatsApp">💬</button>
-        <button id="clearBtn" type="button" aria-label="Effacer">🧹</button>
+        <button id="clearBtn" type="button" aria-label="Effacer">🧹 <span>EFFACER</span></button>
       </div>
 
-      <div class="status" id="status" aria-live="polite">Prêt.</div>
+      <div class="status" id="status" aria-live="polite" title="État micro">•</div>
     </section>
 
     <section class="panel results" aria-label="Résultats directs">
@@ -357,8 +358,11 @@ La Voix du Business DIGIYLYFE. Le public parle ou écrit son besoin. Les fiches 
       .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function setStatus(text){
-    if(status) status.textContent = text || "";
+  function setStatus(icon, label){
+    if(!status) return;
+    status.textContent = icon || "•";
+    status.setAttribute("title", label || "");
+    status.setAttribute("aria-label", label || "État micro");
   }
 
   function matchCards(text){
@@ -380,7 +384,7 @@ La Voix du Business DIGIYLYFE. Le public parle ou écrit son besoin. Les fiches 
     if(!list.length){
       if(empty) empty.style.display = "block";
       cards.innerHTML = '<div class="emptyIcon" aria-hidden="true">👆</div>';
-      setStatus("Prêt.");
+      setStatus("•", "Prêt");
       return;
     }
     if(empty) empty.style.display = "none";
@@ -403,7 +407,7 @@ La Voix du Business DIGIYLYFE. Le public parle ou écrit son besoin. Les fiches 
       frag.appendChild(card);
     });
     cards.appendChild(frag);
-    setStatus("Résultat direct.");
+    setStatus("✅", "Résultat direct");
   }
 
   function searchNow(){
@@ -431,26 +435,91 @@ La Voix du Business DIGIYLYFE. Le public parle ou écrit son besoin. Les fiches 
     window.open(waLink(txt), "_blank", "noopener,noreferrer");
   });
 
+  let activeRecognition = null;
+  let searchTimer = null;
+
+  function scheduleSearch(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      if(q && q.value.trim().length > 2) searchNow();
+    }, 420);
+  }
+
+  q?.addEventListener("input", scheduleSearch);
+
+  function stopRecognition(){
+    try{ activeRecognition && activeRecognition.stop(); }catch(e){}
+    activeRecognition = null;
+    $("listenBtn")?.classList.remove("listening");
+  }
+
   function speechListen(){
+    const listenButton = $("listenBtn");
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SR){
-      q?.focus();
-      setStatus("Micro non disponible.");
+
+    /* Toujours focus le champ : sur iPhone/Safari, le micro web peut être bloqué,
+       mais le micro du clavier peut alors dicter dans ce champ. */
+    q?.focus();
+
+    if(activeRecognition){
+      stopRecognition();
+      if(q && q.value.trim()) searchNow();
+      setStatus(q?.value ? "✅" : "•", q?.value ? "Résultat direct" : "Prêt");
       return;
     }
-    const rec = new SR();
-    rec.lang = "fr-FR";
-    rec.interimResults = false;
-    rec.maxAlternatives = 1;
-    setStatus("Écoute.");
-    rec.onresult = (e) => {
-      const said = e.results?.[0]?.[0]?.transcript || "";
-      if(q) q.value = said;
-      searchNow();
-    };
-    rec.onerror = () => setStatus("Micro arrêté.");
-    rec.onend = () => setStatus(q?.value ? "Résultat direct." : "Prêt.");
-    rec.start();
+
+    if(!SR){
+      setStatus("⌨️", "Micro navigateur indisponible : utilise le micro du clavier dans le champ.");
+      return;
+    }
+
+    try{
+      const rec = new SR();
+      activeRecognition = rec;
+      rec.lang = "fr-FR";
+      rec.continuous = false;
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+
+      listenButton?.classList.add("listening");
+      setStatus("🎙️", "Écoute en cours");
+
+      rec.onresult = (e) => {
+        let transcript = "";
+        for(let i = e.resultIndex; i < e.results.length; i++){
+          transcript += e.results[i][0].transcript || "";
+        }
+        transcript = transcript.trim();
+        if(transcript && q){
+          q.value = transcript;
+          scheduleSearch();
+        }
+      };
+
+      rec.onerror = (e) => {
+        listenButton?.classList.remove("listening");
+        activeRecognition = null;
+        const label = e && e.error ? "Micro : " + e.error : "Micro arrêté";
+        setStatus("⚠️", label);
+      };
+
+      rec.onend = () => {
+        listenButton?.classList.remove("listening");
+        activeRecognition = null;
+        if(q && q.value.trim()){
+          searchNow();
+          setStatus("✅", "Résultat direct");
+        }else{
+          setStatus("•", "Prêt");
+        }
+      };
+
+      rec.start();
+    }catch(err){
+      listenButton?.classList.remove("listening");
+      activeRecognition = null;
+      setStatus("⚠️", "Micro non lancé");
+    }
   }
 
   $("listenBtn")?.addEventListener("click", speechListen);
@@ -483,8 +552,5 @@ La Voix du Business DIGIYLYFE. Le public parle ou écrit son besoin. Les fiches 
   audioFloat?.addEventListener("click", () => speakIntro(audioFloat));
 })();
 </script>
-<script src="./action-digiy-public-duo-fr-wo.js?v=duo-fr-wo-20260607"></script>
-<script src="./assets/js/action-digiy-astou-override.js?v=astou-src-20260606" defer></script>
-<script src="./assets/js/action-digiy-voice-float.js?v=voice-float-20260606" defer></script>
 </body>
 </html>
