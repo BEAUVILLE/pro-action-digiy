@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-business-exemples-publics-tous-modules-20260607"/>
+<meta name="digiy-build" content="voix-business-pay-public-pro-choice-20260609"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -304,6 +304,9 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 .card-actions .btn[href^="tel:"]::before{content:"📞"}
 .card-actions .btn.primary,.card-actions .btn:first-child{background:linear-gradient(135deg,var(--gold2),var(--gold))}
 .card-actions .btn.green{background:linear-gradient(135deg,#d8ffe6,#7ee6a7)}
+.card-actions .btn.proPayBtn::before{content:"🏢"}
+.card-actions .btn.publicPayBtn::before{content:"💳"}
+.card-actions .btn.whatsBtn::before{content:"💬"}
 .emptyIcon{
   min-height:144px;
   display:grid;
@@ -449,7 +452,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {keys:["produit","boutique","acheter","market","article","commande","shop","marché","marche"], icon:"🛍️", title:"MARKET", url:"https://market.digiylyfe.com/", wa:"Bonjour, je cherche un produit via DIGIY."},
     {keys:["emploi","job","mission","travail","recrute","postuler","jobs","liggeey","liggéey"], icon:"💼", title:"JOBS", url:"https://jobs.digiylyfe.com/", wa:"Bonjour, je cherche une mission ou un emploi via DIGIY."},
     {keys:["réseau","reseau","annonce","publier","visibilité","visibilite","fiche","com au clic"], icon:"📣", title:"RÉSEAU", url:"https://reseau-digiy.digiylyfe.com/", wa:"Bonjour, je veux publier une annonce dans le réseau DIGIY."},
-    {keys:["payer","paiement","wave","preuve","pay","argent","reçu","recu","paiement direct"], icon:"💳", title:"PAY", url:"https://pay.digiylyfe.com/", wa:"Bonjour, je veux envoyer une preuve de paiement via DIGIY."},
+    {keys:["payer","paiement","wave","preuve","pay","argent","reçu","recu","paiement direct"], icon:"💳", title:"PAY", url:"https://pay.digiylyfe.com/", proUrl:"https://pro-pay.digiylyfe.com/hub.html", wa:"Bonjour, je veux envoyer une preuve de paiement via DIGIY."},
     {keys:["venir","route","chez digiy","adresse","localisation","vas chez","trouver la route"], icon:"📍", title:"VENIR", url:"https://vas-chez-digiy.digiylyfe.com/", wa:"Bonjour, je veux venir chez DIGIY ou trouver la route."},
     {keys:["ndimbal","solidaire","solidarité","solidarite","loc solidaire"], icon:"🤝", title:"NDIMBAL", url:"https://ndimbal-loc.digiylyfe.com/", wa:"Bonjour, je cherche une option logement solidaire via DIGIY."},
     {keys:["audio","écouter","ecouter","vision","article","revue","son","déglu","deglu"], icon:"🎵", title:"AUDIO", url:"https://digiy-audio.digiylyfe.com/", wa:"Bonjour, je veux écouter la vision DIGIYLYFE."},
@@ -483,6 +486,26 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return base + encodeURIComponent(message || "Bonjour, je viens de La Voix du Business DIGIY.");
   }
 
+  const ACTION_SESSION_KEY = "DIGIY_ACTION_PRO_SESSION";
+  const PRO_PAY_URL = "https://pro-pay.digiylyfe.com/hub.html";
+
+  function hasActionProSession(){
+    try{
+      const raw = sessionStorage.getItem(ACTION_SESSION_KEY) || localStorage.getItem(ACTION_SESSION_KEY);
+      if(!raw) return false;
+      const s = JSON.parse(raw);
+      return !!(s && s.ok && Number(s.until || 0) > Date.now());
+    }catch(e){
+      return false;
+    }
+  }
+
+  function proPayAccessUrl(){
+    if(hasActionProSession()) return PRO_PAY_URL;
+    return "./pin.html?next=" + encodeURIComponent(PRO_PAY_URL);
+  }
+
+
   function render(list){
     if(!cards) return;
     cards.innerHTML = "";
@@ -497,18 +520,33 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     list.forEach(item => {
       const card = document.createElement("article");
       card.className = "card";
-      card.innerHTML = `
-        <div class="cover" aria-hidden="true">${item.icon}</div>
-        <div class="body">
-          <span class="tag">${item.title}</span>
-          <h3>${item.title}</h3>
-          <p>${item.wa}</p>
-          <div class="card-actions">
-            <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir la fiche ${item.title}">↗️</a>
-            <a class="btn green" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬</a>
-            <a class="btn" href="tel:+221771342889" aria-label="Appeler DIGIY">📞</a>
-          </div>
-        </div>`;
+      if(item.title === "PAY"){
+        card.innerHTML = `
+          <div class="cover" aria-hidden="true">${item.icon}</div>
+          <div class="body">
+            <span class="tag">${item.title}</span>
+            <h3>${item.title}</h3>
+            <p>PAY public pour le client. PAY pro pour le cockpit du professionnel.</p>
+            <div class="card-actions">
+              <a class="btn primary proPayBtn" href="${proPayAccessUrl()}" target="_self" rel="noopener noreferrer" aria-label="Ouvrir PAY pro ou PIN">🏢</a>
+              <a class="btn green publicPayBtn" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir PAY public">💳</a>
+              <a class="btn whatsBtn" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp PAY">💬</a>
+            </div>
+          </div>`;
+      }else{
+        card.innerHTML = `
+          <div class="cover" aria-hidden="true">${item.icon}</div>
+          <div class="body">
+            <span class="tag">${item.title}</span>
+            <h3>${item.title}</h3>
+            <p>${item.wa}</p>
+            <div class="card-actions">
+              <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir la fiche ${item.title}">↗️</a>
+              <a class="btn green" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬</a>
+              <a class="btn" href="tel:+221771342889" aria-label="Appeler DIGIY">📞</a>
+            </div>
+          </div>`;
+      }
       frag.appendChild(card);
     });
     cards.appendChild(frag);
@@ -691,6 +729,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
