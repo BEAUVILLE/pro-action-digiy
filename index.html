@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-business-pay-public-pro-entry-20260609"/>
+<meta name="digiy-build" content="voix-business-pro-pay-hub-visible-20260609"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -307,6 +307,63 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 .card-actions .btn.proPayBtn::before{content:"🏢"}
 .card-actions .btn.publicPayBtn::before{content:"💳"}
 .card-actions .btn.whatsBtn::before{content:"💬"}
+.card.payCard{
+  flex-basis:min(86vw,320px);
+}
+.card.payCard h3,
+.card.payCard p,
+.card.payCard .tag{
+  position:static!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  clip:auto!important;
+  white-space:normal!important;
+  border:0!important;
+}
+.card.payCard .tag{
+  display:inline-flex;
+  width:max-content!important;
+  min-height:24px;
+  padding:0 9px!important;
+  border-radius:999px;
+  background:rgba(246,196,83,.28);
+  color:#102f24;
+  font-size:10px;
+  font-weight:1000;
+  letter-spacing:.08em;
+}
+.card.payCard h3{
+  font-size:18px;
+  line-height:1.05;
+  font-weight:1000;
+}
+.card.payCard p{
+  color:rgba(16,47,36,.78);
+  font-size:12px;
+  line-height:1.25;
+  font-weight:850;
+}
+.card.payCard .card-actions{
+  grid-template-columns:1fr;
+  gap:8px;
+}
+.card.payCard .card-actions .btn{
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-size:13px;
+  font-weight:1000;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.card.payCard .card-actions .btn::before{
+  font-size:20px;
+}
 .emptyIcon{
   min-height:144px;
   display:grid;
@@ -452,7 +509,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {keys:["produit","boutique","acheter","market","article","commande","shop","marché","marche"], icon:"🛍️", title:"MARKET", url:"https://market.digiylyfe.com/", wa:"Bonjour, je cherche un produit via DIGIY."},
     {keys:["emploi","job","mission","travail","recrute","postuler","jobs","liggeey","liggéey"], icon:"💼", title:"JOBS", url:"https://jobs.digiylyfe.com/", wa:"Bonjour, je cherche une mission ou un emploi via DIGIY."},
     {keys:["réseau","reseau","annonce","publier","visibilité","visibilite","fiche","com au clic"], icon:"📣", title:"RÉSEAU", url:"https://reseau-digiy.digiylyfe.com/", wa:"Bonjour, je veux publier une annonce dans le réseau DIGIY."},
-    {keys:["payer","paiement","wave","preuve","pay","argent","reçu","recu","paiement direct"], icon:"💳", title:"PAY", url:"https://pay.digiylyfe.com/", proUrl:"https://pro-pay.digiylyfe.com/", wa:"Bonjour, je veux envoyer une preuve de paiement via DIGIY."},
+    {keys:["payer","paiement","wave","preuve","pay","argent","reçu","recu","paiement direct"], icon:"💳", title:"PAY", url:"https://pay.digiylyfe.com/", proUrl:"https://pro-pay.digiylyfe.com/hub.html", wa:"Bonjour, je veux envoyer une preuve de paiement via DIGIY."},
     {keys:["venir","route","chez digiy","adresse","localisation","vas chez","trouver la route"], icon:"📍", title:"VENIR", url:"https://vas-chez-digiy.digiylyfe.com/", wa:"Bonjour, je veux venir chez DIGIY ou trouver la route."},
     {keys:["ndimbal","solidaire","solidarité","solidarite","loc solidaire"], icon:"🤝", title:"NDIMBAL", url:"https://ndimbal-loc.digiylyfe.com/", wa:"Bonjour, je cherche une option logement solidaire via DIGIY."},
     {keys:["audio","écouter","ecouter","vision","article","revue","son","déglu","deglu"], icon:"🎵", title:"AUDIO", url:"https://digiy-audio.digiylyfe.com/", wa:"Bonjour, je veux écouter la vision DIGIYLYFE."},
@@ -486,11 +543,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return base + encodeURIComponent(message || "Bonjour, je viens de La Voix du Business DIGIY.");
   }
 
-  const PRO_PAY_ENTRY_URL = "https://pro-pay.digiylyfe.com/";
+  const PRO_PAY_ENTRY_URL = "https://pro-pay.digiylyfe.com/hub.html";
 
   function proPayAccessUrl(){
-    // PAY garde sa propre porte : téléphone + PIN du module PAY.
-    // On ne passe plus par le PIN ACTION et on ne force plus hub.html.
+    // PRO PAY ouvre le hub PAY.
+    // Le guard du module PAY gère ensuite téléphone + PIN si nécessaire.
     return PRO_PAY_ENTRY_URL;
   }
 
@@ -508,18 +565,18 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const frag = document.createDocumentFragment();
     list.forEach(item => {
       const card = document.createElement("article");
-      card.className = "card";
+      card.className = item.title === "PAY" ? "card payCard" : "card";
       if(item.title === "PAY"){
         card.innerHTML = `
           <div class="cover" aria-hidden="true">${item.icon}</div>
           <div class="body">
             <span class="tag">${item.title}</span>
             <h3>${item.title}</h3>
-            <p>PAY public pour le client. PAY pro pour le cockpit du professionnel.</p>
+            <p>Choisis clairement : PRO PAY pour le professionnel, PAY public pour le client.</p>
             <div class="card-actions">
-              <a class="btn primary proPayBtn" href="${proPayAccessUrl()}" target="_self" rel="noopener noreferrer" aria-label="Ouvrir PAY pro ou PIN">🏢</a>
-              <a class="btn green publicPayBtn" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir PAY public">💳</a>
-              <a class="btn whatsBtn" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp PAY">💬</a>
+              <a class="btn primary proPayBtn" href="${proPayAccessUrl()}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir PRO PAY">PRO PAY</a>
+              <a class="btn green publicPayBtn" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir PAY public">PAY PUBLIC</a>
+              <a class="btn whatsBtn" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp PAY">WHATSAPP</a>
             </div>
           </div>`;
       }else{
