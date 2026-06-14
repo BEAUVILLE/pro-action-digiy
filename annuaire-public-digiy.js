@@ -135,8 +135,7 @@ window.DIGIY_PUBLIC_DIRECTORY = [
       whatsapp: "Demander par WhatsApp",
       appel: "Appeler"
     }
-  }
-   ,
+    },
 
 {
   id: "astou-boutique-saly",
