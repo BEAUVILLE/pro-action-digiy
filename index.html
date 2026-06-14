@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-business-pro-pay-hub-visible-20260609"/>
+<meta name="digiy-build" content="voix-public-helage-plombier-saly-direct-20260614"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -538,6 +538,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
         <button class="examplePhrase" type="button" data-q="Je veux voir les chauffeurs disponibles"><span class="mod">👑 GALERIE CHAUFFEURS</span><span class="fr">Je veux voir les chauffeurs disponibles</span><span class="wo">Damaa bëgg gis chauffeurs yi am.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche une chambre ce week-end à Saly"><span class="mod">🏠 LOC</span><span class="fr">Je cherche une chambre ce week-end à Saly</span><span class="wo">Damaa wut chambre ci Saly weekend bii.</span></button>
         <button class="examplePhrase" type="button" data-q="Je veux réserver une table ce soir"><span class="mod">📅 RESA</span><span class="fr">Je veux réserver une table ce soir</span><span class="wo">Damaa bëgg réserver table ngoon sii.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un plombier à Saly"><span class="mod">🔧 PLOMBIER</span><span class="fr">Je cherche un plombier à Saly</span><span class="wo">Damaa wut plombier ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="J’ai besoin d’un artisan pour une réparation"><span class="mod">🏗️ BUILD</span><span class="fr">J’ai besoin d’un artisan pour une réparation</span><span class="wo">Damaa soxla artisan ngir defar dara.</span></button>
         <button class="examplePhrase" type="button" data-q="Je veux voir les commerces locaux"><span class="mod">👜 COMMERCE</span><span class="fr">Je veux voir les commerces locaux</span><span class="wo">Damaa bëgg gis commerces yi ci dëkk bi.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche un produit dans une boutique"><span class="mod">🛍️ MARKET</span><span class="fr">Je cherche un produit dans une boutique</span><span class="wo">Damaa wut produit ci boutique.</span></button>
@@ -631,12 +632,13 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   const FICHES_DIRECTES = [
     {
-      kind:"directory", priority:1, icon:"🏗️",
-      title:"Plombiers — Saly",
-      metier:"Plombier", categorie:"Artisan / intervention", secteur:"Saly", statut:"Annuaire partenaire",
-      keys:["plombier","plomberie","fuite","robinet","robinetterie","evacuation","évacuation","installation","ndox"],
-      url:"https://build.digiylyfe.com/",
-      wa:"Bonjour, je cherche un plombier à Saly via DIGIY."
+      kind:"directory", priority:80, icon:"🔧",
+      title:"Helage — Plombier Saly",
+      metier:"Plombier multi-services", categorie:"Artisan / plomberie", secteur:"Saly", statut:"Fiche publique qualifiée",
+      phone:"221774513523",
+      keys:["helage","plombier","plomberie","fuite","fuites","robinet","robinetterie","wc","douche","lavabo","chauffe-eau","chauffe eau","desengorgement","désengorgement","evacuation","évacuation","installation","salle de bain","sanitaire","ndox"],
+      url:"https://build.digiylyfe.com/partenaires-helage-plombier.html",
+      wa:"Bonjour Helage, je viens de DIGIYLYFE pour votre service de plomberie à Saly."
     },
     {
       kind:"directory", priority:1, icon:"🏗️",
@@ -726,6 +728,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const direct = (list || []).find(x => x.kind === "directory");
     if(direct){
       const zone = direct.secteur ? " à " + direct.secteur : (secteur ? " à " + secteur.label : "");
+      if((direct.title || "").toLowerCase().includes("helage")){
+        return "J'ai compris : tu cherches un plombier à Saly. Je te remonte Helage, plombier multi-services, avec contact direct. BUILD reste derrière, pas devant.";
+      }
       return "J'ai compris : tu cherches " + (direct.metier || "un service") + zone + ". Je remonte les fiches directes, puis l'annuaire partenaire si besoin. Pas de forêt de modules : DIGIY centre la réponse.";
     }
     if(secteur){
@@ -768,6 +773,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return base + encodeURIComponent(message || "Bonjour, je viens de La Voix du Business DIGIY.");
   }
 
+  function waLinkPhone(phone, message){
+    const p = String(phone || "221771342889").replace(/[^0-9]/g, "") || "221771342889";
+    return "https://wa.me/" + p + "?text=" + encodeURIComponent(message || "Bonjour, je viens de La Voix du Business DIGIY.");
+  }
+
   const PRO_PAY_ENTRY_URL = "https://pro-pay.digiylyfe.com/hub.html";
 
   function proPayAccessUrl(){
@@ -805,8 +815,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
             </div>
             <div class="card-actions">
               <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">↗️</a>
-              <a class="btn green" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬</a>
-              <a class="btn" href="tel:+221771342889" aria-label="Appeler DIGIY">📞</a>
+              <a class="btn green" href="${waLinkPhone(item.phone, item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬</a>
+              <a class="btn" href="tel:+${String(item.phone || '221771342889').replace(/[^0-9]/g, '')}" aria-label="Appeler ${item.title}">📞</a>
             </div>
           </div>`;
       }else if(item.title === "PAY"){
@@ -1109,6 +1119,520 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
