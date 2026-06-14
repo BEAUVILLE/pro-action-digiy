@@ -669,12 +669,76 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     }
   });
 
+  /* ── DIGIY RÉPONSE VOIX — inline, même contexte que speakIntro ── */
+  function digiyBuildReply(raw) {
+    const t = (raw||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/['\u2019]/g," ");
+    if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi")||t.includes("aibd"))
+      return{icon:"🚗",title:"DRIVER",text:"J'ai compris : tu cherches un chauffeur. Je remonte la porte DRIVER. Contact direct, le terrain garde la main."};
+    if(t.includes("chambre")||t.includes("logement")||t.includes("louer")||t.includes("saly")||t.includes("nuit"))
+      return{icon:"🏠",title:"LOC",text:"J'ai compris : tu cherches un logement. Je remonte la porte LOC. Le client voit, le pro valide, relation directe."};
+    if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa"))
+      return{icon:"📅",title:"RESA",text:"J'ai compris : tu veux réserver. Je remonte la porte RESA. DIGIY prépare, le pro confirme."};
+    if(t.includes("artisan")||t.includes("plombier")||t.includes("electricien")||t.includes("build")||t.includes("travaux"))
+      return{icon:"🏗️",title:"BUILD",text:"J'ai compris : tu cherches un artisan. Je remonte la porte BUILD. Contact direct, pas de détour."};
+    if(t.includes("produit")||t.includes("boutique")||t.includes("acheter")||t.includes("market"))
+      return{icon:"🛍️",title:"MARKET",text:"J'ai compris : tu cherches un produit ou une boutique. Je remonte la porte MARKET."};
+    if(t.includes("emploi")||t.includes("travail")||t.includes("job")||t.includes("mission"))
+      return{icon:"💼",title:"JOBS",text:"J'ai compris : tu cherches du travail ou une mission. Je remonte la porte JOBS."};
+    if(t.includes("sortie")||t.includes("decouvrir")||t.includes("explore")||t.includes("petite cote"))
+      return{icon:"🗺️",title:"EXPLORE",text:"J'ai compris : tu cherches une sortie ou un lieu. Je remonte la porte EXPLORE."};
+    if(t.includes("wave")||t.includes("preuve")||t.includes("paiement")||t.includes("pay")||t.includes("argent"))
+      return{icon:"💳",title:"PAY",text:"J'ai compris : la demande touche à l'argent. Je prépare l'action PAY. Le pro vérifie et valide."};
+    if(t.includes("audio")||t.includes("ecouter")||t.includes("vision"))
+      return{icon:"🎵",title:"AUDIO",text:"J'ai compris : tu veux écouter. Je remonte la porte AUDIO DIGIYLYFE."};
+    if(t.includes("venir")||t.includes("adresse")||t.includes("route")||t.includes("chez digiy"))
+      return{icon:"📍",title:"VENIR",text:"J'ai compris : tu veux venir chez DIGIY. Je remonte la route et l'adresse."};
+    if(t.includes("annonce")||t.includes("reseau")||t.includes("publier"))
+      return{icon:"📣",title:"RÉSEAU",text:"J'ai compris : tu veux publier dans le réseau. Je remonte la porte RÉSEAU DIGIY."};
+    if(t.includes("commerce")||t.includes("magasin")||t.includes("local"))
+      return{icon:"👜",title:"COMMERCE",text:"J'ai compris : tu cherches un commerce local. Je remonte la porte COMMERCE."};
+    return{icon:"👂",title:"DEMANDE TERRAIN",text:"J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main."};
+  }
+
+  function digiyShowBox(reply) {
+    let box = document.getElementById("digiy-reponse-box");
+    if(!box){
+      box = document.createElement("div");
+      box.id = "digiy-reponse-box";
+      Object.assign(box.style,{
+        position:"fixed",left:"12px",right:"12px",bottom:"86px",
+        zIndex:"99999",maxWidth:"760px",margin:"0 auto",padding:"16px",
+        borderRadius:"22px",
+        background:"linear-gradient(135deg,rgba(10,54,34,.98),rgba(17,84,52,.98))",
+        color:"#fff7df",border:"1px solid rgba(196,151,63,.75)",
+        boxShadow:"0 18px 45px rgba(0,0,0,.35)",
+        fontWeight:"900",lineHeight:"1.45",fontSize:"15px"
+      });
+      document.body.appendChild(box);
+    }
+    box.innerHTML = "<div style=\'font-size:22px;margin-bottom:6px\'>"+reply.icon+" "+reply.title+"</div><div>"+reply.text+"</div>";
+  }
+
+  function digiySpeak(txt) {
+    if(!("speechSynthesis" in window)||!txt) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = "fr-FR"; u.rate = 0.86; u.pitch = 0.95; u.volume = 1;
+    const voices = window.speechSynthesis.getVoices()||[];
+    const fr = voices.find(v=>v.lang&&v.lang.toLowerCase()==="fr-fr")
+             ||voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith("fr"));
+    if(fr) u.voice = fr;
+    u.onstart = ()=>console.log("DIGIY AUDIO ▶ voix lancée ✅");
+    u.onerror  = (e)=>console.warn("DIGIY AUDIO ⚠", e.error);
+    window.speechSynthesis.speak(u);
+  }
+
   $("searchBtn")?.addEventListener("click", () => {
     searchNow(true);
     const txt = q?.value?.trim();
-    if (txt && window.DIGIY_AUDIO_REPONSE_V2) {
-      window.DIGIY_AUDIO_REPONSE_V2.answer(txt);
-    }
+    if(!txt) return;
+    const reply = digiyBuildReply(txt);
+    digiyShowBox(reply);
+    digiySpeak(reply.text);
   });
 
   $("clearBtn")?.addEventListener("click", () => {
@@ -808,6 +872,79 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   <script src="./digiy-audio-reponse-v1.js?v=20260614-v2-4"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
