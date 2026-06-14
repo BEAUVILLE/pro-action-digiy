@@ -1,0 +1,132 @@
+/* =========================================================
+   annuaire-public-digiy.js
+   DIGIYLYFE — Annuaire public des fiches PRO et partenaires
+   Rôle :
+   - Nourrir la voix publique sans modifier l’index à chaque fiche
+   - Classer par métier / secteur / catégorie / statut
+   - Remonter les fiches directes avant les modules généraux
+   Doctrine :
+   - Public = visible côté client
+   - Partenaire référencé = pas de PIN, pas de cockpit
+   - PRO = fiche visible + priorité plus haute
+   ========================================================= */
+
+window.DIGIY_PUBLIC_DIRECTORY = [
+  {
+    id: "helage-plombier-saly",
+    public: true,
+
+    statut: "partenaire_qualifie",
+    labelStatut: "Partenaire qualifié DIGIY",
+    priorite: 10,
+
+    nom: "Helage",
+    titre: "Helage — Plombier Saly",
+    metier: "plombier",
+    activite: "Plombier multi-services",
+    categorie: "artisan",
+    sousCategorie: "plomberie",
+
+    secteur: "Saly",
+    zones: ["Saly", "Petite Côte", "Ngaparou", "Somone", "Mbour"],
+
+    mots: [
+      "plombier",
+      "plomberie",
+      "fuite",
+      "robinet",
+      "robinetterie",
+      "wc",
+      "toilette",
+      "lavabo",
+      "douche",
+      "salle de bain",
+      "chauffe-eau",
+      "canalisation",
+      "evacuation",
+      "évacuation",
+      "depannage",
+      "dépannage",
+      "installation",
+      "sanitaire"
+    ],
+
+    description:
+      "Plombier multi-services à Saly : dépannage, fuites, robinets, WC, installation, salle de bain et petits chantiers sanitaires.",
+
+    url: "https://helage-plombier.digiylyfe.com/",
+    whatsapp: "221774513523",
+
+    icon: "🔧",
+    image:
+      "https://digiylyfe.net/wp-content/uploads/2026/05/ChatGPT-Image-14-mai-2026-04_01_44.png",
+
+    actions: {
+      ouvrir: "Ouvrir la fiche",
+      whatsapp: "WhatsApp direct",
+      appel: "Appeler"
+    }
+  }
+
+  /*
+  =========================================================
+  MODÈLE POUR AJOUTER UNE NOUVELLE FICHE
+  Copier / coller ce bloc, puis modifier les champs.
+  =========================================================
+
+  ,
+  {
+    id: "nom-metier-secteur",
+    public: true,
+
+    statut: "partenaire_reference",
+    labelStatut: "Partenaire référencé DIGIY",
+    priorite: 5,
+
+    nom: "Nom du pro ou commerce",
+    titre: "Nom — Métier Secteur",
+    metier: "plombier",
+    activite: "Description courte activité",
+    categorie: "artisan",
+    sousCategorie: "plomberie",
+
+    secteur: "Saly",
+    zones: ["Saly", "Mbour"],
+
+    mots: [
+      "mot principal",
+      "synonyme",
+      "besoin client"
+    ],
+
+    description:
+      "Petite description publique propre, simple et directe.",
+
+    url: "https://lien-public.digiylyfe.com/",
+    whatsapp: "221XXXXXXXXX",
+
+    icon: "🔧",
+    image: "",
+
+    actions: {
+      ouvrir: "Ouvrir la fiche",
+      whatsapp: "WhatsApp direct",
+      appel: "Appeler"
+    }
+  }
+
+  */
+];
+
+/* =========================================================
+   Helper simple : permet à l’index voix de lire l’annuaire
+   sans connaître la structure interne.
+   ========================================================= */
+
+window.DIGIY_GET_PUBLIC_DIRECTORY = function () {
+  return Array.isArray(window.DIGIY_PUBLIC_DIRECTORY)
+    ? window.DIGIY_PUBLIC_DIRECTORY.filter(function (item) {
+        return item && item.public === true;
+      })
+    : [];
+};
