@@ -669,7 +669,13 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     }
   });
 
-  $("searchBtn")?.addEventListener("click", () => searchNow(true));
+  $("searchBtn")?.addEventListener("click", () => {
+    searchNow(true);
+    const txt = q?.value?.trim();
+    if (txt && window.DIGIY_AUDIO_REPONSE_V2) {
+      window.DIGIY_AUDIO_REPONSE_V2.answer(txt);
+    }
+  });
 
   $("clearBtn")?.addEventListener("click", () => {
     if(q) q.value = "";
@@ -802,6 +808,80 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   <script src="./digiy-audio-reponse-v1.js?v=20260614-v2-4"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
