@@ -340,51 +340,60 @@ window.DIGIY_PUBLIC_DIRECTORY = [
     appel: "Appeler"
   }
 },
-
 {
-  id: "mbaye-partenaire-build",
+  id: "mbaye-entrepreneur-macon-saly",
   public: true,
 
   statut: "partenaire_reference",
   labelStatut: "Partenaire référencé DIGIY BUILD",
-  priorite: 7,
+  priorite: 10,
 
   nom: "Mbaye",
-  titre: "Mbaye — Partenaire BUILD",
-  metier: "artisan",
-  activite: "Travaux, dépannage, entretien et services utiles",
+  titre: "Mbaye — Entrepreneur maçon à Saly",
+  metier: "macon",
+  activite: "Entrepreneur maçon",
   categorie: "artisan",
-  sousCategorie: "services-build",
+  sousCategorie: "maconnerie",
 
   secteur: "Saly",
-  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "Dakar", "Thiès"],
+  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
 
   mots: [
     "mbaye",
-    "artisan",
-    "travaux",
+    "macon",
+    "maçon",
+    "maconnerie",
+    "maçonnerie",
+    "entrepreneur",
+    "entrepreneur macon",
+    "entrepreneur maçon",
     "chantier",
-    "depannage",
-    "dépannage",
-    "entretien",
+    "construction",
+    "renovation",
+    "rénovation",
+    "mur",
+    "muret",
+    "dalle",
+    "beton",
+    "béton",
+    "carrelage",
+    "enduit",
+    "fondation",
+    "travaux",
     "reparation",
     "réparation",
-    "service",
-    "services",
     "maison",
-    "build",
-    "intervention",
-    "besoin",
+    "villa",
     "devis"
   ],
 
   description:
-    "Partenaire BUILD référencé pour travaux, dépannage, entretien et services pratiques. Fiche publique avec QR et demande client possible.",
+    "Mbaye, entrepreneur maçon à Saly : construction, rénovation, réparation, murs, dalle, béton, chantier maison et petits travaux de maçonnerie.",
 
   url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-mbaye",
   whatsapp: "",
 
-  icon: "🧰",
+  icon: "🧱",
   image: "",
 
   actions: {
