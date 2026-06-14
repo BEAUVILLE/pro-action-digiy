@@ -645,7 +645,14 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   document.querySelectorAll(".chip[data-q], .examplePhrase[data-q]").forEach(btn => {
     btn.addEventListener("click", () => {
-      if(q) q.value = btn.getAttribute("data-q") || "";
+      const txt = btn.getAttribute("data-q") || "";
+      if(q) q.value = txt;
+      /* Voix + boîte au clic direct — data-q est la source fiable */
+      if(txt){
+        const reponse = digiyBuildReply(txt);
+        digiyShowBox(reponse);
+        speakIntro(null, reponse);
+      }
       searchNow(true);
       if(btn.classList.contains("examplePhrase")){
         const panel = $("examplesPanel");
@@ -673,10 +680,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const t = (raw||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
     if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi")||t.includes("aibd"))
       return "J'ai compris : tu cherches un chauffeur. Je remonte la porte DRIVER. Contact direct, le terrain garde la main.";
-    if(t.includes("chambre")||t.includes("logement")||t.includes("louer")||t.includes("saly")||t.includes("nuit"))
+    if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa")||t.includes("manger")||t.includes("diner"))
+      return "J'ai compris : tu veux réserver ou manger. Je remonte la porte RESA. DIGIY prépare, le pro confirme.";
+    if(t.includes("chambre")||t.includes("logement")||t.includes("louer")||t.includes("saly")||t.includes("nuit")||t.includes("dormir"))
       return "J'ai compris : tu cherches un logement. Je remonte la porte LOC. Le client voit, le pro valide, relation directe.";
-    if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa"))
-      return "J'ai compris : tu veux réserver. Je remonte la porte RESA. DIGIY prépare, le pro confirme.";
     if(t.includes("artisan")||t.includes("plombier")||t.includes("electricien")||t.includes("build")||t.includes("travaux"))
       return "J'ai compris : tu cherches un artisan. Je remonte la porte BUILD. Contact direct, pas de détour.";
     if(t.includes("produit")||t.includes("boutique")||t.includes("acheter")||t.includes("market"))
@@ -887,6 +894,80 @@ console.log("DIGIY VOICES — tape digiyListVoices() dans la console pour voir l
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
