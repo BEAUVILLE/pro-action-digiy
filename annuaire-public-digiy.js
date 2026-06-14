@@ -1,10 +1,12 @@
 /* =========================================================
    annuaire-public-digiy.js
    DIGIYLYFE — Annuaire public des fiches PRO et partenaires
+
    Rôle :
    - Nourrir la voix publique sans modifier l’index à chaque fiche
    - Classer par métier / secteur / catégorie / statut
    - Remonter les fiches directes avant les modules généraux
+
    Doctrine :
    - Public = visible côté client
    - Partenaire référencé = pas de PIN, pas de cockpit
@@ -66,121 +68,75 @@ window.DIGIY_PUBLIC_DIRECTORY = [
       whatsapp: "WhatsApp direct",
       appel: "Appeler"
     }
-  }
+  },
 
-  /*
-  =========================================================
-  MODÈLE POUR AJOUTER UNE NOUVELLE FICHE
-  Copier / coller ce bloc, puis modifier les champs.
-  =========================================================
-
-  ,
   {
-    id: "nom-metier-secteur",
+    id: "chez-baptiste-appartement-saly",
     public: true,
 
-    statut: "partenaire_reference",
-    labelStatut: "Partenaire référencé DIGIY",
-    priorite: 5,
+    statut: "fiche_loc_publique",
+    labelStatut: "Fiche LOC publique DIGIY",
+    priorite: 10,
 
-    nom: "Nom du pro ou commerce",
-    titre: "Nom — Métier Secteur",
-    metier: "plombier",
-    activite: "Description courte activité",
-    categorie: "artisan",
-    sousCategorie: "plomberie",
+    nom: "CHEZ BAPTISTE",
+    titre: "CHEZ BAPTISTE — Appartement à Saly",
+    metier: "logement",
+    activite: "Appartement à Saly",
+    categorie: "loc",
+    sousCategorie: "appartement",
 
     secteur: "Saly",
-    zones: ["Saly", "Mbour"],
+    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
 
     mots: [
-      "mot principal",
-      "synonyme",
-      "besoin client"
+      "logement",
+      "appartement",
+      "location",
+      "loc",
+      "chambre",
+      "séjour",
+      "sejour",
+      "famille",
+      "amis",
+      "week-end",
+      "weekend",
+      "vacances",
+      "saly",
+      "petite cote",
+      "petite côte",
+      "4 personnes",
+      "quartier calme",
+      "quartier paisible",
+      "senelec",
+      "sénélec",
+      "réserver",
+      "reserver"
     ],
 
     description:
-      "Petite description publique propre, simple et directe.",
+      "Appartement confortable à Saly pour jusqu’à 4 personnes, quartier paisible, réservation directe propriétaire, paiement direct et contact WhatsApp.",
 
-    url: "https://lien-public.digiylyfe.com/",
-    whatsapp: "221XXXXXXXXX",
+    url: "https://part-chez-baptiste.digiylyfe.com/",
+    whatsapp: "221771342889",
 
-    icon: "🔧",
+    icon: "🏠",
     image: "",
+
+    infos: {
+      capacite: "4 personnes max",
+      nuit: "30 000 FCFA",
+      semaine: "175 000 FCFA",
+      mois: "550 000 FCFA",
+      note: "Sénélec en sus selon consommation"
+    },
 
     actions: {
       ouvrir: "Ouvrir la fiche",
-      whatsapp: "WhatsApp direct",
+      whatsapp: "Demander par WhatsApp",
       appel: "Appeler"
     }
   }
-,
-{
-  id: "chez-baptiste-appartement-saly",
-  public: true,
-
-  statut: "fiche_loc_publique",
-  labelStatut: "Fiche LOC publique DIGIY",
-  priorite: 10,
-
-  nom: "CHEZ BAPTISTE",
-  titre: "CHEZ BAPTISTE — Appartement à Saly",
-  metier: "logement",
-  activite: "Appartement à Saly",
-  categorie: "loc",
-  sousCategorie: "appartement",
-
-  secteur: "Saly",
-  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
-
-  mots: [
-    "logement",
-    "appartement",
-    "location",
-    "loc",
-    "chambre",
-    "séjour",
-    "sejour",
-    "famille",
-    "amis",
-    "week-end",
-    "weekend",
-    "vacances",
-    "saly",
-    "petite cote",
-    "petite côte",
-    "4 personnes",
-    "quartier calme",
-    "quartier paisible",
-    "senelec",
-    "sénélec",
-    "réserver",
-    "reserver"
-  ],
-
-  description:
-    "Appartement confortable à Saly pour jusqu’à 4 personnes, quartier paisible, réservation directe propriétaire, paiement direct et contact WhatsApp.",
-
-  url: "https://part-chez-baptiste.digiylyfe.com/",
-  whatsapp: "221771342889",
-
-  icon: "🏠",
-  image: "",
-
-  infos: {
-    capacite: "4 personnes max",
-    nuit: "30 000 FCFA",
-    semaine: "175 000 FCFA",
-    mois: "550 000 FCFA",
-    note: "Sénélec en sus selon consommation"
-  },
-
-  actions: {
-    ouvrir: "Ouvrir la fiche",
-    whatsapp: "Demander par WhatsApp",
-    appel: "Appeler"
-  }
-}
+];
 
 /* =========================================================
    Helper simple : permet à l’index voix de lire l’annuaire
@@ -194,6 +150,3 @@ window.DIGIY_GET_PUBLIC_DIRECTORY = function () {
       })
     : [];
 };
-
-  */
-];
