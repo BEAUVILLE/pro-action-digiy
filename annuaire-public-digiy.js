@@ -117,6 +117,73 @@ window.DIGIY_PUBLIC_DIRECTORY = [
 
   */
 ];
+,
+{
+  id: "chez-baptiste-appartement-saly",
+  public: true,
+
+  statut: "fiche_loc_publique",
+  labelStatut: "Fiche LOC publique DIGIY",
+  priorite: 10,
+
+  nom: "CHEZ BAPTISTE",
+  titre: "CHEZ BAPTISTE — Appartement à Saly",
+  metier: "logement",
+  activite: "Appartement à Saly",
+  categorie: "loc",
+  sousCategorie: "appartement",
+
+  secteur: "Saly",
+  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
+
+  mots: [
+    "logement",
+    "appartement",
+    "location",
+    "loc",
+    "chambre",
+    "séjour",
+    "sejour",
+    "famille",
+    "amis",
+    "week-end",
+    "weekend",
+    "vacances",
+    "saly",
+    "petite cote",
+    "petite côte",
+    "4 personnes",
+    "quartier calme",
+    "quartier paisible",
+    "senelec",
+    "sénélec",
+    "réserver",
+    "reserver"
+  ],
+
+  description:
+    "Appartement confortable à Saly pour jusqu’à 4 personnes, quartier paisible, réservation directe propriétaire, paiement direct et contact WhatsApp.",
+
+  url: "https://part-chez-baptiste.digiylyfe.com/",
+  whatsapp: "221771342889",
+
+  icon: "🏠",
+  image: "",
+
+  infos: {
+    capacite: "4 personnes max",
+    nuit: "30 000 FCFA",
+    semaine: "175 000 FCFA",
+    mois: "550 000 FCFA",
+    note: "Sénélec en sus selon consommation"
+  },
+
+  actions: {
+    ouvrir: "Ouvrir la fiche",
+    whatsapp: "Demander par WhatsApp",
+    appel: "Appeler"
+  }
+}
 
 /* =========================================================
    Helper simple : permet à l’index voix de lire l’annuaire
