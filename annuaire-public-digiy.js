@@ -136,6 +136,152 @@ window.DIGIY_PUBLIC_DIRECTORY = [
       appel: "Appeler"
     }
   }
+   ,
+
+{
+  id: "astou-boutique-saly",
+  public: true,
+
+  statut: "fiche_market_publique",
+  labelStatut: "Fiche boutique DIGIY",
+  priorite: 10,
+
+  nom: "Astou Boutique",
+  titre: "Astou Boutique — Maison, plage & élégance",
+  metier: "boutique",
+  activite: "Linge de maison, plage, style et beauté",
+  categorie: "commerce",
+  sousCategorie: "linge-maison",
+
+  secteur: "Saly",
+  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
+
+  mots: [
+    "boutique",
+    "commerce",
+    "magasin",
+    "linge",
+    "linge de maison",
+    "serviette",
+    "serviettes",
+    "drap",
+    "draps",
+    "peignoir",
+    "peignoirs",
+    "fouta",
+    "foutas",
+    "plage",
+    "piscine",
+    "transat",
+    "transats",
+    "hotel",
+    "hôtel",
+    "villa",
+    "maison d'hote",
+    "maison d’hôte",
+    "location courte duree",
+    "location courte durée",
+    "robe",
+    "robes",
+    "tenue",
+    "tenues",
+    "confection",
+    "beaute",
+    "beauté",
+    "creme",
+    "crème",
+    "cosmetique",
+    "cosmétique"
+  ],
+
+  description:
+    "Astou Boutique à Saly : linge de maison, serviettes, draps, peignoirs, foutas, articles plage, tenues stylées, confection et produits de beauté.",
+
+  url: "https://astou-boutique.digiylyfe.com/",
+  whatsapp: "221778765785",
+
+  icon: "👜",
+  image: "",
+
+  infos: {
+    familles: "Maison, hôtels, villas, plage, style et beauté",
+    zone: "Saly, Sénégal",
+    note: "Contacter Astou pour connaître les produits disponibles et préparer la visite."
+  },
+
+  actions: {
+    ouvrir: "Ouvrir la boutique",
+    whatsapp: "WhatsApp direct",
+    appel: "Appeler"
+  }
+},
+
+{
+  id: "digiy-driver-ambassadeur-baptiste",
+  public: true,
+
+  statut: "fiche_driver_publique",
+  labelStatut: "Fiche DRIVER publique DIGIY",
+  priorite: 10,
+
+  nom: "DIGIY DRIVER Ambassadeur",
+  titre: "DIGIY DRIVER Ambassadeur — Chauffeur avec style",
+  metier: "chauffeur",
+  activite: "Service chauffeur avec contact direct",
+  categorie: "transport",
+  sousCategorie: "driver",
+
+  secteur: "Saly",
+  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "AIBD", "Dakar"],
+
+  mots: [
+    "chauffeur",
+    "driver",
+    "taxi",
+    "transport",
+    "voiture",
+    "véhicule",
+    "vehicule",
+    "trajet",
+    "course",
+    "aibd",
+    "aéroport",
+    "aeroport",
+    "dakar",
+    "saly",
+    "mbour",
+    "petite côte",
+    "petite cote",
+    "ponctualité",
+    "ponctualite",
+    "discrétion",
+    "discretion",
+    "ambassadeur",
+    "carte chauffeur",
+    "qr chauffeur",
+    "contact direct"
+  ],
+
+  description:
+    "Vitrine chauffeur DIGIY DRIVER Ambassadeur : présentation propre, QR chauffeur, contact direct, sérieux, discrétion, ponctualité et savoir-vivre.",
+
+  url: "https://digiy-driver-part-bapt.digiylyfe.com/",
+  whatsapp: "",
+
+  icon: "🚗",
+  image: "",
+
+  infos: {
+    service: "Chauffeur / DRIVER",
+    note: "Contact direct et carte chauffeur selon profil disponible."
+  },
+
+  actions: {
+    ouvrir: "Ouvrir la fiche DRIVER",
+    whatsapp: "WhatsApp direct",
+    appel: "Appeler"
+  }
+}
 ];
 
 /* =========================================================
