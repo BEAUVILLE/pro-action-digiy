@@ -280,6 +280,188 @@ window.DIGIY_PUBLIC_DIRECTORY = [
     whatsapp: "WhatsApp direct",
     appel: "Appeler"
   }
+},
+
+{
+  id: "zal-kourant-electricite-build",
+  public: true,
+
+  statut: "partenaire_reference",
+  labelStatut: "Partenaire référencé DIGIY BUILD",
+  priorite: 8,
+
+  nom: "Zal Kourant",
+  titre: "Zal Kourant — Électricité & dépannage",
+  metier: "electricien",
+  activite: "Électricité, dépannage et services BUILD",
+  categorie: "artisan",
+  sousCategorie: "electricite",
+
+  secteur: "Saly",
+  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "Dakar", "Thiès"],
+
+  mots: [
+    "zal",
+    "kourant",
+    "courant",
+    "electricien",
+    "électricien",
+    "electricite",
+    "électricité",
+    "panne",
+    "dépannage",
+    "depannage",
+    "cable",
+    "câble",
+    "prise",
+    "interrupteur",
+    "lumiere",
+    "lumière",
+    "installation",
+    "tableau electrique",
+    "tableau électrique",
+    "chantier",
+    "travaux",
+    "artisan"
+  ],
+
+  description:
+    "Partenaire BUILD référencé pour les besoins d’électricité, dépannage, installation et services utiles. Fiche publique avec QR et contact direct si publié.",
+
+  url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-zal-kourant",
+  whatsapp: "",
+
+  icon: "⚡",
+  image: "",
+
+  actions: {
+    ouvrir: "Ouvrir la fiche",
+    whatsapp: "WhatsApp direct",
+    appel: "Appeler"
+  }
+},
+
+{
+  id: "mbaye-partenaire-build",
+  public: true,
+
+  statut: "partenaire_reference",
+  labelStatut: "Partenaire référencé DIGIY BUILD",
+  priorite: 7,
+
+  nom: "Mbaye",
+  titre: "Mbaye — Partenaire BUILD",
+  metier: "artisan",
+  activite: "Travaux, dépannage, entretien et services utiles",
+  categorie: "artisan",
+  sousCategorie: "services-build",
+
+  secteur: "Saly",
+  zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "Dakar", "Thiès"],
+
+  mots: [
+    "mbaye",
+    "artisan",
+    "travaux",
+    "chantier",
+    "depannage",
+    "dépannage",
+    "entretien",
+    "reparation",
+    "réparation",
+    "service",
+    "services",
+    "maison",
+    "build",
+    "intervention",
+    "besoin",
+    "devis"
+  ],
+
+  description:
+    "Partenaire BUILD référencé pour travaux, dépannage, entretien et services pratiques. Fiche publique avec QR et demande client possible.",
+
+  url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-mbaye",
+  whatsapp: "",
+
+  icon: "🧰",
+  image: "",
+
+  actions: {
+    ouvrir: "Ouvrir la fiche",
+    whatsapp: "WhatsApp direct",
+    appel: "Appeler"
+  }
+},
+
+{
+  id: "digiy-solaire-installation-depannage",
+  public: true,
+
+  statut: "fiche_build_publique",
+  labelStatut: "Fiche solaire DIGIY BUILD",
+  priorite: 10,
+
+  nom: "DIGIY Solaire",
+  titre: "DIGIY Solaire — Installation & dépannage",
+  metier: "solaire",
+  activite: "Installation solaire, dépannage, diagnostic et entretien",
+  categorie: "artisan",
+  sousCategorie: "solaire",
+
+  secteur: "Saly",
+  zones: ["Saly", "Petite Côte", "Dakar", "Sénégal", "Mbour", "Thiès"],
+
+  mots: [
+    "solaire",
+    "panneau solaire",
+    "panneaux solaires",
+    "installation solaire",
+    "depannage solaire",
+    "dépannage solaire",
+    "batterie",
+    "regulateur",
+    "régulateur",
+    "cablage",
+    "câblage",
+    "energie",
+    "énergie",
+    "lumiere",
+    "lumière",
+    "charge",
+    "frigo",
+    "pompe",
+    "boutique",
+    "maison",
+    "chambre",
+    "atelier",
+    "chantier",
+    "diagnostic",
+    "entretien",
+    "controle",
+    "contrôle"
+  ],
+
+  description:
+    "DIGIY Solaire : installation solaire, dépannage, diagnostic batterie, régulateur, câblage, entretien et conseil énergie pour maison, boutique, chambre, atelier ou chantier.",
+
+  url: "https://digiy-solaire.digiylyfe.com/",
+  whatsapp: "221771342889",
+
+  icon: "☀️",
+  image: "",
+
+  infos: {
+    services: "Installation solaire, dépannage, diagnostic, entretien, conseil énergie",
+    zone: "Sénégal · Saly · Dakar · Petite-Côte",
+    note: "Le client explique le besoin, le pro diagnostique, le devis est posé, le terrain valide."
+  },
+
+  actions: {
+    ouvrir: "Ouvrir la fiche solaire",
+    whatsapp: "Demander sur WhatsApp",
+    appel: "Appeler"
+  }
 }
 ];
 
