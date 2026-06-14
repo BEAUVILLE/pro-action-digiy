@@ -1,21 +1,23 @@
 /* =========================================================
-   DIGIY AUDIO RÉPONSE V1 — PRO ACTION DIGIY
+   DIGIY AUDIO RÉPONSE V2 — PRO ACTION DIGIY
+   Version robuste : répond après GO, clic, entrée, ou remontée des fiches.
 
-   Objectif :
-   - Ne pas casser les fiches qui remontent déjà.
-   - Ajouter une vraie réponse assistant après GO / VOIR / demande.
-   - Lire la réponse à voix haute quand le navigateur l’autorise.
-   - Garder la doctrine : DIGIY prépare, le pro valide.
+   À appeler juste avant </body> :
+   <script src="./digiy-audio-reponse-v2.js?v=20260614-3"></script>
 ========================================================= */
 
 (function () {
   "use strict";
 
-  let lastText = "";
-  let lastTime = 0;
+  let lastDemand = "";
+  let lastAnswerKey = "";
+  let lastAnswerAt = 0;
+  let timer = null;
+  let userGestureSeen = false;
 
   function clean(txt) {
     return (txt || "")
+      .toString()
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -24,85 +26,77 @@
       .trim();
   }
 
+  function textOf(el) {
+    if (!el) return "";
+    return (el.value || el.innerText || el.textContent || "").toString().trim();
+  }
+
   function findDemandText() {
-    const fields = Array.from(
-      document.querySelectorAll(
-        "[data-digiy-input], #digiy-voice-input, #voiceInput, #digiyInput, #q, #query, textarea, input[type='text'], [contenteditable='true']"
-      )
-    );
+    const selectors = [
+      "[data-digiy-input]",
+      "#digiy-voice-input",
+      "#voiceInput",
+      "#digiyInput",
+      "#searchInput",
+      "#search",
+      "#q",
+      "#query",
+      "textarea",
+      "input[type='search']",
+      "input[type='text']",
+      "[contenteditable='true']"
+    ];
 
-    for (const field of fields) {
-      const value =
-        field.value ||
-        field.innerText ||
-        field.textContent ||
-        "";
-
-      const txt = value.trim();
-
-      if (txt && txt.length > 1) {
-        return txt;
+    for (const sel of selectors) {
+      const nodes = Array.from(document.querySelectorAll(sel));
+      for (const node of nodes) {
+        const txt = textOf(node);
+        if (txt && txt.length > 2) {
+          lastDemand = txt;
+          return txt;
+        }
       }
+    }
+
+    return lastDemand || "";
+  }
+
+  function inferDemandFromPage() {
+    const body = clean(document.body ? document.body.innerText : "");
+
+    if (body.includes("driver") || body.includes("chauffeur") || body.includes("aibd")) {
+      return "chauffeur";
+    }
+
+    if (body.includes("loc") || body.includes("logement") || body.includes("location")) {
+      return "logement";
+    }
+
+    if (body.includes("resa") || body.includes("reservation") || body.includes("table")) {
+      return "reservation";
+    }
+
+    if (body.includes("build") || body.includes("artisan") || body.includes("chantier")) {
+      return "artisan";
+    }
+
+    if (body.includes("market") || body.includes("boutique") || body.includes("produit")) {
+      return "boutique";
+    }
+
+    if (body.includes("jobs") || body.includes("emploi") || body.includes("mission")) {
+      return "emploi";
+    }
+
+    if (body.includes("pay") || body.includes("paiement") || body.includes("argent")) {
+      return "pay";
     }
 
     return "";
   }
 
-  function ensureReplyBox() {
-    let box = document.getElementById("digiy-audio-reponse-box");
-
-    if (!box) {
-      box = document.createElement("div");
-      box.id = "digiy-audio-reponse-box";
-      box.setAttribute("role", "status");
-      box.setAttribute("aria-live", "polite");
-
-      box.style.margin = "14px auto";
-      box.style.maxWidth = "760px";
-      box.style.padding = "16px";
-      box.style.borderRadius = "22px";
-      box.style.background = "linear-gradient(135deg, rgba(10,54,34,.96), rgba(17,84,52,.96))";
-      box.style.color = "#fff7df";
-      box.style.border = "1px solid rgba(196,151,63,.65)";
-      box.style.boxShadow = "0 18px 45px rgba(0,0,0,.28)";
-      box.style.fontWeight = "900";
-      box.style.lineHeight = "1.45";
-      box.style.fontSize = "15px";
-
-      const target =
-        document.querySelector("[data-digiy-results]") ||
-        document.querySelector("#results") ||
-        document.querySelector("#fiches") ||
-        document.querySelector("main") ||
-        document.body;
-
-      if (target && target !== document.body) {
-        target.parentNode.insertBefore(box, target);
-      } else {
-        document.body.insertBefore(box, document.body.firstChild);
-      }
-    }
-
-    return box;
-  }
-
-  function speak(text) {
-    if (!("speechSynthesis" in window)) return;
-
-    try {
-      window.speechSynthesis.cancel();
-
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "fr-FR";
-      msg.rate = 0.86;
-      msg.pitch = 0.95;
-
-      window.speechSynthesis.speak(msg);
-    } catch (e) {}
-  }
-
-  function buildReply(rawText) {
-    const t = clean(rawText);
+  function buildReply(raw) {
+    const t = clean(raw);
 
     if (
       t.includes("chauffeur") ||
@@ -147,7 +141,7 @@
         icon: "📅",
         title: "RESA",
         text:
-          "J’ai compris : tu veux préparer une réservation. Je remonte la porte RESA. DIGIY peut préparer la demande, mais la confirmation reste côté professionnel."
+          "J’ai compris : tu veux préparer une réservation. Je remonte la porte RESA. DIGIY prépare la demande, mais la confirmation reste côté professionnel."
       };
     }
 
@@ -176,9 +170,9 @@
     ) {
       return {
         icon: "🛍️",
-        title: "MARKET / COMMERCE",
+        title: "MARKET",
         text:
-          "J’ai compris : tu cherches un produit ou une boutique. Je remonte la bonne porte commerce. Le client voit l’offre, le vendeur garde son contact et sa décision."
+          "J’ai compris : tu cherches un produit ou une boutique. Je remonte la bonne porte commerce. Le vendeur garde son contact, son argent et sa décision."
       };
     }
 
@@ -224,7 +218,7 @@
         icon: "💳",
         title: "PAY",
         text:
-          "J’ai compris : la demande touche à l’argent. Je peux préparer l’action PAY, mais aucune validation ne doit se faire seule. Le pro vérifie et valide."
+          "J’ai compris : la demande touche à l’argent. Je peux préparer l’action PAY, mais aucune validation ne se fait seule. Le pro vérifie et valide."
       };
     }
 
@@ -236,22 +230,77 @@
     };
   }
 
-  function answerNow(source) {
-    const text = findDemandText();
+  function ensureBox() {
+    let box = document.getElementById("digiy-audio-reponse-box-v2");
 
-    if (!text) return;
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "digiy-audio-reponse-box-v2";
+      box.setAttribute("role", "status");
+      box.setAttribute("aria-live", "polite");
 
+      box.style.position = "fixed";
+      box.style.left = "12px";
+      box.style.right = "12px";
+      box.style.bottom = "86px";
+      box.style.zIndex = "99999";
+      box.style.maxWidth = "760px";
+      box.style.margin = "0 auto";
+      box.style.padding = "16px";
+      box.style.borderRadius = "22px";
+      box.style.background =
+        "linear-gradient(135deg, rgba(10,54,34,.98), rgba(17,84,52,.98))";
+      box.style.color = "#fff7df";
+      box.style.border = "1px solid rgba(196,151,63,.75)";
+      box.style.boxShadow = "0 18px 45px rgba(0,0,0,.35)";
+      box.style.fontWeight = "900";
+      box.style.lineHeight = "1.45";
+      box.style.fontSize = "15px";
+      box.style.display = "none";
+
+      document.body.appendChild(box);
+    }
+
+    return box;
+  }
+
+  function speak(text) {
+    if (!userGestureSeen) return;
+    if (!("speechSynthesis" in window)) return;
+
+    try {
+      window.speechSynthesis.cancel();
+
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = "fr-FR";
+      msg.rate = 0.86;
+      msg.pitch = 0.95;
+
+      window.speechSynthesis.speak(msg);
+    } catch (e) {}
+  }
+
+  function answerNow(reason) {
+    let demand = findDemandText();
+
+    if (!demand) {
+      demand = inferDemandFromPage();
+    }
+
+    if (!demand) return;
+
+    const reply = buildReply(demand);
+    const key = reply.title + "::" + clean(demand);
     const now = Date.now();
 
-    if (text === lastText && now - lastTime < 2500) {
+    if (key === lastAnswerKey && now - lastAnswerAt < 4000) {
       return;
     }
 
-    lastText = text;
-    lastTime = now;
+    lastAnswerKey = key;
+    lastAnswerAt = now;
 
-    const reply = buildReply(text);
-    const box = ensureReplyBox();
+    const box = ensureBox();
 
     box.innerHTML =
       "<div style='font-size:22px;margin-bottom:6px'>" +
@@ -263,56 +312,108 @@
       reply.text +
       "</div>";
 
+    box.style.display = "block";
+
     speak(reply.text);
   }
 
-  function bindClicks() {
-    document.addEventListener("click", function (e) {
-      const btn = e.target.closest("button, a, [role='button'], .btn, .pill, .chip");
-      if (!btn) return;
-
-      const label = clean(btn.innerText || btn.textContent || "");
-
-      if (
-        label === "go" ||
-        label.includes("go") ||
-        label.includes("voir") ||
-        label.includes("ecouter") ||
-        label.includes("j ecoute") ||
-        label.includes("🎙") ||
-        label.includes("🔎") ||
-        label.includes("👂")
-      ) {
-        setTimeout(function () {
-          answerNow("click");
-        }, 350);
-      }
-    });
+  function scheduleAnswer(reason, delay) {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(function () {
+      answerNow(reason);
+    }, delay || 800);
   }
 
-  function bindEnter() {
-    document.addEventListener("keydown", function (e) {
-      if (e.key !== "Enter") return;
+  function bindInputs() {
+    document.addEventListener(
+      "input",
+      function (e) {
+        const target = e.target;
+        if (!target) return;
 
-      const target = e.target;
-      if (!target) return;
+        const tag = (target.tagName || "").toLowerCase();
+        const editable = target.getAttribute("contenteditable") === "true";
 
-      const tag = (target.tagName || "").toLowerCase();
+        if (
+          tag === "textarea" ||
+          tag === "input" ||
+          editable ||
+          target.matches("[data-digiy-input]")
+        ) {
+          const txt = textOf(target);
+          if (txt && txt.length > 2) {
+            lastDemand = txt;
+          }
+        }
+      },
+      true
+    );
+  }
 
-      if (
-        tag === "textarea" ||
-        tag === "input" ||
-        target.getAttribute("contenteditable") === "true"
-      ) {
-        setTimeout(function () {
-          answerNow("enter");
-        }, 350);
+  function bindClicks() {
+    ["click", "pointerup", "touchend"].forEach(function (eventName) {
+      document.addEventListener(
+        eventName,
+        function () {
+          userGestureSeen = true;
+          scheduleAnswer(eventName, 900);
+        },
+        true
+      );
+    });
+
+    document.addEventListener(
+      "keydown",
+      function (e) {
+        if (e.key === "Enter") {
+          userGestureSeen = true;
+          scheduleAnswer("enter", 500);
+        }
+      },
+      true
+    );
+  }
+
+  function observeResults() {
+    if (!document.body || !("MutationObserver" in window)) return;
+
+    const observer = new MutationObserver(function (mutations) {
+      let changed = false;
+
+      for (const m of mutations) {
+        if (m.addedNodes && m.addedNodes.length) {
+          changed = true;
+          break;
+        }
       }
+
+      if (changed) {
+        const body = clean(document.body.innerText || "");
+
+        if (
+          body.includes("fiches qui remontent") ||
+          body.includes("driver") ||
+          body.includes("loc") ||
+          body.includes("resa") ||
+          body.includes("build") ||
+          body.includes("market") ||
+          body.includes("jobs") ||
+          body.includes("pay")
+        ) {
+          scheduleAnswer("mutation", 600);
+        }
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true
     });
   }
 
   function exposeApi() {
-    window.DIGIY_AUDIO_REPONSE = {
+    window.DIGIY_AUDIO_REPONSE_V2 = {
       answer: answerNow,
       speak: speak,
       buildReply: buildReply
@@ -320,9 +421,14 @@
   }
 
   function boot() {
+    document.documentElement.setAttribute("data-digiy-audio-reponse-v2", "on");
+
+    bindInputs();
     bindClicks();
-    bindEnter();
+    observeResults();
     exposeApi();
+
+    console.log("DIGIY AUDIO RÉPONSE V2 chargé ✅");
   }
 
   if (document.readyState === "loading") {
