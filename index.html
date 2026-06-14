@@ -806,14 +806,15 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   function pickBestFrenchVoice(){
     const voices = window.speechSynthesis.getVoices() || [];
-    /* Priorité : voix Apple premium françaises */
-    const priority = ["Thomas","Amélie","Amé​lie","Audrey","Julie","Nicolas","Marie"];
+    /* Priorité terrain : voix mâle française naturelle */
+    const priority = ["Thomas","Rocko (français (France))","Daniel (français (France))","Jacques","Eddy (français (France))","Grandpa (français (France))","Marie","Amélie"];
     for(const name of priority){
-      const v = voices.find(v => v.name && v.name.includes(name));
+      const v = voices.find(v => v.name && v.name === name);
       if(v) return v;
     }
-    /* Fallback : n'importe quelle voix fr-FR */
-    return voices.find(v => v.lang && v.lang.toLowerCase() === "fr-fr")
+    /* Fallback : n'importe quelle fr-FR locale */
+    return voices.find(v => v.lang && v.lang.toLowerCase() === "fr-fr" && v.localService)
+        || voices.find(v => v.lang && v.lang.toLowerCase() === "fr-fr")
         || voices.find(v => v.lang && v.lang.toLowerCase().startsWith("fr"))
         || null;
   }
@@ -863,6 +864,79 @@ console.log("DIGIY VOICES — tape digiyListVoices() dans la console pour voir l
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
