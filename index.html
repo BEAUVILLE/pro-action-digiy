@@ -692,20 +692,110 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     }
   ];
 
-  const ANNUAIRE_DIGIY = window.DIGIY_ANNUAIRE_PUBLIC || {};
-  const SECTEURS_PUBLICS = Array.isArray(ANNUAIRE_DIGIY.secteurs) && ANNUAIRE_DIGIY.secteurs.length ? ANNUAIRE_DIGIY.secteurs : SECTEURS;
-  const FICHES_PUBLICS = Array.isArray(ANNUAIRE_DIGIY.fiches) && ANNUAIRE_DIGIY.fiches.length ? ANNUAIRE_DIGIY.fiches : FICHES_DIRECTES;
+  /* ══ LECTURE PROPRE DE L'ANNUAIRE PUBLIC ══
+     Correction importante :
+     - La priorité ne doit JAMAIS faire remonter une fiche toute seule.
+     - Il faut d'abord une correspondance métier / produit / besoin.
+     - Le secteur renforce le score, mais ne choisit pas seul.
+     - L'annuaire externe annuaire-public-digiy.js est lu en priorité.
+  */
+
+  function getPublicDirectoryRaw(){
+    try{
+      if(typeof window.DIGIY_GET_PUBLIC_DIRECTORY === "function"){
+        const fromGetter = window.DIGIY_GET_PUBLIC_DIRECTORY();
+        if(Array.isArray(fromGetter) && fromGetter.length) return fromGetter;
+      }
+      if(Array.isArray(window.DIGIY_PUBLIC_DIRECTORY) && window.DIGIY_PUBLIC_DIRECTORY.length){
+        return window.DIGIY_PUBLIC_DIRECTORY.filter(item => item && item.public === true);
+      }
+      const old = window.DIGIY_ANNUAIRE_PUBLIC || {};
+      if(Array.isArray(old.fiches) && old.fiches.length) return old.fiches;
+    }catch(_){ }
+    return FICHES_DIRECTES;
+  }
+
+  function normalizeDirectoryItem(src){
+    const zones = Array.isArray(src.zones) ? src.zones : [];
+    const mots = Array.isArray(src.mots) ? src.mots : (Array.isArray(src.keys) ? src.keys : []);
+    const title = src.titre || src.title || src.nom || "Fiche DIGIY";
+    const metier = src.metier || src.activite || "";
+    const categorie = [src.categorie, src.sousCategorie].filter(Boolean).join(" / ") || src.categorie || "";
+    const phone = src.whatsapp || src.phone || "";
+    const waText = src.wa || (src.nom
+      ? "Bonjour " + src.nom + ", je viens de DIGIYLYFE pour votre service."
+      : "Bonjour, je viens de DIGIYLYFE.");
+
+    return {
+      kind: "directory",
+      sourceId: src.id || "",
+      public: src.public !== false,
+      priority: Number(src.priorite || src.priority || 1),
+      icon: src.icon || "📍",
+      title,
+      metier,
+      categorie,
+      secteur: src.secteur || zones[0] || "",
+      zones,
+      statut: src.labelStatut || src.statut || "Référencé public",
+      phone,
+      url: src.url || "#",
+      wa: waText,
+      description: src.description || "",
+      keys: mots.concat([
+        src.nom,
+        src.titre,
+        src.metier,
+        src.activite,
+        src.categorie,
+        src.sousCategorie
+      ]).filter(Boolean)
+    };
+  }
+
+  const SECTEURS_PUBLICS = SECTEURS;
+  const FICHES_PUBLICS = getPublicDirectoryRaw().map(normalizeDirectoryItem);
 
   function detectSecteurFromCleanText(t){
     return SECTEURS_PUBLICS.find(z => z.keys.some(k => t.includes(clean(k)))) || null;
   }
 
+  function isOnlyZoneWord(k){
+    const z = clean(k);
+    return ["saly","mbour","dakar","thies","thiès","ngaparou","somone","petite cote","petite côte"].includes(z);
+  }
+
   function directScore(item, t, secteur){
+    const keys = Array.isArray(item.keys) ? item.keys : [];
+
+    /* Mots métier / produit / besoin : c'est la vraie clé.
+       On ignore les mots qui sont seulement des zones, sinon "Saly" ferait tout remonter. */
+    const keyHit = keys.some(k => {
+      const ck = clean(k);
+      return ck && !isOnlyZoneWord(ck) && t.includes(ck);
+    });
+
+    const mainHit = [item.metier, item.categorie, item.title].some(v => {
+      const cv = clean(v);
+      return cv && t.includes(cv);
+    });
+
+    const zoneHit = !!(secteur && (
+      clean(item.secteur) === clean(secteur.label) ||
+      (Array.isArray(item.zones) && item.zones.some(z => clean(z) === clean(secteur.label)))
+    ));
+
+    /* Protection anti-Helage partout : pas de besoin clair = pas de fiche directe. */
+    if(!keyHit && !mainHit) return 0;
+
     let score = 0;
-    if(item.keys.some(k => t.includes(clean(k)))) score += 10;
-    if(secteur && clean(item.secteur) === clean(secteur.label)) score += 5;
-    if(item.statut && /pro|fiche/i.test(item.statut)) score += 2;
-    score += item.priority || 0;
+    if(keyHit) score += 50;
+    if(mainHit) score += 20;
+    if(zoneHit) score += 15;
+    if(item.statut && /pro|fiche|qualifie/i.test(item.statut)) score += 3;
+
+    /* La priorité départage seulement après une vraie correspondance. */
+    score += Math.min(Number(item.priority || 0), 10);
     return score;
   }
 
@@ -714,13 +804,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const secteur = detectSecteurFromCleanText(t);
     const scored = FICHES_PUBLICS
       .filter(item => item && item.public !== false)
-      .map(item => ({item, score:directScore(item,t,secteur)}))
-      .filter(x => x.score >= 10)
+      .map(item => ({item, score: directScore(item, t, secteur)}))
+      .filter(x => x.score > 0)
       .sort((a,b) => b.score - a.score)
       .map(x => x.item);
 
-    if(scored.length) return scored.slice(0,4);
-    return [];
+    return scored.slice(0,4);
   }
 
   function humanNeedFromDirect(item){
@@ -1126,6 +1215,520 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
