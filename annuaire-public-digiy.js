@@ -7,15 +7,10 @@
    - Classer par métier / secteur / catégorie / statut
    - Remonter les fiches directes avant les modules généraux
 
-   Règle importante :
-   - Les lieux restent dans "zones"
-   - Les métiers / produits / besoins restent dans "mots"
-   - Comme ça, "Saly" seul ne fait pas remonter n’importe quelle fiche
-
-   Doctrine :
-   - Public = visible côté client
-   - Partenaire référencé = pas de PIN, pas de cockpit
-   - PRO = fiche visible + priorité plus haute
+   Règle :
+   - Les métiers / produits / besoins vont dans "mots"
+   - Les lieux vont dans "zones"
+   - Le secteur sert à afficher, pas à voler la recherche
    ========================================================= */
 
 window.DIGIY_PUBLIC_DIRECTORY = [
@@ -76,6 +71,268 @@ window.DIGIY_PUBLIC_DIRECTORY = [
   },
 
   {
+    id: "mbaye-entrepreneur-macon-saly",
+    public: true,
+
+    statut: "partenaire_reference",
+    labelStatut: "Partenaire référencé DIGIY BUILD",
+    priorite: 10,
+
+    nom: "Mbaye",
+    titre: "Mbaye — Entrepreneur maçon à Saly",
+    metier: "macon",
+    activite: "Entrepreneur maçon",
+    categorie: "artisan",
+    sousCategorie: "maconnerie",
+
+    secteur: "Saly",
+    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
+
+    mots: [
+      "mbaye",
+      "macon",
+      "maçon",
+      "maconnerie",
+      "maçonnerie",
+      "entrepreneur",
+      "entrepreneur macon",
+      "entrepreneur maçon",
+      "chantier",
+      "construction",
+      "renovation",
+      "rénovation",
+      "mur",
+      "muret",
+      "dalle",
+      "beton",
+      "béton",
+      "carrelage",
+      "enduit",
+      "fondation",
+      "travaux",
+      "reparation",
+      "réparation",
+      "devis"
+    ],
+
+    description:
+      "Mbaye, entrepreneur maçon à Saly : construction, rénovation, réparation, murs, dalle, béton, chantier maison et petits travaux de maçonnerie.",
+
+    url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-mbaye",
+    whatsapp: "",
+
+    icon: "🧱",
+    image: "",
+
+    actions: {
+      ouvrir: "Ouvrir la fiche",
+      whatsapp: "WhatsApp direct",
+      appel: "Appeler"
+    }
+  },
+
+  {
+    id: "zal-kourant-electricite-build",
+    public: true,
+
+    statut: "partenaire_reference",
+    labelStatut: "Partenaire référencé DIGIY BUILD",
+    priorite: 9,
+
+    nom: "Zal Kourant",
+    titre: "Zal Kourant — Électricité & dépannage",
+    metier: "electricien",
+    activite: "Électricité, dépannage et services BUILD",
+    categorie: "artisan",
+    sousCategorie: "electricite",
+
+    secteur: "Saly · Petite Côte",
+    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "Dakar", "Thiès"],
+
+    mots: [
+      "zal",
+      "kourant",
+      "courant",
+      "electricien",
+      "électricien",
+      "electricite",
+      "électricité",
+      "panne",
+      "dépannage",
+      "depannage",
+      "cable",
+      "câble",
+      "prise",
+      "interrupteur",
+      "lumiere",
+      "lumière",
+      "installation",
+      "tableau electrique",
+      "tableau électrique",
+      "chantier",
+      "travaux"
+    ],
+
+    description:
+      "Zal Kourant, partenaire BUILD référencé pour les besoins d’électricité, dépannage, installation et services utiles.",
+
+    url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-zal-kourant",
+    whatsapp: "",
+
+    icon: "⚡",
+    image: "",
+
+    actions: {
+      ouvrir: "Ouvrir la fiche",
+      whatsapp: "WhatsApp direct",
+      appel: "Appeler"
+    }
+  },
+
+  {
+    id: "digiy-solaire-installation-depannage",
+    public: true,
+
+    statut: "fiche_build_publique",
+    labelStatut: "Fiche solaire DIGIY BUILD",
+    priorite: 10,
+
+    nom: "DIGIY Solaire",
+    titre: "DIGIY Solaire — Installation & dépannage",
+    metier: "solaire",
+    activite: "Installation solaire, dépannage, diagnostic et entretien",
+    categorie: "artisan",
+    sousCategorie: "solaire",
+
+    secteur: "Dakar · Saly · Sénégal",
+    zones: ["Dakar", "Saly", "Petite Côte", "Mbour", "Thiès", "Sénégal"],
+
+    mots: [
+      "solaire",
+      "panneau solaire",
+      "panneaux solaires",
+      "installation solaire",
+      "depannage solaire",
+      "dépannage solaire",
+      "batterie",
+      "regulateur",
+      "régulateur",
+      "cablage",
+      "câblage",
+      "energie",
+      "énergie",
+      "lumiere",
+      "lumière",
+      "charge",
+      "frigo",
+      "pompe",
+      "atelier",
+      "chantier",
+      "diagnostic",
+      "entretien",
+      "controle",
+      "contrôle"
+    ],
+
+    description:
+      "DIGIY Solaire : installation solaire, dépannage, diagnostic batterie, régulateur, câblage, entretien et conseil énergie pour maison, boutique, chambre, atelier ou chantier.",
+
+    url: "https://digiy-solaire.digiylyfe.com/",
+    whatsapp: "221771342889",
+
+    icon: "☀️",
+    image: "",
+
+    infos: {
+      services: "Installation solaire, dépannage, diagnostic, entretien, conseil énergie",
+      zone: "Dakar · Saly · Petite Côte · Sénégal",
+      note: "Le client explique le besoin, le pro diagnostique, le devis est posé, le terrain valide."
+    },
+
+    actions: {
+      ouvrir: "Ouvrir la fiche solaire",
+      whatsapp: "Demander sur WhatsApp",
+      appel: "Appeler"
+    }
+  },
+
+  {
+    id: "astou-boutique-saly",
+    public: true,
+
+    statut: "fiche_market_publique",
+    labelStatut: "Fiche boutique DIGIY",
+    priorite: 10,
+
+    nom: "Astou Boutique",
+    titre: "Astou Boutique — Maison, plage & élégance",
+    metier: "boutique",
+    activite: "Linge de maison, plage, style et beauté",
+    categorie: "commerce",
+    sousCategorie: "linge-maison",
+
+    secteur: "Saly",
+    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
+
+    mots: [
+      "astou",
+      "boutique",
+      "commerce",
+      "magasin",
+      "linge",
+      "linge de maison",
+      "serviette",
+      "serviettes",
+      "drap",
+      "draps",
+      "peignoir",
+      "peignoirs",
+      "fouta",
+      "foutas",
+      "plage",
+      "piscine",
+      "transat",
+      "transats",
+      "hotel",
+      "hôtel",
+      "maison d'hote",
+      "maison d’hôte",
+      "robe",
+      "robes",
+      "tenue",
+      "tenues",
+      "confection",
+      "beaute",
+      "beauté",
+      "creme",
+      "crème",
+      "cosmetique",
+      "cosmétique"
+    ],
+
+    description:
+      "Astou Boutique à Saly : linge de maison, serviettes, draps, peignoirs, foutas, articles plage, tenues stylées, confection et produits de beauté.",
+
+    url: "https://astou-boutique.digiylyfe.com/",
+    whatsapp: "221778765785",
+
+    icon: "👜",
+    image: "",
+
+    infos: {
+      familles: "Maison, hôtels, villas, plage, style et beauté",
+      zone: "Saly, Sénégal",
+      note: "Contacter Astou pour connaître les produits disponibles et préparer la visite."
+    },
+
+    actions: {
+      ouvrir: "Ouvrir la boutique",
+      whatsapp: "WhatsApp direct",
+      appel: "Appeler"
+    }
+  },
+
+  {
     id: "chez-baptiste-appartement-saly",
     public: true,
 
@@ -94,6 +351,7 @@ window.DIGIY_PUBLIC_DIRECTORY = [
     zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
 
     mots: [
+      "chez baptiste",
       "logement",
       "appartement",
       "location",
@@ -140,82 +398,6 @@ window.DIGIY_PUBLIC_DIRECTORY = [
   },
 
   {
-    id: "astou-boutique-saly",
-    public: true,
-
-    statut: "fiche_market_publique",
-    labelStatut: "Fiche boutique DIGIY",
-    priorite: 10,
-
-    nom: "Astou Boutique",
-    titre: "Astou Boutique — Maison, plage & élégance",
-    metier: "boutique",
-    activite: "Linge de maison, plage, style et beauté",
-    categorie: "commerce",
-    sousCategorie: "linge-maison",
-
-    secteur: "Saly",
-    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
-
-    mots: [
-      "boutique",
-      "commerce",
-      "magasin",
-      "linge",
-      "linge de maison",
-      "serviette",
-      "serviettes",
-      "drap",
-      "draps",
-      "peignoir",
-      "peignoirs",
-      "fouta",
-      "foutas",
-      "plage",
-      "piscine",
-      "transat",
-      "transats",
-      "hotel",
-      "hôtel",
-      "villa",
-      "maison d'hote",
-      "maison d’hôte",
-      "robe",
-      "robes",
-      "tenue",
-      "tenues",
-      "confection",
-      "beaute",
-      "beauté",
-      "creme",
-      "crème",
-      "cosmetique",
-      "cosmétique"
-    ],
-
-    description:
-      "Astou Boutique à Saly : linge de maison, serviettes, draps, peignoirs, foutas, articles plage, tenues stylées, confection et produits de beauté.",
-
-    url: "https://astou-boutique.digiylyfe.com/",
-    whatsapp: "221778765785",
-
-    icon: "👜",
-    image: "",
-
-    infos: {
-      familles: "Maison, hôtels, villas, plage, style et beauté",
-      zone: "Saly, Sénégal",
-      note: "Contacter Astou pour connaître les produits disponibles et préparer la visite."
-    },
-
-    actions: {
-      ouvrir: "Ouvrir la boutique",
-      whatsapp: "WhatsApp direct",
-      appel: "Appeler"
-    }
-  },
-
-  {
     id: "digiy-driver-ambassadeur-baptiste",
     public: true,
 
@@ -230,8 +412,8 @@ window.DIGIY_PUBLIC_DIRECTORY = [
     categorie: "transport",
     sousCategorie: "driver",
 
-    secteur: "Saly",
-    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "AIBD", "Dakar"],
+    secteur: "AIBD · Saly · Dakar",
+    zones: ["AIBD", "Dakar", "Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
 
     mots: [
       "chauffeur",
@@ -273,195 +455,6 @@ window.DIGIY_PUBLIC_DIRECTORY = [
     actions: {
       ouvrir: "Ouvrir la fiche DRIVER",
       whatsapp: "WhatsApp direct",
-      appel: "Appeler"
-    }
-  },
-
-  {
-    id: "zal-kourant-electricite-build",
-    public: true,
-
-    statut: "partenaire_reference",
-    labelStatut: "Partenaire référencé DIGIY BUILD",
-    priorite: 8,
-
-    nom: "Zal Kourant",
-    titre: "Zal Kourant — Électricité & dépannage",
-    metier: "electricien",
-    activite: "Électricité, dépannage et services BUILD",
-    categorie: "artisan",
-    sousCategorie: "electricite",
-
-    secteur: "Saly",
-    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone", "Dakar", "Thiès"],
-
-    mots: [
-      "zal",
-      "kourant",
-      "courant",
-      "electricien",
-      "électricien",
-      "electricite",
-      "électricité",
-      "panne",
-      "dépannage",
-      "depannage",
-      "cable",
-      "câble",
-      "prise",
-      "interrupteur",
-      "lumiere",
-      "lumière",
-      "installation",
-      "tableau electrique",
-      "tableau électrique",
-      "chantier",
-      "travaux",
-      "artisan"
-    ],
-
-    description:
-      "Partenaire BUILD référencé pour les besoins d’électricité, dépannage, installation et services utiles. Fiche publique avec QR et contact direct si publié.",
-
-    url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-zal-kourant",
-    whatsapp: "",
-
-    icon: "⚡",
-    image: "",
-
-    actions: {
-      ouvrir: "Ouvrir la fiche",
-      whatsapp: "WhatsApp direct",
-      appel: "Appeler"
-    }
-  },
-
-  {
-    id: "mbaye-entrepreneur-macon-saly",
-    public: true,
-
-    statut: "partenaire_reference",
-    labelStatut: "Partenaire référencé DIGIY BUILD",
-    priorite: 10,
-
-    nom: "Mbaye",
-    titre: "Mbaye — Entrepreneur maçon à Saly",
-    metier: "macon",
-    activite: "Entrepreneur maçon",
-    categorie: "artisan",
-    sousCategorie: "maconnerie",
-
-    secteur: "Saly",
-    zones: ["Saly", "Petite Côte", "Mbour", "Ngaparou", "Somone"],
-
-    mots: [
-      "mbaye",
-      "macon",
-      "maçon",
-      "maconnerie",
-      "maçonnerie",
-      "entrepreneur",
-      "entrepreneur macon",
-      "entrepreneur maçon",
-      "chantier",
-      "construction",
-      "renovation",
-      "rénovation",
-      "mur",
-      "muret",
-      "dalle",
-      "beton",
-      "béton",
-      "carrelage",
-      "enduit",
-      "fondation",
-      "travaux",
-      "reparation",
-      "réparation",
-      "maison",
-      "villa",
-      "devis"
-    ],
-
-    description:
-      "Mbaye, entrepreneur maçon à Saly : construction, rénovation, réparation, murs, dalle, béton, chantier maison et petits travaux de maçonnerie.",
-
-    url: "https://build.digiylyfe.com/fiche.html?slug=partenaires-mbaye",
-    whatsapp: "",
-
-    icon: "🧱",
-    image: "",
-
-    actions: {
-      ouvrir: "Ouvrir la fiche",
-      whatsapp: "WhatsApp direct",
-      appel: "Appeler"
-    }
-  },
-
-  {
-    id: "digiy-solaire-installation-depannage",
-    public: true,
-
-    statut: "fiche_build_publique",
-    labelStatut: "Fiche solaire DIGIY BUILD",
-    priorite: 10,
-
-    nom: "DIGIY Solaire",
-    titre: "DIGIY Solaire — Installation & dépannage",
-    metier: "solaire",
-    activite: "Installation solaire, dépannage, diagnostic et entretien",
-    categorie: "artisan",
-    sousCategorie: "solaire",
-
-    secteur: "Saly",
-    zones: ["Saly", "Petite Côte", "Dakar", "Sénégal", "Mbour", "Thiès"],
-
-    mots: [
-      "solaire",
-      "panneau solaire",
-      "panneaux solaires",
-      "installation solaire",
-      "depannage solaire",
-      "dépannage solaire",
-      "batterie",
-      "regulateur",
-      "régulateur",
-      "cablage",
-      "câblage",
-      "energie",
-      "énergie",
-      "lumiere",
-      "lumière",
-      "charge",
-      "frigo",
-      "pompe",
-      "atelier",
-      "chantier",
-      "diagnostic",
-      "entretien",
-      "controle",
-      "contrôle"
-    ],
-
-    description:
-      "DIGIY Solaire : installation solaire, dépannage, diagnostic batterie, régulateur, câblage, entretien et conseil énergie pour maison, boutique, chambre, atelier ou chantier.",
-
-    url: "https://digiy-solaire.digiylyfe.com/",
-    whatsapp: "221771342889",
-
-    icon: "☀️",
-    image: "",
-
-    infos: {
-      services: "Installation solaire, dépannage, diagnostic, entretien, conseil énergie",
-      zone: "Sénégal · Saly · Dakar · Petite-Côte",
-      note: "Le client explique le besoin, le pro diagnostique, le devis est posé, le terrain valide."
-    },
-
-    actions: {
-      ouvrir: "Ouvrir la fiche solaire",
-      whatsapp: "Demander sur WhatsApp",
       appel: "Appeler"
     }
   }
