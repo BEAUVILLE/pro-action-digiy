@@ -114,9 +114,6 @@ window.DIGIY_PUBLIC_DIRECTORY = [
       appel: "Appeler"
     }
   }
-
-  */
-];
 ,
 {
   id: "chez-baptiste-appartement-saly",
@@ -197,3 +194,6 @@ window.DIGIY_GET_PUBLIC_DIRECTORY = function () {
       })
     : [];
 };
+
+  */
+];
