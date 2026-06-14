@@ -1,9 +1,15 @@
 /* =========================================================
-   DIGIY AUDIO RÉPONSE V2 — PRO ACTION DIGIY
-   Version robuste : répond après GO, clic, entrée, ou remontée des fiches.
+   DIGIY AUDIO RÉPONSE V2.1 — PRO ACTION DIGIY
+   Version robuste + déverrouillage voix navigateur.
 
-   À appeler juste avant </body> :
-   <script src="./digiy-audio-reponse-v2.js?v=20260614-3"></script>
+   Objectif :
+   - Garder la remontée des fiches existante.
+   - Afficher la réponse DIGIY après GO / clic / entrée / mutation.
+   - Lire la réponse à voix haute après le vrai clic utilisateur.
+   - Garder la doctrine : DIGIY prépare, le pro valide.
+
+   Chargé actuellement par index.html :
+   <script src="./digiy-audio-reponse-v1.js?v=20260614-pro-action-reponse-1"></script>
 ========================================================= */
 
 (function () {
@@ -14,6 +20,8 @@
   let lastAnswerAt = 0;
   let timer = null;
   let userGestureSeen = false;
+  let speechUnlocked = false;
+  let voicesReady = false;
 
   function clean(txt) {
     return (txt || "")
@@ -29,6 +37,55 @@
   function textOf(el) {
     if (!el) return "";
     return (el.value || el.innerText || el.textContent || "").toString().trim();
+  }
+
+  function preloadVoices() {
+    if (!("speechSynthesis" in window)) return;
+
+    try {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length) voicesReady = true;
+
+      window.speechSynthesis.onvoiceschanged = function () {
+        voicesReady = true;
+      };
+    } catch (e) {}
+  }
+
+  function unlockSpeech() {
+    userGestureSeen = true;
+
+    if (speechUnlocked) return;
+    if (!("speechSynthesis" in window)) return;
+
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+
+      const u = new SpeechSynthesisUtterance(" ");
+      u.lang = "fr-FR";
+      u.volume = 0.01;
+      u.rate = 1;
+      u.pitch = 1;
+
+      u.onstart = function () {
+        speechUnlocked = true;
+      };
+
+      u.onend = function () {
+        speechUnlocked = true;
+      };
+
+      u.onerror = function () {
+        speechUnlocked = true;
+      };
+
+      window.speechSynthesis.speak(u);
+      speechUnlocked = true;
+      console.log("DIGIY AUDIO : voix déverrouillée ✅");
+    } catch (e) {
+      console.warn("DIGIY AUDIO : déverrouillage voix impossible", e);
+    }
   }
 
   function findDemandText() {
@@ -68,7 +125,7 @@
       return "chauffeur";
     }
 
-    if (body.includes("loc") || body.includes("logement") || body.includes("location")) {
+    if (body.includes("loc") || body.includes("logement") || body.includes("location") || body.includes("chambre")) {
       return "logement";
     }
 
@@ -120,7 +177,9 @@
       t.includes("chambre") ||
       t.includes("location") ||
       t.includes("louer") ||
-      t.includes("loc")
+      t.includes("loc") ||
+      t.includes("weekend") ||
+      t.includes("week end")
     ) {
       return {
         icon: "🏠",
@@ -151,7 +210,8 @@
       t.includes("macon") ||
       t.includes("electricien") ||
       t.includes("chantier") ||
-      t.includes("service")
+      t.includes("service") ||
+      t.includes("reparation")
     ) {
       return {
         icon: "🏗️",
@@ -195,7 +255,8 @@
       t.includes("lieu") ||
       t.includes("visiter") ||
       t.includes("decouvrir") ||
-      t.includes("explore")
+      t.includes("explore") ||
+      t.includes("petite cote")
     ) {
       return {
         icon: "📍",
@@ -212,7 +273,8 @@
       t.includes("depense") ||
       t.includes("encaisse") ||
       t.includes("argent") ||
-      t.includes("pay")
+      t.includes("pay") ||
+      t.includes("preuve")
     ) {
       return {
         icon: "💳",
@@ -264,20 +326,76 @@
     return box;
   }
 
+  function pickFrenchVoice() {
+    if (!("speechSynthesis" in window)) return null;
+
+    try {
+      const voices = window.speechSynthesis.getVoices() || [];
+      return (
+        voices.find(function (v) {
+          return v.lang && v.lang.toLowerCase() === "fr-fr";
+        }) ||
+        voices.find(function (v) {
+          return v.lang && v.lang.toLowerCase().startsWith("fr");
+        }) ||
+        voices[0] ||
+        null
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
   function speak(text) {
-    if (!userGestureSeen) return;
-    if (!("speechSynthesis" in window)) return;
+    if (!("speechSynthesis" in window)) {
+      console.warn("DIGIY AUDIO : speechSynthesis indisponible");
+      return;
+    }
+
+    const safeText = (text || "").toString().trim();
+    if (!safeText) return;
+
+    if (!userGestureSeen) {
+      console.warn("DIGIY AUDIO : voix attend un geste utilisateur");
+      return;
+    }
 
     try {
       window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
 
-      const msg = new SpeechSynthesisUtterance(text);
+      const msg = new SpeechSynthesisUtterance(safeText);
       msg.lang = "fr-FR";
       msg.rate = 0.86;
       msg.pitch = 0.95;
+      msg.volume = 1;
+
+      const frVoice = pickFrenchVoice();
+      if (frVoice) msg.voice = frVoice;
+
+      msg.onstart = function () {
+        console.log("DIGIY AUDIO : voix lancée ✅");
+      };
+
+      msg.onend = function () {
+        console.log("DIGIY AUDIO : voix terminée ✅");
+      };
+
+      msg.onerror = function (e) {
+        console.warn("DIGIY AUDIO : erreur voix", e);
+      };
 
       window.speechSynthesis.speak(msg);
-    } catch (e) {}
+
+      /* Certains navigateurs se mettent en pause sans raison : petit rappel propre. */
+      window.setTimeout(function () {
+        try {
+          if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        } catch (e) {}
+      }, 250);
+    } catch (e) {
+      console.warn("DIGIY AUDIO : impossible de parler", e);
+    }
   }
 
   function answerNow(reason) {
@@ -351,11 +469,11 @@
   }
 
   function bindClicks() {
-    ["click", "pointerup", "touchend"].forEach(function (eventName) {
+    ["pointerdown", "click", "pointerup", "touchstart", "touchend"].forEach(function (eventName) {
       document.addEventListener(
         eventName,
         function () {
-          userGestureSeen = true;
+          unlockSpeech();
           scheduleAnswer(eventName, 900);
         },
         true
@@ -366,7 +484,7 @@
       "keydown",
       function (e) {
         if (e.key === "Enter") {
-          userGestureSeen = true;
+          unlockSpeech();
           scheduleAnswer("enter", 500);
         }
       },
@@ -398,9 +516,11 @@
           body.includes("build") ||
           body.includes("market") ||
           body.includes("jobs") ||
-          body.includes("pay")
+          body.includes("pay") ||
+          body.includes("chambre") ||
+          body.includes("chauffeur")
         ) {
-          scheduleAnswer("mutation", 600);
+          scheduleAnswer("mutation", 650);
         }
       }
     });
@@ -416,19 +536,21 @@
     window.DIGIY_AUDIO_REPONSE_V2 = {
       answer: answerNow,
       speak: speak,
+      unlockSpeech: unlockSpeech,
       buildReply: buildReply
     };
   }
 
   function boot() {
-    document.documentElement.setAttribute("data-digiy-audio-reponse-v2", "on");
+    document.documentElement.setAttribute("data-digiy-audio-reponse-v2", "voice-unlock");
 
+    preloadVoices();
     bindInputs();
     bindClicks();
     observeResults();
     exposeApi();
 
-    console.log("DIGIY AUDIO RÉPONSE V2 chargé ✅");
+    console.log("DIGIY AUDIO RÉPONSE V2.1 chargé ✅");
   }
 
   if (document.readyState === "loading") {
