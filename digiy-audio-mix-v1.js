@@ -569,23 +569,94 @@
     });
   }
 
-  function boot() {
-    installControls();
+ function removeFloatingControls() {
+  const oldBar = document.getElementById("digiy-audio-controls");
+  if (oldBar) oldBar.remove();
+}
 
-    window.DIGIY_AUDIO_MIX = {
-      speak: speak,
-      listen: startListen,
-      read: readPage,
-      stop: function () {
-        stopSpeak();
-        stopListen();
-        showAssistant("Arrêt demandé.");
-        hideAssistantSoon();
-      },
-      routeIntent: routeIntent,
-      routes: DIGIY_ROUTES
-    };
-  }
+function getDemandText() {
+  const field =
+    document.querySelector("[data-digiy-input]") ||
+    document.querySelector("#digiy-voice-input") ||
+    document.querySelector("#voiceInput") ||
+    document.querySelector("#digiyInput") ||
+    document.querySelector("textarea") ||
+    document.querySelector("input[placeholder*='Parler']") ||
+    document.querySelector("input[placeholder*='dicter']") ||
+    document.querySelector("input[type='text']");
+
+  return field && field.value ? field.value.trim() : "";
+}
+
+function bindExistingProActionControls() {
+  if (window.__DIGIY_AUDIO_PRO_ACTION_BOUND__) return;
+  window.__DIGIY_AUDIO_PRO_ACTION_BOUND__ = true;
+
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("button, a, [role='button']");
+    if (!btn) return;
+
+    const label = (btn.innerText || btn.textContent || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!label) return;
+
+    if (label.includes("ecouter") || label.includes("j ecoute") || label.includes("🎙")) {
+      e.preventDefault();
+      startListen();
+      return;
+    }
+
+    if (label === "go" || label.includes("go")) {
+      const text = getDemandText();
+
+      if (text) {
+        e.preventDefault();
+        routeIntent(text);
+      }
+
+      return;
+    }
+
+    if (label.includes("lire") || label.includes("audio") || label.includes("🎧")) {
+      e.preventDefault();
+      readPage();
+      return;
+    }
+
+    if (label.includes("stop") || label.includes("arreter") || label.includes("■")) {
+      e.preventDefault();
+      stopSpeak();
+      stopListen();
+      showAssistant("Arrêt demandé.");
+      hideAssistantSoon();
+      return;
+    }
+  });
+}
+
+function boot() {
+  removeFloatingControls();
+  bindExistingProActionControls();
+
+  window.DIGIY_AUDIO_MIX = {
+    speak: speak,
+    listen: startListen,
+    read: readPage,
+    stop: function () {
+      stopSpeak();
+      stopListen();
+      showAssistant("Arrêt demandé.");
+      hideAssistantSoon();
+    },
+    routeIntent: routeIntent,
+    routes: DIGIY_ROUTES
+  };
+}
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
