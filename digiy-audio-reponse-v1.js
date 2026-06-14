@@ -1,13 +1,13 @@
 /* =========================================================
-   DIGIY AUDIO RÉPONSE V2.4 — PRO ACTION DIGIY
-   
-   DOCTRINE V2.4 :
-   - Les fiches remontent seules (pas besoin de VOIR pour ça).
+   DIGIY AUDIO RÉPONSE V2.5 — PRO ACTION DIGIY
+
+   DOCTRINE V2.5 :
+   - Les fiches remontent seules.
    - Le bouton VOIR = déclencheur officiel de la VOIX DIGIY.
    - Clic VOIR → geste utilisateur garanti → navigateur autorise speech.
-   - Lit la demande en cours dans #q et parle immédiatement.
-   - Chips / examplePhrase : voix au clic direct (data-q dispo en synchrone).
-   - MutationObserver supprimé (inutile, les fiches remontent déjà).
+   - Réponse visuelle courte type toast : elle parle puis se range.
+   - Le bloc ne doit pas cacher les cartes sur téléphone.
+   - MutationObserver supprimé : inutile, les fiches remontent déjà.
 ========================================================= */
 
 (function () {
@@ -16,12 +16,22 @@
   let speechUnlocked = false;
   let lastAnswerKey = "";
   let lastAnswerAt = 0;
+  let hideTimer = null;
 
   /* ── Nettoyage texte ── */
   function clean(txt) {
     return (txt || "").toString().toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/['']/g, " ").replace(/\s+/g, " ").trim();
+      .replace(/['’]/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function escapeHtml(txt) {
+    return (txt || "").toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   /* ── Voix française ── */
@@ -67,7 +77,6 @@
     if (!("speechSynthesis" in window) || !text) return;
 
     if (!speechUnlocked) {
-      /* Premier geste : silence ultrarapide puis vraie phrase */
       window.speechSynthesis.cancel();
       const silence = new SpeechSynthesisUtterance(" ");
       silence.lang   = "fr-FR";
@@ -116,7 +125,7 @@
     return {icon:"👂",title:"DEMANDE TERRAIN",text:"J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main."};
   }
 
-  /* ── Boîte visuelle réponse ── */
+  /* ── Boîte visuelle réponse : toast mobile non bloquant ── */
   function ensureBox() {
     let box = document.getElementById("digiy-audio-reponse-box-v2");
     if (!box) {
@@ -125,17 +134,65 @@
       box.setAttribute("role", "status");
       box.setAttribute("aria-live", "polite");
       Object.assign(box.style, {
-        position:"fixed", left:"12px", right:"12px", bottom:"86px",
-        zIndex:"99999", maxWidth:"760px", margin:"0 auto", padding:"16px",
-        borderRadius:"22px",
-        background:"linear-gradient(135deg,rgba(10,54,34,.98),rgba(17,84,52,.98))",
-        color:"#fff7df", border:"1px solid rgba(196,151,63,.75)",
-        boxShadow:"0 18px 45px rgba(0,0,0,.35)",
-        fontWeight:"900", lineHeight:"1.45", fontSize:"15px", display:"none"
+        position:"fixed",
+        left:"12px",
+        right:"12px",
+        top:"calc(env(safe-area-inset-top) + 10px)",
+        bottom:"auto",
+        zIndex:"99999",
+        maxWidth:"560px",
+        margin:"0 auto",
+        padding:"10px 42px 10px 12px",
+        borderRadius:"18px",
+        background:"linear-gradient(135deg,rgba(10,54,34,.96),rgba(17,84,52,.96))",
+        color:"#fff7df",
+        border:"1px solid rgba(196,151,63,.75)",
+        boxShadow:"0 12px 28px rgba(0,0,0,.28)",
+        fontWeight:"900",
+        lineHeight:"1.32",
+        fontSize:"13px",
+        display:"none",
+        transform:"translateY(-8px)",
+        opacity:"0",
+        transition:"opacity .22s ease, transform .22s ease",
+        pointerEvents:"auto"
       });
       document.body.appendChild(box);
     }
     return box;
+  }
+
+  function hideBox() {
+    const box = document.getElementById("digiy-audio-reponse-box-v2");
+    if (!box) return;
+    box.style.opacity = "0";
+    box.style.transform = "translateY(-8px)";
+    setTimeout(() => {
+      box.style.display = "none";
+    }, 240);
+  }
+
+  function showBox(reply) {
+    const box = ensureBox();
+    clearTimeout(hideTimer);
+
+    box.innerHTML =
+      "<button type='button' aria-label='Fermer' id='digiy-reponse-close' " +
+      "style='position:absolute;right:8px;top:8px;width:30px;height:30px;border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff7df;font-weight:1000;font-size:16px'>×</button>" +
+      "<div style='font-size:15px;margin-bottom:3px'>" + escapeHtml(reply.icon + " " + reply.title) + "</div>" +
+      "<div style='font-size:12.5px;font-weight:850;opacity:.96'>" + escapeHtml(reply.text) + "</div>";
+
+    box.style.display = "block";
+    requestAnimationFrame(() => {
+      box.style.opacity = "1";
+      box.style.transform = "translateY(0)";
+    });
+
+    const close = document.getElementById("digiy-reponse-close");
+    if (close) close.onclick = hideBox;
+
+    /* Sur téléphone, la réponse ne doit pas gêner la remontée des modules. */
+    hideTimer = setTimeout(hideBox, 5200);
   }
 
   /* ── Cœur : affiche + parle ── */
@@ -149,13 +206,9 @@
     lastAnswerKey = key;
     lastAnswerAt = now;
 
-    const box = ensureBox();
-    box.innerHTML =
-      "<div style='font-size:22px;margin-bottom:6px'>" + reply.icon + " " + reply.title + "</div>" +
-      "<div>" + reply.text + "</div>";
-    box.style.display = "block";
+    showBox(reply);
 
-    /* Voix — appelé depuis le tick synchrone du clic */
+    /* Voix — appelée depuis le tick synchrone du clic */
     unlockThenSpeak(reply.text);
   }
 
@@ -170,7 +223,6 @@
     if (!btn) return;
 
     btn.addEventListener("click", function () {
-      /* Priorité : ce qui est dans le champ */
       const txt = readQ();
       if (txt) triggerAnswer(txt);
     }, true);
@@ -190,7 +242,8 @@
   window.DIGIY_AUDIO_REPONSE_V2 = {
     answer: function(txt) { triggerAnswer(txt || readQ()); },
     speak: speakNow,
-    buildReply: buildReply
+    buildReply: buildReply,
+    hide: hideBox
   };
 
   /* ── Boot ── */
@@ -200,7 +253,7 @@
     }
     hookVoirButton();
     hookQuickButtons();
-    console.log("DIGIY AUDIO RÉPONSE V2.4 ✅ — VOIR = déclencheur voix");
+    console.log("DIGIY AUDIO RÉPONSE V2.5 ✅ — toast non bloquant");
   }
 
   if (document.readyState === "loading") {
@@ -209,5 +262,3 @@
     boot();
   }
 })();
-
-
