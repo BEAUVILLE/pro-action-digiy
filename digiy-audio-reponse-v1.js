@@ -1,13 +1,13 @@
 /* =========================================================
-   DIGIY AUDIO RÉPONSE V2.5 — PRO ACTION DIGIY
+   DIGIY AUDIO RÉPONSE V2.7 — PRO ACTION DIGIY
 
-   DOCTRINE V2.5 :
-   - Les fiches remontent seules.
-   - Le bouton VOIR = déclencheur officiel de la VOIX DIGIY.
-   - Clic VOIR → geste utilisateur garanti → navigateur autorise speech.
-   - Réponse visuelle courte type toast : elle parle puis se range.
-   - Le bloc ne doit pas cacher les cartes sur téléphone.
-   - MutationObserver supprimé : inutile, les fiches remontent déjà.
+   CORRECTION MOBILE :
+   - GO déverrouille la voix dès le geste utilisateur.
+   - Après dictée, la réponse DIGIY parle sans obliger à toucher VOIR.
+   - VOIR reste un secours manuel.
+   - Le toast audio est très court, en haut, non bloquant.
+   - Le texte long de réponse est caché : seule une petite pastille audio apparaît.
+   - Aucune boîte ne doit couvrir les fiches ni empêcher les clics.
 ========================================================= */
 
 (function () {
@@ -17,8 +17,8 @@
   let lastAnswerKey = "";
   let lastAnswerAt = 0;
   let hideTimer = null;
+  let goWatcher = null;
 
-  /* ── Nettoyage texte ── */
   function clean(txt) {
     return (txt || "").toString().toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -34,7 +34,6 @@
       .replace(/'/g, "&#039;");
   }
 
-  /* ── Voix française ── */
   function pickFrenchVoice() {
     if (!("speechSynthesis" in window)) return null;
     try {
@@ -45,12 +44,11 @@
     } catch (e) { return null; }
   }
 
-  /* ── Parle (appel synchrone depuis un handler clic) ── */
   function speakNow(text) {
     if (!("speechSynthesis" in window) || !text || !text.trim()) return;
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.resume();
+    try { window.speechSynthesis.cancel(); } catch(e) {}
+    try { window.speechSynthesis.resume(); } catch(e) {}
 
     const msg = new SpeechSynthesisUtterance(text.trim());
     msg.lang   = "fr-FR";
@@ -66,32 +64,34 @@
 
     window.speechSynthesis.speak(msg);
 
-    /* Anti-pause mobile Chrome/Samsung */
     setTimeout(() => {
       try { if (window.speechSynthesis.paused) window.speechSynthesis.resume(); } catch(e){}
     }, 350);
   }
 
-  /* ── Déverrouille puis parle, dans le même tick de clic ── */
-  function unlockThenSpeak(text) {
-    if (!("speechSynthesis" in window) || !text) return;
-
-    if (!speechUnlocked) {
+  function primeSpeech() {
+    if (!("speechSynthesis" in window) || speechUnlocked) return;
+    try {
       window.speechSynthesis.cancel();
       const silence = new SpeechSynthesisUtterance(" ");
-      silence.lang   = "fr-FR";
+      silence.lang = "fr-FR";
       silence.volume = 0.001;
-      silence.rate   = 2;
-      silence.onend   = () => { speechUnlocked = true; speakNow(text); };
-      silence.onerror = () => { speechUnlocked = true; speakNow(text); };
+      silence.rate = 2;
+      silence.onend = () => { speechUnlocked = true; };
+      silence.onerror = () => { speechUnlocked = true; };
       window.speechSynthesis.speak(silence);
       speechUnlocked = true;
-    } else {
-      speakNow(text);
+    } catch(e) {
+      speechUnlocked = true;
     }
   }
 
-  /* ── Réponses DIGIY ── */
+  function unlockThenSpeak(text) {
+    if (!("speechSynthesis" in window) || !text) return;
+    if (!speechUnlocked) primeSpeech();
+    speakNow(text);
+  }
+
   function buildReply(raw) {
     const t = clean(raw);
 
@@ -125,7 +125,6 @@
     return {icon:"👂",title:"DEMANDE TERRAIN",text:"J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main."};
   }
 
-  /* ── Boîte visuelle réponse : toast mobile non bloquant ── */
   function ensureBox() {
     let box = document.getElementById("digiy-audio-reponse-box-v2");
     if (!box) {
@@ -137,25 +136,25 @@
         position:"fixed",
         left:"12px",
         right:"12px",
-        top:"calc(env(safe-area-inset-top) + 10px)",
+        top:"calc(env(safe-area-inset-top) + 8px)",
         bottom:"auto",
         zIndex:"99999",
-        maxWidth:"560px",
+        maxWidth:"480px",
         margin:"0 auto",
-        padding:"10px 42px 10px 12px",
-        borderRadius:"18px",
-        background:"linear-gradient(135deg,rgba(10,54,34,.96),rgba(17,84,52,.96))",
+        padding:"9px 11px",
+        borderRadius:"15px",
+        background:"linear-gradient(135deg,rgba(10,54,34,.94),rgba(17,84,52,.94))",
         color:"#fff7df",
-        border:"1px solid rgba(196,151,63,.75)",
-        boxShadow:"0 12px 28px rgba(0,0,0,.28)",
+        border:"1px solid rgba(196,151,63,.60)",
+        boxShadow:"0 10px 24px rgba(0,0,0,.22)",
         fontWeight:"900",
-        lineHeight:"1.32",
-        fontSize:"13px",
+        lineHeight:"1.22",
+        fontSize:"12px",
         display:"none",
-        transform:"translateY(-8px)",
+        transform:"translateY(-7px)",
         opacity:"0",
-        transition:"opacity .22s ease, transform .22s ease",
-        pointerEvents:"auto"
+        transition:"opacity .18s ease, transform .18s ease",
+        pointerEvents:"none"
       });
       document.body.appendChild(box);
     }
@@ -166,49 +165,56 @@
     const box = document.getElementById("digiy-audio-reponse-box-v2");
     if (!box) return;
     box.style.opacity = "0";
-    box.style.transform = "translateY(-8px)";
-    setTimeout(() => {
-      box.style.display = "none";
-    }, 240);
+    box.style.transform = "translate(-50%, -7px)";
+    setTimeout(() => { box.style.display = "none"; }, 200);
   }
 
   function showBox(reply) {
     const box = ensureBox();
     clearTimeout(hideTimer);
 
+    /*
+      MOBILE DIGIY — TEXTE RÉPONSE CACHÉ
+      On garde la voix comme vraie réponse.
+      On affiche seulement une petite pastille courte, sans texte long,
+      pour ne jamais couvrir les fiches ni voler les clics.
+    */
+    box.setAttribute("aria-label", reply.text || "Réponse audio DIGIY");
     box.innerHTML =
-      "<button type='button' aria-label='Fermer' id='digiy-reponse-close' " +
-      "style='position:absolute;right:8px;top:8px;width:30px;height:30px;border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff7df;font-weight:1000;font-size:16px'>×</button>" +
-      "<div style='font-size:15px;margin-bottom:3px'>" + escapeHtml(reply.icon + " " + reply.title) + "</div>" +
-      "<div style='font-size:12.5px;font-weight:850;opacity:.96'>" + escapeHtml(reply.text) + "</div>";
+      "<div style='font-size:12px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" +
+      escapeHtml("🎧 DIGIY parle · " + reply.title) +
+      "</div>";
+
+    Object.assign(box.style, {
+      left:"50%",
+      right:"auto",
+      top:"calc(env(safe-area-inset-top) + 8px)",
+      width:"auto",
+      maxWidth:"min(78vw, 330px)",
+      margin:"0",
+      padding:"7px 10px",
+      borderRadius:"999px",
+      transform:"translate(-50%, -7px)",
+      pointerEvents:"none"
+    });
 
     box.style.display = "block";
     requestAnimationFrame(() => {
       box.style.opacity = "1";
-      box.style.transform = "translateY(0)";
+      box.style.transform = "translate(-50%, 0)";
     });
-
-    const close = document.getElementById("digiy-reponse-close");
-    if (close) close.onclick = hideBox;
-
-    /* Sur téléphone, la réponse ne doit pas gêner la remontée des modules. */
-    hideTimer = setTimeout(hideBox, 5200);
+    hideTimer = setTimeout(hideBox, 1600);
   }
 
-  /* ── Cœur : affiche + parle ── */
   function triggerAnswer(queryText) {
     if (!queryText || queryText.length < 3) return;
-
     const reply = buildReply(queryText);
-    const key = reply.title + "::" + clean(queryText).slice(0, 40);
+    const key = reply.title + "::" + clean(queryText).slice(0, 60);
     const now = Date.now();
-    if (key === lastAnswerKey && now - lastAnswerAt < 3000) return;
+    if (key === lastAnswerKey && now - lastAnswerAt < 3500) return;
     lastAnswerKey = key;
     lastAnswerAt = now;
-
     showBox(reply);
-
-    /* Voix — appelée depuis le tick synchrone du clic */
     unlockThenSpeak(reply.text);
   }
 
@@ -217,43 +223,84 @@
     return q ? (q.value || "").trim() : "";
   }
 
-  /* ── VOIR = déclencheur officiel de la voix ── */
-  function hookVoirButton() {
-    const btn = document.getElementById("searchBtn");
-    if (!btn) return;
-
-    btn.addEventListener("click", function () {
+  function watchAfterGo() {
+    const initial = clean(readQ());
+    const started = Date.now();
+    clearInterval(goWatcher);
+    goWatcher = setInterval(function () {
       const txt = readQ();
-      if (txt) triggerAnswer(txt);
-    }, true);
+      const nowClean = clean(txt);
+      if (txt && txt.length >= 3 && nowClean !== initial) {
+        clearInterval(goWatcher);
+        goWatcher = null;
+        setTimeout(function(){ triggerAnswer(txt); }, 220);
+        return;
+      }
+      if (Date.now() - started > 18000) {
+        clearInterval(goWatcher);
+        goWatcher = null;
+      }
+    }, 280);
   }
 
-  /* ── Chips et exemples : voix au clic direct ── */
-  function hookQuickButtons() {
-    document.querySelectorAll(".chip[data-q], .examplePhrase[data-q]").forEach(function(el) {
-      el.addEventListener("click", function () {
-        const txt = el.getAttribute("data-q") || "";
+  function hookVoirButton() {
+    document.querySelectorAll("#searchBtn, .viewBtn, [data-search], [data-action='search']").forEach(function(btn){
+      btn.addEventListener("click", function () {
+        const txt = readQ();
         if (txt) triggerAnswer(txt);
       }, true);
     });
   }
 
-  /* ── API publique ── */
+  function hookGoButton() {
+    document.querySelectorAll("#listenBtn, .talkBtn, [data-listen], [data-action='listen']").forEach(function(btn){
+      btn.addEventListener("click", function () {
+        primeSpeech();
+        watchAfterGo();
+      }, true);
+    });
+  }
+
+  function hookQuickButtons() {
+    document.querySelectorAll(".chip[data-q], .examplePhrase[data-q]").forEach(function(el) {
+      el.addEventListener("click", function () {
+        primeSpeech();
+        const txt = el.getAttribute("data-q") || readQ();
+        if (txt) triggerAnswer(txt);
+      }, true);
+    });
+  }
+
+  function hookEnter() {
+    const q = document.getElementById("q");
+    if (!q) return;
+    q.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter" && !ev.shiftKey) {
+        const txt = readQ();
+        if (txt) triggerAnswer(txt);
+      }
+    }, true);
+  }
+
   window.DIGIY_AUDIO_REPONSE_V2 = {
     answer: function(txt) { triggerAnswer(txt || readQ()); },
     speak: speakNow,
+    prime: primeSpeech,
     buildReply: buildReply,
-    hide: hideBox
+    hide: hideBox,
+    version: "2.7-mobile-audio-pill-no-text"
   };
 
-  /* ── Boot ── */
   function boot() {
     if ("speechSynthesis" in window) {
       try { window.speechSynthesis.getVoices(); } catch(e){}
+      try { window.speechSynthesis.onvoiceschanged = pickFrenchVoice; } catch(e){}
     }
+    hookGoButton();
     hookVoirButton();
     hookQuickButtons();
-    console.log("DIGIY AUDIO RÉPONSE V2.5 ✅ — toast non bloquant");
+    hookEnter();
+    console.log("DIGIY AUDIO RÉPONSE V2.7 ✅ — GO parle, texte réponse caché, fiches cliquables");
   }
 
   if (document.readyState === "loading") {
