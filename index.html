@@ -422,6 +422,77 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   .logo{height:54px;width:54px}.navIcon,.iconBtn{height:46px;width:46px}
   .card{flex-basis:48vw}
 }
+
+/* ══ DIGIY PATCH — FICHES DIRECTES MÉTIER + SECTEUR + CATÉGORIE ══ */
+.card.directoryCard{
+  flex:0 0 min(86vw,320px);
+  min-height:188px;
+  border:1px solid rgba(22,129,67,.20);
+  background:
+    radial-gradient(circle at top left,rgba(246,196,83,.25),transparent 46%),
+    linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,252,240,.78));
+}
+.card.directoryCard h3,
+.card.directoryCard p,
+.card.directoryCard .tag{
+  position:static!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  clip:auto!important;
+  white-space:normal!important;
+  border:0!important;
+}
+.card.directoryCard .tag{
+  display:inline-flex;
+  width:max-content!important;
+  min-height:24px;
+  padding:0 9px!important;
+  border-radius:999px;
+  background:rgba(22,129,67,.12);
+  color:#102f24;
+  font-size:10px;
+  font-weight:1000;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.card.directoryCard h3{
+  color:#102f24;
+  font-size:18px;
+  line-height:1.07;
+  font-weight:1000;
+}
+.card.directoryCard p{
+  color:rgba(16,47,36,.78);
+  font-size:12px;
+  line-height:1.28;
+  font-weight:900;
+}
+.card.directoryCard .miniMeta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:2px;
+}
+.card.directoryCard .miniMeta span{
+  min-height:26px;
+  border-radius:999px;
+  background:rgba(246,196,83,.18);
+  color:#102f24;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 8px;
+  font-size:10px;
+  font-weight:1000;
+}
+.card.directoryCard .card-actions .btn{
+  font-size:0;
+}
+
 </style>
 </head>
 <body>
@@ -524,7 +595,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const audioText = ($("audioText")?.textContent || "").trim();
 
   const DATA = [
-    {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"https://pro-action-digiy.digiylyfe.com/", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
+    {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"#voix", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
     {keys:["sortie","pêche","peche","explore","visite","activité","activite","découvrir","decouvrir","idée","idee","territoire","petite cote","petite côte","genn","génn"], icon:"🗺️", title:"EXPLORE", url:"https://explore.digiylyfe.com/", wa:"Bonjour, je cherche une sortie ou une idée de découverte via DIGIY."},
     {keys:["chauffeur","aibd","taxi","driver","course","conduire","trajet","mobilite","mobilité","yobbu","yóbbu"], icon:"🚗", title:"DRIVER", url:"https://driver-client.digiylyfe.com/", wa:"Bonjour, je cherche un chauffeur via DIGIY."},
     {keys:["chauffeurs disponibles","galerie chauffeur","chauffeurs","nos chauffeurs","visage","conducteur"], icon:"👑", title:"GALERIE", url:"https://galerie-chauffeurs.digiylyfe.com/", wa:"Bonjour, je veux voir les chauffeurs disponibles via DIGIY."},
@@ -540,7 +611,128 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {keys:["ndimbal","solidaire","solidarité","solidarite","loc solidaire"], icon:"🤝", title:"NDIMBAL", url:"https://ndimbal-loc.digiylyfe.com/", wa:"Bonjour, je cherche une option logement solidaire via DIGIY."},
     {keys:["audio","écouter","ecouter","vision","article","revue","son","déglu","deglu"], icon:"🎵", title:"AUDIO", url:"https://digiy-audio.digiylyfe.com/", wa:"Bonjour, je veux écouter la vision DIGIYLYFE."},
     {keys:["assistant","aide","guidé","guide","knowledge","infini","avancer"], icon:"♾️", title:"ASSISTANT", url:"https://knowledge.digiylyfe.com/widget/", wa:"Bonjour, je veux être guidé par l’assistant DIGIY."}
+
   ];
+
+  /* ══ ANNUAIRE PUBLIC DIGIY — FICHES DIRECTES AVANT MODULES ══
+     Doctrine : demande précise = fiches précises.
+     Pas de PIN ici. Pas de cockpit. PRO et partenaires restent distingués.
+  */
+  const SECTEURS = [
+    {label:"Saly", keys:["saly"]},
+    {label:"Mbour", keys:["mbour"]},
+    {label:"Dakar", keys:["dakar"]},
+    {label:"Thiès", keys:["thies","thiès"]},
+    {label:"AIBD", keys:["aibd","diass"]},
+    {label:"Ngaparou", keys:["ngaparou"]},
+    {label:"Somone", keys:["somone"]},
+    {label:"Petite Côte", keys:["petite cote","petite côte"]}
+  ];
+
+  const FICHES_DIRECTES = [
+    {
+      kind:"directory", priority:1, icon:"🏗️",
+      title:"Plombiers — Saly",
+      metier:"Plombier", categorie:"Artisan / intervention", secteur:"Saly", statut:"Annuaire partenaire",
+      keys:["plombier","plomberie","fuite","robinet","robinetterie","evacuation","évacuation","installation","ndox"],
+      url:"https://build.digiylyfe.com/",
+      wa:"Bonjour, je cherche un plombier à Saly via DIGIY."
+    },
+    {
+      kind:"directory", priority:1, icon:"🏗️",
+      title:"Artisans réparation — Mbour",
+      metier:"Artisan réparation", categorie:"Artisan / intervention", secteur:"Mbour", statut:"Annuaire partenaire",
+      keys:["artisan","réparation","reparation","travaux","maçon","macon","electricien","électricien","fuite"],
+      url:"https://build.digiylyfe.com/",
+      wa:"Bonjour, je cherche un artisan à Mbour via DIGIY."
+    },
+    {
+      kind:"directory", priority:1, icon:"👜",
+      title:"Linge de maison / serviettes",
+      metier:"Linge de maison", categorie:"Commerce", secteur:"Saly", statut:"Fiche commerce",
+      keys:["serviette","serviettes","linge","drap","draps","maison","boutique","magasin"],
+      url:"https://mon-commerce.digiylyfe.com/",
+      wa:"Bonjour, je cherche des serviettes ou du linge de maison via DIGIY."
+    },
+    {
+      kind:"directory", priority:1, icon:"🛍️",
+      title:"Hi-fi / électronique",
+      metier:"Hi-fi", categorie:"Commerce / produits", secteur:"Dakar", statut:"Annuaire partenaire",
+      keys:["hifi","hi-fi","sono","enceinte","bluetooth","casque","audio","electronique","électronique"],
+      url:"https://market.digiylyfe.com/",
+      wa:"Bonjour, je cherche du matériel hi-fi via DIGIY."
+    },
+    {
+      kind:"directory", priority:1, icon:"🚗",
+      title:"Chauffeurs — AIBD",
+      metier:"Chauffeur", categorie:"Transport", secteur:"AIBD", statut:"Fiches DRIVER",
+      keys:["chauffeur","taxi","driver","aibd","diass","trajet","course","conduire"],
+      url:"https://driver-client.digiylyfe.com/",
+      wa:"Bonjour, je cherche un chauffeur pour AIBD via DIGIY."
+    },
+    {
+      kind:"directory", priority:1, icon:"🏠",
+      title:"Logements — Saly",
+      metier:"Logement", categorie:"Location", secteur:"Saly", statut:"Fiches LOC",
+      keys:["chambre","logement","studio","appartement","maison","louer","location","nuit","dormir"],
+      url:"https://loc.digiylyfe.com/",
+      wa:"Bonjour, je cherche un logement à Saly via DIGIY."
+    },
+    {
+      kind:"directory", priority:1, icon:"📅",
+      title:"Restaurants / tables",
+      metier:"Restaurant", categorie:"Réservation", secteur:"Saly", statut:"Fiches RESA",
+      keys:["restaurant","resto","table","réserver","reserver","reservation","réservation","diner","dîner","manger"],
+      url:"https://resa-table-resto.digiylyfe.com/",
+      wa:"Bonjour, je veux réserver une table via DIGIY."
+    }
+  ];
+
+  function detectSecteurFromCleanText(t){
+    return SECTEURS.find(z => z.keys.some(k => t.includes(clean(k)))) || null;
+  }
+
+  function directScore(item, t, secteur){
+    let score = 0;
+    if(item.keys.some(k => t.includes(clean(k)))) score += 10;
+    if(secteur && clean(item.secteur) === clean(secteur.label)) score += 5;
+    if(item.statut && /pro|fiche/i.test(item.statut)) score += 2;
+    score += item.priority || 0;
+    return score;
+  }
+
+  function matchDirectFiches(text){
+    const t = clean(text);
+    const secteur = detectSecteurFromCleanText(t);
+    const scored = FICHES_DIRECTES
+      .map(item => ({item, score:directScore(item,t,secteur)}))
+      .filter(x => x.score >= 10)
+      .sort((a,b) => b.score - a.score)
+      .map(x => x.item);
+
+    if(scored.length) return scored.slice(0,4);
+    return [];
+  }
+
+  function humanNeedFromDirect(item){
+    if(!item) return "ta demande";
+    const zone = item.secteur ? " à " + item.secteur : "";
+    return (item.metier || item.title || "ta demande") + zone;
+  }
+
+  function responseDirecte(text, list){
+    const t = clean(text);
+    const secteur = detectSecteurFromCleanText(t);
+    const direct = (list || []).find(x => x.kind === "directory");
+    if(direct){
+      const zone = direct.secteur ? " à " + direct.secteur : (secteur ? " à " + secteur.label : "");
+      return "J'ai compris : tu cherches " + (direct.metier || "un service") + zone + ". Je remonte les fiches directes, puis l'annuaire partenaire si besoin. Pas de forêt de modules : DIGIY centre la réponse.";
+    }
+    if(secteur){
+      return "J'ai compris le secteur : " + secteur.label + ". Je remonte les résultats utiles autour de cette zone.";
+    }
+    return null;
+  }
 
   function clean(s){
     return String(s || "")
@@ -559,8 +751,15 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function matchCards(text){
     const t = clean(text);
     if(!t) return [];
+
+    /* D'abord : fiches directes par métier + secteur + catégorie. */
+    const direct = matchDirectFiches(text);
+    if(direct.length) return direct;
+
+    /* Ensuite seulement : portes/modules généraux. */
     const found = DATA.filter(item => item.keys.some(k => t.includes(clean(k))));
     if(found.length) return found.slice(0,4);
+
     return [DATA[1], DATA[2], DATA[0]].filter(Boolean);
   }
 
@@ -591,8 +790,26 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const frag = document.createDocumentFragment();
     list.forEach(item => {
       const card = document.createElement("article");
-      card.className = item.title === "PAY" ? "card payCard" : "card";
-      if(item.title === "PAY"){
+      card.className = item.kind === "directory" ? "card directoryCard" : (item.title === "PAY" ? "card payCard" : "card");
+
+      if(item.kind === "directory"){
+        card.innerHTML = `
+          <div class="cover" aria-hidden="true">${item.icon}</div>
+          <div class="body">
+            <span class="tag">${item.statut || "Référencé public"}</span>
+            <h3>${item.title}</h3>
+            <p>${item.metier || ""} · ${item.categorie || ""} · ${item.secteur || "Secteur à préciser"}</p>
+            <div class="miniMeta">
+              <span>${item.categorie || "Catégorie"}</span>
+              <span>${item.secteur || "Secteur"}</span>
+            </div>
+            <div class="card-actions">
+              <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">↗️</a>
+              <a class="btn green" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬</a>
+              <a class="btn" href="tel:+221771342889" aria-label="Appeler DIGIY">📞</a>
+            </div>
+          </div>`;
+      }else if(item.title === "PAY"){
         card.innerHTML = `
           <div class="cover" aria-hidden="true">${item.icon}</div>
           <div class="body">
@@ -677,21 +894,25 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   });
 
   function digiyBuildReply(raw) {
-    const t = (raw||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+    const list = matchCards(raw || "");
+    const directMsg = responseDirecte(raw || "", list);
+    if(directMsg) return directMsg;
+
+    const t = (raw||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
     if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi")||t.includes("aibd"))
-      return "J'ai compris : tu cherches un chauffeur. Je remonte la porte DRIVER. Contact direct, le terrain garde la main.";
+      return "J'ai compris : tu cherches un chauffeur. Je remonte les fiches DRIVER, puis les partenaires transport si besoin. Contact direct, le terrain garde la main.";
     if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa")||t.includes("manger")||t.includes("diner"))
-      return "J'ai compris : tu veux réserver ou manger. Je remonte la porte RESA. DIGIY prépare, le pro confirme.";
+      return "J'ai compris : tu veux réserver ou manger. Je remonte les fiches RESA. DIGIY prépare, le pro confirme.";
     if(t.includes("chambre")||t.includes("logement")||t.includes("louer")||t.includes("saly")||t.includes("nuit")||t.includes("dormir"))
-      return "J'ai compris : tu cherches un logement. Je remonte la porte LOC. Le client voit, le pro valide, relation directe.";
+      return "J'ai compris : tu cherches un logement. Je remonte les fiches LOC. Le client voit, le pro valide, relation directe.";
     if(t.includes("artisan")||t.includes("plombier")||t.includes("electricien")||t.includes("build")||t.includes("travaux"))
-      return "J'ai compris : tu cherches un artisan. Je remonte la porte BUILD. Contact direct, pas de détour.";
-    if(t.includes("produit")||t.includes("boutique")||t.includes("acheter")||t.includes("market"))
-      return "J'ai compris : tu cherches un produit ou une boutique. Je remonte la porte MARKET.";
+      return "J'ai compris : tu cherches un artisan. Je remonte les fiches métier d'abord, puis l'annuaire partenaire. BUILD reste en secours.";
+    if(t.includes("produit")||t.includes("boutique")||t.includes("acheter")||t.includes("market")||t.includes("magasin"))
+      return "J'ai compris : tu cherches un produit ou un commerce. Je remonte les boutiques et produits directs avant MARKET.";
     if(t.includes("emploi")||t.includes("travail")||t.includes("job")||t.includes("mission"))
-      return "J'ai compris : tu cherches du travail ou une mission. Je remonte la porte JOBS.";
+      return "J'ai compris : tu cherches du travail ou une mission. Je remonte les fiches JOBS.";
     if(t.includes("sortie")||t.includes("decouvrir")||t.includes("explore")||t.includes("petite cote"))
-      return "J'ai compris : tu cherches une sortie ou un lieu. Je remonte la porte EXPLORE.";
+      return "J'ai compris : tu cherches une sortie ou un lieu. Je remonte les fiches EXPLORE.";
     if(t.includes("wave")||t.includes("preuve")||t.includes("paiement")||t.includes("pay")||t.includes("argent"))
       return "J'ai compris : la demande touche à l'argent. Je prépare l'action PAY. Le pro vérifie et valide.";
     if(t.includes("audio")||t.includes("ecouter")||t.includes("vision"))
@@ -701,7 +922,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(t.includes("annonce")||t.includes("reseau")||t.includes("publier"))
       return "J'ai compris : tu veux publier dans le réseau. Je remonte la porte RÉSEAU DIGIY.";
     if(t.includes("commerce")||t.includes("magasin"))
-      return "J'ai compris : tu cherches un commerce local. Je remonte la porte COMMERCE.";
+      return "J'ai compris : tu cherches un commerce local. Je remonte les commerces référencés.";
     return "J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main.";
   }
 
@@ -817,6 +1038,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         listenButton?.classList.remove("listening");
         activeRecognition = null;
         if(q && q.value.trim()){
+          const reponse = digiyBuildReply(q.value.trim());
+          digiyShowBox(reponse);
+          speakIntro(null, reponse);
           searchNow(true);
           setStatus("✅", "Résultat direct");
         }else{
@@ -885,6 +1109,520 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
