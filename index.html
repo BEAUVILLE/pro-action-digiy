@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-public-fiches-directes-consignes-mobile-diji-i-20260615"/>
+<meta name="digiy-build" content="voix-public-fiches-directes-bouton-flottant-consignes-go-voir-diji-i-20260615"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -401,14 +401,26 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   position:fixed;
   left:12px;
   bottom:calc(env(safe-area-inset-bottom) + 12px);
-  width:54px;height:54px;border-radius:21px;
-  display:grid;place-items:center;
-  font-size:24px;
-  border:1px solid var(--line);
+  min-width:96px;
+  height:48px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:0 13px;
+  font-size:18px;
+  font-weight:1000;
+  letter-spacing:.03em;
+  color:#102f24;
+  border:1px solid rgba(246,196,83,.70);
   background:linear-gradient(135deg,var(--gold2),var(--gold));
-  box-shadow:0 14px 34px rgba(18,60,45,.18);
-  z-index:30;
+  box-shadow:0 14px 34px rgba(18,60,45,.20);
+  z-index:40;
+  pointer-events:auto;
 }
+.floatingHint span{font-size:13px;font-weight:1000;color:#102f24}
+.floatingHint.audio-on{background:linear-gradient(135deg,#d8ffe6,#7ee6a7)}
 @media(min-width:700px){
   .app{width:min(100%,760px)}
   .stage{display:grid;grid-template-columns:.78fr 1fr;align-items:start}
@@ -505,8 +517,8 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   gap:8px;
   padding:7px 8px;
   color:rgba(16,47,36,.78);
-  font-size:12px;
-  line-height:1.18;
+  font-size:13px;
+  line-height:1.22;
   font-weight:900;
 }
 .consignesLine b{color:#102f24;font-weight:1000}
@@ -517,9 +529,9 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   border:1px solid rgba(246,196,83,.55);
   background:linear-gradient(135deg,var(--gold2),var(--gold));
   color:#102f24;
-  font-size:12px;
+  font-size:13px;
   font-weight:1000;
-  padding:0 10px;
+  padding:0 11px;
   box-shadow:0 8px 18px rgba(18,60,45,.08);
 }
 .consigneBtn.audio-on{background:linear-gradient(135deg,#d8ffe6,#7ee6a7)}
@@ -589,7 +601,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <div class="consignesLine" aria-label="Consignes téléphone">
         <button id="consigneBtn" class="consigneBtn" type="button" aria-label="Écouter les consignes">🎧 Consignes</button>
-        <span>📱 Sur téléphone : écris ou parle, puis appuie sur <b>VOIR</b> — DIGIY parle et les fiches remontent.</span>
+        <span>📱 Besoin d’aide ? Appuie sur <b>GO</b> pour lancer la discussion ou parler. Puis touche <b>VOIR</b> — DIGIY parle et les fiches remontent.</span>
       </div>
     </section>
 
@@ -606,10 +618,10 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   <footer>La Voix du Business — DIGIYLYFE</footer>
 </div>
 
-<!-- Bouton audio flottant retiré : il gênait les fiches sur mobile. Le bouton 🎧 du haut reste actif. -->
+<button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter les consignes téléphone">🎧 <span>GO</span></button>
 
 <p id="audioText" class="sr-only">
-Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur J’écoute et parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, pay, audio ou assistant. Sur téléphone, la règle est simple : écris ou parle ton besoin, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
+Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, pay, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script>
 (function(){
@@ -626,7 +638,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const resultsPanel = document.querySelector(".results");
   const askPanel = document.querySelector(".ask");
   const audioText = ($("audioText")?.textContent || "").trim();
-  const consigneText = "Consigne téléphone. Écris ou parle ton besoin, puis appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
+  const consigneText = "Consigne téléphone. Appuie sur GO pour lancer la discussion ou parler. Ensuite appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
 
   const DATA = [
     {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"#voix", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
@@ -1517,6 +1529,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
 
 
 
