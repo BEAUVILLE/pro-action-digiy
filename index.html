@@ -567,7 +567,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   <footer>La Voix du Business — DIGIYLYFE</footer>
 </div>
 
-<button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter l’explication">🎧</button>
+<!-- Bouton audio flottant retiré : il gênait les fiches sur mobile. Le bouton 🎧 du haut reste actif. -->
 
 <p id="audioText" class="sr-only">
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur J’écoute et parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, artisan, commerce, market, jobs, réseau, pay, audio ou assistant. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. Ce sont des fichiers connectés qui se passent le relais : la voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
@@ -1184,77 +1184,75 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return "J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main.";
   }
 
-  ffunction digiyShowBox(replyText) {
-  let box = document.getElementById("digiy-reponse-box");
+    function digiyShowBox(replyText) {
+    let box = document.getElementById("digiy-reponse-box");
 
-  if(!box){
-    box = document.createElement("div");
-    box.id = "digiy-reponse-box";
-    box.setAttribute("role", "status");
-    box.setAttribute("aria-live", "polite");
+    if(!box){
+      box = document.createElement("div");
+      box.id = "digiy-reponse-box";
+      box.setAttribute("role", "status");
+      box.setAttribute("aria-live", "polite");
 
-    Object.assign(box.style,{
-      position:"fixed",
-      left:"50%",
-      top:"calc(env(safe-area-inset-top) + 8px)",
-      right:"auto",
-      bottom:"auto",
-      transform:"translateX(-50%)",
-      zIndex:"99999",
-      width:"auto",
-      maxWidth:"min(78vw,330px)",
-      padding:"7px 11px",
-      borderRadius:"999px",
-      background:"linear-gradient(135deg,rgba(10,54,34,.96),rgba(17,84,52,.96))",
-      color:"#fff7df",
-      border:"1px solid rgba(196,151,63,.70)",
-      boxShadow:"0 10px 24px rgba(0,0,0,.24)",
-      fontWeight:"1000",
-      lineHeight:"1.15",
-      fontSize:"12px",
-      pointerEvents:"none",
-      opacity:"1",
-      transition:"opacity .18s ease, transform .18s ease"
-    });
+      Object.assign(box.style,{
+        position:"fixed",
+        left:"50%",
+        top:"calc(env(safe-area-inset-top) + 8px)",
+        right:"auto",
+        bottom:"auto",
+        transform:"translateX(-50%)",
+        zIndex:"99999",
+        width:"auto",
+        maxWidth:"min(78vw,330px)",
+        padding:"7px 11px",
+        borderRadius:"999px",
+        background:"linear-gradient(135deg,rgba(10,54,34,.96),rgba(17,84,52,.96))",
+        color:"#fff7df",
+        border:"1px solid rgba(196,151,63,.70)",
+        boxShadow:"0 10px 24px rgba(0,0,0,.24)",
+        fontWeight:"1000",
+        lineHeight:"1.15",
+        fontSize:"12px",
+        pointerEvents:"none",
+        opacity:"1",
+        transition:"opacity .18s ease, transform .18s ease"
+      });
 
-    document.body.appendChild(box);
-  }
-
-  let titre = "DIGIY";
-  const t = String(replyText || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"");
-
-  if(t.includes("chauffeur") || t.includes("driver") || t.includes("aibd")) titre = "DRIVER";
-  else if(t.includes("plombier") || t.includes("artisan") || t.includes("macon") || t.includes("electricien") || t.includes("build")) titre = "BUILD";
-  else if(t.includes("logement") || t.includes("location") || t.includes("chambre")) titre = "LOC";
-  else if(t.includes("reserver") || t.includes("reservation") || t.includes("restaurant")) titre = "RESA";
-  else if(t.includes("produit") || t.includes("commerce") || t.includes("boutique")) titre = "MARKET";
-  else if(t.includes("emploi") || t.includes("mission") || t.includes("job")) titre = "JOBS";
-  else if(t.includes("sortie") || t.includes("explore")) titre = "EXPLORE";
-  else if(t.includes("argent") || t.includes("paiement") || t.includes("pay") || t.includes("wave")) titre = "PAY";
-
-  box.setAttribute("aria-label", replyText || "Réponse audio DIGIY");
-  box.innerHTML = "🎧 DIGIY parle · " + titre;
-
-  box.style.display = "block";
-  box.style.opacity = "1";
-  box.style.transform = "translateX(-50%) translateY(0)";
-
-  clearTimeout(window.__digiyHideReplyBox);
-  window.__digiyHideReplyBox = setTimeout(function(){
-    box.style.opacity = "0";
-    box.style.transform = "translateX(-50%) translateY(-6px)";
-  }, 1400);
-
-  window.__digiyHideReplyBox2 = setTimeout(function(){
-    box.style.display = "none";
-  }, 1750);
-}
       document.body.appendChild(box);
     }
-    box.innerHTML = "<div>" + replyText + "</div>";
+
+    let titre = "DIGIY";
+    const t = String(replyText || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g,"");
+
+    if(t.includes("chauffeur") || t.includes("driver") || t.includes("aibd")) titre = "DRIVER";
+    else if(t.includes("plombier") || t.includes("artisan") || t.includes("macon") || t.includes("electricien") || t.includes("build")) titre = "BUILD";
+    else if(t.includes("logement") || t.includes("location") || t.includes("chambre")) titre = "LOC";
+    else if(t.includes("reserver") || t.includes("reservation") || t.includes("restaurant")) titre = "RESA";
+    else if(t.includes("produit") || t.includes("commerce") || t.includes("boutique")) titre = "MARKET";
+    else if(t.includes("emploi") || t.includes("mission") || t.includes("job")) titre = "JOBS";
+    else if(t.includes("sortie") || t.includes("explore")) titre = "EXPLORE";
+    else if(t.includes("argent") || t.includes("paiement") || t.includes("pay") || t.includes("wave")) titre = "PAY";
+
+    box.setAttribute("aria-label", replyText || "Réponse audio DIGIY");
+    box.textContent = "🎧 DIGIY parle · " + titre;
+
+    box.style.display = "block";
+    box.style.opacity = "1";
+    box.style.transform = "translateX(-50%) translateY(0)";
+
+    clearTimeout(window.__digiyHideReplyBox);
+    clearTimeout(window.__digiyHideReplyBox2);
+
+    window.__digiyHideReplyBox = setTimeout(function(){
+      box.style.opacity = "0";
+      box.style.transform = "translateX(-50%) translateY(-6px)";
+    }, 1400);
+
+    window.__digiyHideReplyBox2 = setTimeout(function(){
+      box.style.display = "none";
+    }, 1750);
   }
 
   $("searchBtn")?.addEventListener("click", () => {
@@ -1417,9 +1415,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   audioFloat?.addEventListener("click", () => speakIntro(audioFloat));
 })();
 </script>
- <script src="./digiy-audio-reponse-v1.js?v=20260615-mobile-clean"></script>
 </body>
 </html>
+
 
 
 
