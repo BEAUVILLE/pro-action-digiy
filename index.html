@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-public-fiches-directes-prononciation-diji-i-20260615"/>
+<meta name="digiy-build" content="voix-public-fiches-directes-consignes-mobile-diji-i-20260615"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -493,6 +493,40 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   font-size:0;
 }
 
+
+/* ══ DIGIY CONSIGNES MOBILE — petit lecteur rassurant non bloquant ══ */
+.consignesLine{
+  min-height:42px;
+  border-radius:18px;
+  border:1px solid rgba(22,129,67,.16);
+  background:rgba(255,255,255,.58);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 8px;
+  color:rgba(16,47,36,.78);
+  font-size:12px;
+  line-height:1.18;
+  font-weight:900;
+}
+.consignesLine b{color:#102f24;font-weight:1000}
+.consigneBtn{
+  flex:0 0 auto;
+  min-height:30px;
+  border-radius:999px;
+  border:1px solid rgba(246,196,83,.55);
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#102f24;
+  font-size:12px;
+  font-weight:1000;
+  padding:0 10px;
+  box-shadow:0 8px 18px rgba(18,60,45,.08);
+}
+.consigneBtn.audio-on{background:linear-gradient(135deg,#d8ffe6,#7ee6a7)}
+@media(min-width:700px){
+  .consignesLine{font-size:13px}
+}
+
 </style>
 </head>
 <body>
@@ -552,6 +586,11 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
       </div>
 
       <div class="status" id="status" aria-live="polite" title="État micro">•</div>
+
+      <div class="consignesLine" aria-label="Consignes téléphone">
+        <button id="consigneBtn" class="consigneBtn" type="button" aria-label="Écouter les consignes">🎧 Consignes</button>
+        <span>📱 Sur téléphone : écris ou parle, puis appuie sur <b>VOIR</b> — DIGIY parle et les fiches remontent.</span>
+      </div>
     </section>
 
     <section class="panel results" aria-label="Résultats directs">
@@ -570,7 +609,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 <!-- Bouton audio flottant retiré : il gênait les fiches sur mobile. Le bouton 🎧 du haut reste actif. -->
 
 <p id="audioText" class="sr-only">
-Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur J’écoute et parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, artisan, commerce, market, jobs, réseau, pay, audio ou assistant. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. Ce sont des fichiers connectés qui se passent le relais : la voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
+Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur J’écoute et parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, pay, audio ou assistant. Sur téléphone, la règle est simple : écris ou parle ton besoin, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script>
 (function(){
@@ -582,10 +621,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const status = $("status");
   const empty = $("empty");
   const introBtn = $("introBtn");
+  const consigneBtn = $("consigneBtn");
   const audioFloat = $("audioFloat");
   const resultsPanel = document.querySelector(".results");
   const askPanel = document.querySelector(".ask");
   const audioText = ($("audioText")?.textContent || "").trim();
+  const consigneText = "Consigne téléphone. Écris ou parle ton besoin, puis appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
 
   const DATA = [
     {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"#voix", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
@@ -1443,6 +1484,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(window.speechSynthesis.speaking){
       window.speechSynthesis.cancel();
       introBtn?.classList.remove("audio-on");
+      consigneBtn?.classList.remove("audio-on");
       audioFloat?.classList.remove("audio-on");
       return;
     }
@@ -1456,16 +1498,19 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(bestVoice) u.voice = bestVoice;
     u.onstart = () => {
       introBtn?.classList.add("audio-on");
+      consigneBtn?.classList.add("audio-on");
       audioFloat?.classList.add("audio-on");
     };
     u.onend = u.onerror = () => {
       introBtn?.classList.remove("audio-on");
+      consigneBtn?.classList.remove("audio-on");
       audioFloat?.classList.remove("audio-on");
     };
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
   }
 
+  consigneBtn?.addEventListener("click", () => speakIntro(consigneBtn, consigneText));
   introBtn?.addEventListener("click", () => speakIntro(introBtn));
   audioFloat?.addEventListener("click", () => speakIntro(audioFloat));
 })();
