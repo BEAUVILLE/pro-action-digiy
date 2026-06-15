@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="voix-public-fiches-directes-integrees-clean-20260614"/>
+<meta name="digiy-build" content="voix-public-fiches-directes-prononciation-diji-i-20260615"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -1423,6 +1423,21 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         || null;
   }
 
+  function digiyVoiceText(text){
+    return String(text || "")
+      .replace(/DIGIYLYFE/g, "Diji i laïfe")
+      .replace(/DIGIY/g, "Diji i")
+      .replace(/BUILD/g, "Bâtiment")
+      .replace(/BUIL/g, "Bâtiment")
+      .replace(/RESA/g, "Réservation")
+      .replace(/MARKET/g, "Boutique")
+      .replace(/JOBS/g, "Travail")
+      .replace(/QR/g, "Q R")
+      .replace(/SMS/g, "S M S")
+      .replace(/WhatsApp/g, "Ouatsap")
+      .replace(/Wave/g, "Ouève");
+  }
+
   function speakIntro(btn, overrideText){
     if(!("speechSynthesis" in window)) return;
     if(window.speechSynthesis.speaking){
@@ -1431,7 +1446,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       audioFloat?.classList.remove("audio-on");
       return;
     }
-    const textToSpeak = overrideText || audioText;
+    const textToSpeak = digiyVoiceText(overrideText || audioText);
     const u = new SpeechSynthesisUtterance(textToSpeak);
     u.lang = "fr-FR";
     u.rate = 0.82;
@@ -1457,6 +1472,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
 
 
 
