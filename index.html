@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-digiy-lang="fr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
 <meta name="digiy-build" content="pro-action-supabase-rpc-digiy-route-public-secours-local-20260616"/>
+<meta name="digiy-lang" content="fr-en-20260620"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -540,13 +541,47 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   .consignesLine{font-size:13px}
 }
 
+/* ══ DIGIY PATCH — FR / EN sans double interface ══ */
+.brandSpace.langSwitch{height:auto}
+.langSwitch{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-width:88px;
+}
+.langSwitch button{
+  min-height:34px;
+  padding:0 8px;
+  border-radius:999px;
+  border:1px solid rgba(18,60,45,.13);
+  background:rgba(255,255,255,.72);
+  color:#102f24;
+  font-size:11px;
+  font-weight:1000;
+  box-shadow:0 8px 18px rgba(18,60,45,.07);
+}
+.langSwitch button.active{
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  border-color:rgba(246,196,83,.74);
+  color:#102f24;
+}
+.langSwitch button:active{transform:scale(.98)}
+@media(max-width:380px){
+  .langSwitch{min-width:78px;gap:3px}
+  .langSwitch button{min-height:31px;padding:0 6px;font-size:10px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <header class="topbar" aria-label="Navigation DIGIY">
     <a class="logo" href="./" aria-label="Accueil La Voix du Business"><span class="ear" aria-hidden="true">👂</span><span class="logoText">J’ÉCOUTE</span></a>
-    <div class="brandSpace" aria-hidden="true"></div>
+    <div class="brandSpace langSwitch" id="langSwitch" aria-label="Choisir la langue">
+      <button type="button" data-lang-choice="fr" aria-pressed="true">🇫🇷 FR</button>
+      <button type="button" data-lang-choice="en" aria-pressed="false">🇬🇧 EN</button>
+    </div>
     <a class="navIcon" href="https://digiylyfe.com/" aria-label="Site DIGIYLYFE">🌍</a>
     <a class="navIcon" href="https://digiy-hub.digiylyfe.com/" aria-label="HUB DIGIY">🧭</a>
     <a class="navIcon" href="./pin.html" aria-label="Espace professionnel protégé">🔒</a>
@@ -628,6 +663,22 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 <script>
 (function(){
   "use strict";
+
+  const DIGIY_LANG_KEY = "digiy_voice_lang_v1";
+  function digiyLang(){
+    try{
+      const saved = localStorage.getItem(DIGIY_LANG_KEY);
+      return saved === "en" ? "en" : "fr";
+    }catch(_){
+      return "fr";
+    }
+  }
+  function digiySetLang(lang){
+    const safe = lang === "en" ? "en" : "fr";
+    try{ localStorage.setItem(DIGIY_LANG_KEY, safe); }catch(_){}
+    applyDigiyLang();
+    if("speechSynthesis" in window) window.speechSynthesis.cancel();
+  }
 
   /* ══ DIGIY SUPABASE RPC — Mémoire DIGIY V1
      Remplir ces 2 lignes avec Project URL + anon public key Supabase.
@@ -745,9 +796,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const sb = digiySupabaseClient();
     if(sb){
       try{
-        setStatus("⏳", "Mémoire DIGIY");
+        setStatus("⏳", digiyLang() === "en" ? "DIGIY memory" : "Mémoire DIGIY");
         const {data, error} = await sb.rpc(DIGIY_RPC_NAME, {
-          p_query: val,
+          p_query: digiyExpandQuery(val),
           p_limit: 8
         });
 
@@ -758,7 +809,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         if(mapped.length) return mapped.slice(0,4);
       }catch(err){
         console.warn("DIGIY RPC indisponible, moteur local en secours :", err);
-        setStatus("⚠️", "Mémoire indisponible · secours local");
+        setStatus("⚠️", digiyLang() === "en" ? "Memory unavailable · local backup" : "Mémoire indisponible · secours local");
       }
     }
 
@@ -775,8 +826,235 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const audioFloat = $("audioFloat");
   const resultsPanel = document.querySelector(".results");
   const askPanel = document.querySelector(".ask");
-  const audioText = ($("audioText")?.textContent || "").trim();
-  const consigneText = "Consigne téléphone. Appuie sur GO pour lancer la discussion ou parler. Ensuite appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
+  const audioTextFr = ($("audioText")?.textContent || "").trim();
+  const audioTextEn = "Welcome to La Voix du Business by DIGIY. Here, you have three simple paths. Tap GO to start the discussion or speak naturally. You can also tap a quick icon: driver, outing, lodging, booking, building, shop, market, jobs, network, pay, audio or assistant. On mobile, the rule is simple: tap GO to speak or start, then tap SEE. DIGIY speaks and the right cards appear. If you do not know how to ask yet, open the red Examples box. Choose a model sentence in English or Wolof. DIGIY fills the request, then the useful cards appear directly. No long scroll. No complication. Voice or click catches the need, the right door answers, and contact stays direct. DIGIY prepares. The professional validates. The field keeps control.";
+  const consigneTextFr = "Consigne téléphone. Appuie sur GO pour lancer la discussion ou parler. Ensuite appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
+  const consigneTextEn = "Phone guide. Tap GO to start the discussion or speak. Then tap SEE. DIGIY speaks, the cards appear, and you can tap the card, WhatsApp or call directly.";
+  function getAudioText(){ return digiyLang() === "en" ? audioTextEn : audioTextFr; }
+  function getConsigneText(){ return digiyLang() === "en" ? consigneTextEn : consigneTextFr; }
+
+  const DIGIY_QUICK_FR = [
+    "Je veux dire ma recherche à DIGIY",
+    "Je veux une idée de sortie sur la Petite Côte",
+    "Je cherche un chauffeur pour AIBD demain matin",
+    "Je veux voir les chauffeurs disponibles",
+    "Je cherche une chambre ce week-end à Saly",
+    "Je veux réserver une table ce soir",
+    "J’ai besoin d’un artisan pour une réparation",
+    "Je veux voir les commerces locaux",
+    "Je cherche un produit dans une boutique",
+    "Je cherche un emploi ou une mission",
+    "Je veux publier une annonce dans le réseau",
+    "Je veux envoyer une preuve Wave",
+    "Je veux venir chez DIGIY ou trouver la route",
+    "Je cherche un logement avec option solidaire",
+    "Je veux écouter la vision DIGIYLYFE",
+    "Je veux être guidé par l’assistant DIGIY"
+  ];
+  const DIGIY_QUICK_EN = [
+    "I want to tell DIGIY what I am looking for",
+    "I want an outing idea on the Petite Côte",
+    "I need a driver for AIBD tomorrow morning",
+    "I want to see available drivers",
+    "I need a room this weekend in Saly",
+    "I want to book a table tonight",
+    "I need an artisan for a repair",
+    "I want to see local shops",
+    "I am looking for a product in a shop",
+    "I am looking for a job or a mission",
+    "I want to publish an announcement in the network",
+    "I want to send a Wave payment proof",
+    "I want to come to DIGIY or find the route",
+    "I need lodging with a solidarity option",
+    "I want to listen to the DIGIYLYFE vision",
+    "I want guidance from the DIGIY assistant"
+  ];
+  const DIGIY_EXAMPLE_FR = [
+    "Je cherche un plombier à Saly",
+    "Je cherche un entrepreneur maçon à Saly",
+    "Je cherche un électricien à Saly",
+    "Je cherche du solaire à Dakar",
+    "Je cherche des serviettes à Saly",
+    "Je cherche un appartement à Saly pour 4 personnes",
+    "Je cherche un chauffeur pour AIBD",
+    "Je veux une idée de sortie sur la Petite Côte",
+    "Je veux réserver une table ce soir",
+    "Je veux envoyer une preuve Wave"
+  ];
+  const DIGIY_EXAMPLE_EN = [
+    "I am looking for a plumber in Saly",
+    "I am looking for a masonry contractor in Saly",
+    "I am looking for an electrician in Saly",
+    "I am looking for solar service in Dakar",
+    "I am looking for towels in Saly",
+    "I am looking for an apartment in Saly for 4 people",
+    "I am looking for a driver for AIBD",
+    "I want an outing idea on the Petite Côte",
+    "I want to book a table tonight",
+    "I want to send a Wave payment proof"
+  ];
+
+  const DIGIY_UI = {
+    fr:{
+      title:"La Voix du Business — DIGIYLYFE",
+      desc:"La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct.",
+      htmlLang:"fr",
+      logo:"J’ÉCOUTE",
+      header:"Navigation DIGIY",
+      home:"Accueil La Voix du Business",
+      site:"Site DIGIYLYFE",
+      hub:"HUB DIGIY",
+      pro:"Espace professionnel protégé",
+      intro:"Écouter l’explication",
+      ask:"Demande vocale ou écrite",
+      label:"Parler ici ou dicter ton besoin",
+      placeholder:"GO",
+      quick:"Choix rapides — portes publiques",
+      examples:"🟥 EXEMPLES POUR PARLER",
+      examplesLabel:"Exemples de phrases terrain pour les fiches partenaires DIGIY",
+      actions:"Actions",
+      listen:"Parler ici",
+      see:"VOIR",
+      seeLabel:"Voir les fiches",
+      msg:"Préparer un message WhatsApp",
+      clear:"EFFACER",
+      clearLabel:"Effacer",
+      statusTitle:"État micro",
+      consigneArea:"Consignes téléphone",
+      consigneBtn:"🎧 Consignes",
+      consigneBtnLabel:"Écouter les consignes",
+      consigneLine:"📱 Besoin d’aide ? Appuie sur <b>GO</b> pour lancer la discussion ou parler. Puis touche <b>VOIR</b> — DIGIY parle et les fiches remontent.",
+      results:"Résultats directs",
+      resultTitle:"Fiches qui remontent",
+      resultIntro:"Les résultats remontent directement après la demande.",
+      empty:"Aucune fiche exacte.",
+      footer:"La Voix du Business — DIGIYLYFE",
+      float:"GO",
+      floatLabel:"Écouter les consignes téléphone",
+      ready:"Prêt",
+      direct:"Résultat direct"
+    },
+    en:{
+      title:"The Business Voice — DIGIYLYFE",
+      desc:"DIGIYLYFE Business Voice — simple request, direct cards, direct contact.",
+      htmlLang:"en",
+      logo:"I LISTEN",
+      header:"DIGIY navigation",
+      home:"Business Voice home",
+      site:"DIGIYLYFE website",
+      hub:"DIGIY HUB",
+      pro:"Protected professional area",
+      intro:"Listen to the explanation",
+      ask:"Voice or written request",
+      label:"Speak here or type what you need",
+      placeholder:"GO",
+      quick:"Quick choices — public doors",
+      examples:"🟥 EXAMPLES TO SPEAK",
+      examplesLabel:"Ground examples for DIGIY partner cards",
+      actions:"Actions",
+      listen:"Speak here",
+      see:"SEE",
+      seeLabel:"See the cards",
+      msg:"Prepare a WhatsApp message",
+      clear:"CLEAR",
+      clearLabel:"Clear",
+      statusTitle:"Microphone status",
+      consigneArea:"Phone guide",
+      consigneBtn:"🎧 Guide",
+      consigneBtnLabel:"Listen to the guide",
+      consigneLine:"📱 Need help? Tap <b>GO</b> to start or speak. Then tap <b>SEE</b> — DIGIY speaks and the cards appear.",
+      results:"Direct results",
+      resultTitle:"Cards that appear",
+      resultIntro:"Results appear directly after the request.",
+      empty:"No exact card yet.",
+      footer:"The Business Voice — DIGIYLYFE",
+      float:"GO",
+      floatLabel:"Listen to the phone guide",
+      ready:"Ready",
+      direct:"Direct result"
+    }
+  };
+
+  function applyDigiyLang(){
+    const lang = digiyLang();
+    const ui = DIGIY_UI[lang] || DIGIY_UI.fr;
+    document.documentElement.lang = ui.htmlLang;
+    document.documentElement.setAttribute("data-digiy-lang", lang);
+    document.title = ui.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if(metaDesc) metaDesc.setAttribute("content", ui.desc);
+
+    const logoText = document.querySelector(".logoText");
+    if(logoText) logoText.textContent = ui.logo;
+    document.querySelector(".topbar")?.setAttribute("aria-label", ui.header);
+    document.querySelector(".logo")?.setAttribute("aria-label", ui.home);
+    document.querySelectorAll(".navIcon")[0]?.setAttribute("aria-label", ui.site);
+    document.querySelectorAll(".navIcon")[1]?.setAttribute("aria-label", ui.hub);
+    document.querySelectorAll(".navIcon")[2]?.setAttribute("aria-label", ui.pro);
+    introBtn?.setAttribute("aria-label", ui.intro);
+
+    askPanel?.setAttribute("aria-label", ui.ask);
+    document.querySelector('label[for="q"]') && (document.querySelector('label[for="q"]').textContent = ui.label);
+    if(q){
+      q.placeholder = ui.placeholder;
+      q.setAttribute("aria-label", ui.label);
+    }
+    document.querySelector(".quickGrid")?.setAttribute("aria-label", ui.quick);
+    document.querySelector(".actionbar")?.setAttribute("aria-label", ui.actions);
+
+    const quick = lang === "en" ? DIGIY_QUICK_EN : DIGIY_QUICK_FR;
+    document.querySelectorAll(".chip[data-q]").forEach((btn, i) => {
+      if(quick[i]) btn.setAttribute("data-q", quick[i]);
+    });
+
+    const ex = lang === "en" ? DIGIY_EXAMPLE_EN : DIGIY_EXAMPLE_FR;
+    document.querySelectorAll(".examplePhrase[data-q]").forEach((btn, i) => {
+      if(ex[i]){
+        btn.setAttribute("data-q", ex[i]);
+        const line = btn.querySelector(".fr");
+        if(line) line.textContent = ex[i];
+      }
+    });
+
+    $("examplesToggle") && ($("examplesToggle").textContent = ui.examples);
+    $("examplesPanel")?.setAttribute("aria-label", ui.examplesLabel);
+
+    $("listenBtn")?.setAttribute("aria-label", ui.listen);
+    $("searchBtn")?.setAttribute("aria-label", ui.seeLabel);
+    $("searchBtn")?.querySelector("span") && ($("searchBtn").querySelector("span").textContent = ui.see);
+    $("msgBtn")?.setAttribute("aria-label", ui.msg);
+    $("clearBtn")?.setAttribute("aria-label", ui.clearLabel);
+    $("clearBtn")?.querySelector("span") && ($("clearBtn").querySelector("span").textContent = ui.clear);
+
+    status?.setAttribute("title", ui.statusTitle);
+    status?.setAttribute("aria-label", ui.statusTitle);
+    document.querySelector(".consignesLine")?.setAttribute("aria-label", ui.consigneArea);
+    consigneBtn && (consigneBtn.textContent = ui.consigneBtn);
+    consigneBtn?.setAttribute("aria-label", ui.consigneBtnLabel);
+    const consigneSpan = document.querySelector(".consignesLine span");
+    if(consigneSpan) consigneSpan.innerHTML = ui.consigneLine;
+
+    resultsPanel?.setAttribute("aria-label", ui.results);
+    document.querySelector(".resultTitle") && (document.querySelector(".resultTitle").textContent = ui.resultTitle);
+    document.querySelector(".resultIntro") && (document.querySelector(".resultIntro").textContent = ui.resultIntro);
+    empty && (empty.textContent = ui.empty);
+    document.querySelector("footer") && (document.querySelector("footer").textContent = ui.footer);
+    audioFloat?.setAttribute("aria-label", ui.floatLabel);
+    audioFloat?.querySelector("span") && (audioFloat.querySelector("span").textContent = ui.float);
+
+    document.querySelectorAll("[data-lang-choice]").forEach(btn => {
+      const active = btn.getAttribute("data-lang-choice") === lang;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+
+    if(status && status.textContent === "•") setStatus("•", ui.ready);
+  }
+
+  document.querySelectorAll("[data-lang-choice]").forEach(btn => {
+    btn.addEventListener("click", () => digiySetLang(btn.getAttribute("data-lang-choice")));
+  });
+  applyDigiyLang();
 
   const DATA = [
     {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"#voix", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
@@ -1165,7 +1443,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function matchDirectFiches(text){
-    const t = clean(text);
+    const t = clean(digiyExpandQuery(text));
     const secteur = detectSecteurFromCleanText(t);
     const scored = FICHES_PUBLICS
       .filter(item => item && item.public !== false)
@@ -1192,37 +1470,70 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function responseDirecte(text, list){
-    const t = clean(text);
+    const t = clean(digiyExpandQuery(text));
     const secteur = detectSecteurFromCleanText(t);
     const direct = (list || []).find(x => x.kind === "directory");
+    const en = digiyLang() === "en";
     if(direct){
-      const zone = direct.secteur ? " à " + direct.secteur : (secteur ? " à " + secteur.label : "");
+      const zone = direct.secteur ? (en ? " in " : " à ") + direct.secteur : (secteur ? (en ? " in " : " à ") + secteur.label : "");
       const titleClean = clean(direct.title || "");
       if(titleClean.includes("helage")){
-        return "J'ai compris : tu cherches un plombier à Saly. Je te remonte Helage, plombier multi-services, avec contact direct. BÂTIMENT reste derrière, pas devant.";
+        return en
+          ? "I understood: you are looking for a plumber in Saly. I bring up Helage, multi-service plumber, with direct contact. BUILDING stays behind, not in front."
+          : "J'ai compris : tu cherches un plombier à Saly. Je te remonte Helage, plombier multi-services, avec contact direct. BÂTIMENT reste derrière, pas devant.";
       }
       if(titleClean.includes("mbaye")){
-        return "J'ai compris : tu cherches un entrepreneur maçon. Je te remonte Mbaye, partenaire BÂTIMENT référencé. Contact direct, pas de détour.";
+        return en
+          ? "I understood: you are looking for a masonry contractor. I bring up Mbaye, a referenced BUILDING partner. Direct contact, no detour."
+          : "J'ai compris : tu cherches un entrepreneur maçon. Je te remonte Mbaye, partenaire BÂTIMENT référencé. Contact direct, pas de détour.";
       }
       if(titleClean.includes("zal")){
-        return "J'ai compris : tu cherches un électricien. Je te remonte Zal Kourant, partenaire BÂTIMENT référencé. Contact direct, pas de détour.";
+        return en
+          ? "I understood: you are looking for an electrician. I bring up Zal Kourant, a referenced BUILDING partner. Direct contact, no detour."
+          : "J'ai compris : tu cherches un électricien. Je te remonte Zal Kourant, partenaire BÂTIMENT référencé. Contact direct, pas de détour.";
       }
       if(titleClean.includes("solaire")){
-        return "J'ai compris : tu cherches du solaire" + zone + ". Je te remonte DIGIY Solaire pour installation, dépannage, diagnostic et entretien.";
+        return en
+          ? "I understood: you are looking for solar service" + zone + ". I bring up DIGIY Solar for installation, repair, diagnosis and maintenance."
+          : "J'ai compris : tu cherches du solaire" + zone + ". Je te remonte DIGIY Solaire pour installation, dépannage, diagnostic et entretien.";
       }
-      return "J'ai compris : tu cherches " + (direct.metier || "un service") + zone + ". Je remonte les fiches directes, puis l'annuaire partenaire si besoin. Pas de forêt de modules : DIGIY centre la réponse.";
+      return en
+        ? "I understood: you are looking for " + (direct.metier || "a service") + zone + ". I bring up direct cards first, then the partner directory if needed. No forest of modules: DIGIY centers the answer."
+        : "J'ai compris : tu cherches " + (direct.metier || "un service") + zone + ". Je remonte les fiches directes, puis l'annuaire partenaire si besoin. Pas de forêt de modules : DIGIY centre la réponse.";
     }
     if(secteur){
-      return "J'ai compris le secteur : " + secteur.label + ". Je remonte les résultats utiles autour de cette zone.";
+      return en
+        ? "I understood the area: " + secteur.label + ". I bring up useful results around this zone."
+        : "J'ai compris le secteur : " + secteur.label + ". Je remonte les résultats utiles autour de cette zone.";
     }
     return null;
   }
-
   function clean(s){
     return String(s || "")
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function digiyExpandQuery(text){
+    const raw = String(text || "");
+    const t = clean(raw);
+    let extra = "";
+    if(/\b(plumber|plumbing|leak|pipe|tap|faucet|toilet|bathroom)\b/.test(t)) extra += " plombier plomberie fuite robinet wc sanitaire";
+    if(/\b(mason|masonry|builder|building|construction|renovation|wall|concrete|repair|contractor)\b/.test(t)) extra += " macon maçon maçonnerie chantier construction travaux réparation artisan";
+    if(/\b(electrician|electricity|electrical|power|socket|switch|wire|wiring)\b/.test(t)) extra += " electricien électricien électricité courant dépannage";
+    if(/\b(solar|panel|battery|energy|inverter)\b/.test(t)) extra += " solaire panneau batterie énergie installation dépannage";
+    if(/\b(driver|taxi|airport|ride|trip|transfer|car)\b/.test(t)) extra += " chauffeur driver taxi aibd trajet transfert voiture";
+    if(/\b(room|apartment|flat|house|villa|lodging|accommodation|hotel|sleep|night|weekend|week-end)\b/.test(t)) extra += " chambre appartement logement location villa dormir nuit hébergement hôtel";
+    if(/\b(book|booking|reserve|reservation|table|restaurant|dinner|lunch|eat)\b/.test(t)) extra += " réserver reservation réservation table restaurant manger diner";
+    if(/\b(shop|store|market|product|buy|towel|towels|sheet|sheets|boutique)\b/.test(t)) extra += " boutique market produit acheter serviette serviettes drap commerce";
+    if(/\b(job|work|mission|employment|hire|hiring)\b/.test(t)) extra += " emploi travail job mission recrute postuler";
+    if(/\b(outing|visit|discover|tour|activity|idea|place|petite cote|petite coast)\b/.test(t)) extra += " sortie visite découvrir idée activité explore petite cote";
+    if(/\b(payment|pay|money|wave|proof|receipt)\b/.test(t)) extra += " paiement pay argent wave preuve reçu";
+    if(/\b(address|route|directions|come|map|location)\b/.test(t)) extra += " adresse route venir carte localisation";
+    if(/\b(announcement|ad|network|publish|visibility)\b/.test(t)) extra += " annonce réseau publier visibilité";
+    if(/\b(audio|listen|vision|assistant|guide|help)\b/.test(t)) extra += " audio écouter vision assistant aide guide";
+    return raw + extra;
   }
 
   function setStatus(icon, label){
@@ -1233,7 +1544,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function matchCards(text){
-    const t = clean(text);
+    const t = clean(digiyExpandQuery(text));
     if(!t) return [];
 
     /* D'abord : fiches directes par métier + secteur + catégorie. */
@@ -1272,7 +1583,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(!list.length){
       if(empty) empty.style.display = "block";
       cards.innerHTML = '<div class="emptyIcon" aria-hidden="true">👆</div>';
-      setStatus("•", "Prêt");
+      setStatus("•", digiyLang() === "en" ? "Ready" : "Prêt");
       return;
     }
     if(empty) empty.style.display = "none";
@@ -1285,12 +1596,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         card.innerHTML = `
           <div class="cover" aria-hidden="true">${item.icon}</div>
           <div class="body">
-            <span class="tag">${item.statut || "Référencé public"}</span>
+            <span class="tag">${item.statut || (digiyLang() === "en" ? "Public listing" : "Référencé public")}</span>
             <h3>${item.title}</h3>
-            <p>${item.metier || ""} · ${item.categorie || ""} · ${item.secteur || "Secteur à préciser"}</p>
+            <p>${item.metier || ""} · ${item.categorie || ""} · ${item.secteur || (digiyLang() === "en" ? "Area to confirm" : "Secteur à préciser")}</p>
             <div class="miniMeta">
-              <span>${item.categorie || "Catégorie"}</span>
-              <span>${item.secteur || "Secteur"}</span>
+              <span>${item.categorie || (digiyLang() === "en" ? "Category" : "Catégorie")}</span>
+              <span>${item.secteur || (digiyLang() === "en" ? "Area" : "Secteur")}</span>
             </div>
             <div class="card-actions">
               <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">↗️</a>
@@ -1300,7 +1611,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
           </div>`;
       }else if(item.kind === "route"){
         const routeButton = item.url
-          ? `<a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">OUVRIR</a>`
+          ? `<a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="${digiyLang() === "en" ? "Open" : "Ouvrir"} ${item.title}">${digiyLang() === "en" ? "OPEN" : "OUVRIR"}</a>`
           : `<a class="btn green whatsBtn" href="${waLink(item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">WHATSAPP</a>`;
         card.innerHTML = `
           <div class="cover" aria-hidden="true">${item.icon || "📍"}</div>
@@ -1318,7 +1629,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
           <div class="body">
             <span class="tag">${item.title}</span>
             <h3>${item.title}</h3>
-            <p>Choisis clairement : PRO PAY pour le professionnel, PAY public pour le client.</p>
+            <p>${digiyLang() === "en" ? "Choose clearly: PRO PAY for the professional, public PAY for the client." : "Choisis clairement : PRO PAY pour le professionnel, PAY public pour le client."}</p>
             <div class="card-actions">
               <a class="btn primary proPayBtn" href="${proPayAccessUrl()}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir PRO PAY">PRO PAY</a>
               <a class="btn green publicPayBtn" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir PAY public">PAY PUBLIC</a>
@@ -1342,7 +1653,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       frag.appendChild(card);
     });
     cards.appendChild(frag);
-    setStatus("✅", "Résultat direct");
+    setStatus("✅", digiyLang() === "en" ? "Direct result" : "Résultat direct");
   }
 
   function bringResultsIntoView(){
@@ -1412,32 +1723,33 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const directMsg = responseDirecte(raw || "", list);
     if(directMsg) return directMsg;
 
-    const t = (raw||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    const en = digiyLang() === "en";
+    const t = clean(digiyExpandQuery(raw || ""));
     if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi")||t.includes("aibd"))
-      return "J'ai compris : tu cherches un chauffeur. Je remonte les fiches DRIVER, puis les partenaires transport si besoin. Contact direct, le terrain garde la main.";
+      return en ? "I understood: you are looking for a driver. I bring up DRIVER cards, then transport partners if needed. Direct contact, the field keeps control." : "J'ai compris : tu cherches un chauffeur. Je remonte les fiches DRIVER, puis les partenaires transport si besoin. Contact direct, le terrain garde la main.";
     if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa")||t.includes("manger")||t.includes("diner"))
-      return "J'ai compris : tu veux réserver ou manger. Je remonte les fiches RÉSERVATION. DIGIY prépare, le pro confirme.";
+      return en ? "I understood: you want to book or eat. I bring up RESERVATION cards. DIGIY prepares, the professional confirms." : "J'ai compris : tu veux réserver ou manger. Je remonte les fiches RÉSERVATION. DIGIY prépare, le pro confirme.";
     if(t.includes("chambre")||t.includes("logement")||t.includes("louer")||t.includes("location")||t.includes("appartement")||t.includes("nuit")||t.includes("dormir"))
-      return "J'ai compris : tu cherches un logement. Je remonte les fiches LOC. Le client voit, le pro valide, relation directe.";
+      return en ? "I understood: you are looking for lodging. I bring up LOC cards. The client sees, the professional validates, direct relationship." : "J'ai compris : tu cherches un logement. Je remonte les fiches LOC. Le client voit, le pro valide, relation directe.";
     if(t.includes("artisan")||t.includes("plombier")||t.includes("electricien")||t.includes("build")||t.includes("travaux"))
-      return "J'ai compris : tu cherches un artisan. Je remonte les fiches métier d'abord, puis l'annuaire partenaire. BÂTIMENT reste en secours.";
+      return en ? "I understood: you are looking for an artisan. I bring up trade cards first, then the partner directory. BUILDING stays as backup." : "J'ai compris : tu cherches un artisan. Je remonte les fiches métier d'abord, puis l'annuaire partenaire. BÂTIMENT reste en secours.";
     if(t.includes("produit")||t.includes("boutique")||t.includes("acheter")||t.includes("market")||t.includes("magasin"))
-      return "J'ai compris : tu cherches un produit ou un commerce. Je remonte les boutiques et produits directs avant BOUTIQUE.";
+      return en ? "I understood: you are looking for a product or a shop. I bring up shops and direct products before MARKET." : "J'ai compris : tu cherches un produit ou un commerce. Je remonte les boutiques et produits directs avant BOUTIQUE.";
     if(t.includes("emploi")||t.includes("travail")||t.includes("job")||t.includes("mission"))
-      return "J'ai compris : tu cherches du travail ou une mission. Je remonte les fiches TRAVAIL.";
+      return en ? "I understood: you are looking for work or a mission. I bring up JOBS cards." : "J'ai compris : tu cherches du travail ou une mission. Je remonte les fiches TRAVAIL.";
     if(t.includes("sortie")||t.includes("decouvrir")||t.includes("explore")||t.includes("petite cote"))
-      return "J'ai compris : tu cherches une sortie ou un lieu. Je remonte les fiches EXPLORE.";
+      return en ? "I understood: you are looking for an outing or a place. I bring up EXPLORE cards." : "J'ai compris : tu cherches une sortie ou un lieu. Je remonte les fiches EXPLORE.";
     if(t.includes("wave")||t.includes("preuve")||t.includes("paiement")||t.includes("pay")||t.includes("argent"))
-      return "J'ai compris : la demande touche à l'argent. Je prépare l'action PAY. Le pro vérifie et valide.";
+      return en ? "I understood: the request touches money. I prepare the PAY action. The professional checks and validates." : "J'ai compris : la demande touche à l'argent. Je prépare l'action PAY. Le pro vérifie et valide.";
     if(t.includes("audio")||t.includes("ecouter")||t.includes("vision"))
-      return "J'ai compris : tu veux écouter. Je remonte la porte AUDIO DIGIYLYFE.";
+      return en ? "I understood: you want to listen. I bring up the DIGIYLYFE AUDIO door." : "J'ai compris : tu veux écouter. Je remonte la porte AUDIO DIGIYLYFE.";
     if(t.includes("venir")||t.includes("adresse")||t.includes("route"))
-      return "J'ai compris : tu veux venir chez DIGIY. Je remonte la route et l'adresse.";
+      return en ? "I understood: you want to come to DIGIY. I bring up the route and address." : "J'ai compris : tu veux venir chez DIGIY. Je remonte la route et l'adresse.";
     if(t.includes("annonce")||t.includes("reseau")||t.includes("publier"))
-      return "J'ai compris : tu veux publier dans le réseau. Je remonte la porte RÉSEAU DIGIY.";
+      return en ? "I understood: you want to publish in the network. I bring up the DIGIY NETWORK door." : "J'ai compris : tu veux publier dans le réseau. Je remonte la porte RÉSEAU DIGIY.";
     if(t.includes("commerce")||t.includes("magasin"))
-      return "J'ai compris : tu cherches un commerce local. Je remonte les commerces référencés.";
-    return "J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main.";
+      return en ? "I understood: you are looking for a local shop. I bring up referenced shops." : "J'ai compris : tu cherches un commerce local. Je remonte les commerces référencés.";
+    return en ? "I understood your request. The cards are ready. DIGIY prepares, the field keeps control." : "J'ai compris ta demande. Les fiches sont remontées. DIGIY prépare, le terrain garde la main.";
   }
 
     function digiyShowBox(replyText) {
@@ -1566,20 +1878,20 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     }
 
     if(!SR){
-      setStatus("⌨️", "Micro navigateur indisponible : utilise le micro du clavier dans le champ.");
+      setStatus("⌨️", digiyLang() === "en" ? "Browser microphone unavailable: use the keyboard microphone in the field." : "Micro navigateur indisponible : utilise le micro du clavier dans le champ.");
       return;
     }
 
     try{
       const rec = new SR();
       activeRecognition = rec;
-      rec.lang = "fr-FR";
+      rec.lang = digiyLang() === "en" ? "en-US" : "fr-FR";
       rec.continuous = false;
       rec.interimResults = true;
       rec.maxAlternatives = 1;
 
       listenButton?.classList.add("listening");
-      setStatus("👂", "Écoute en cours");
+      setStatus("👂", digiyLang() === "en" ? "Listening" : "Écoute en cours");
 
       rec.onresult = (e) => {
         let transcript = "";
@@ -1608,9 +1920,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
           digiyShowBox(reponse);
           speakIntro(null, reponse);
           searchNow(true);
-          setStatus("✅", "Résultat direct");
+          setStatus("✅", digiyLang() === "en" ? "Direct result" : "Résultat direct");
         }else{
-          setStatus("•", "Prêt");
+          setStatus("•", digiyLang() === "en" ? "Ready" : "Prêt");
         }
       };
 
@@ -1618,7 +1930,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     }catch(err){
       listenButton?.classList.remove("listening");
       activeRecognition = null;
-      setStatus("⚠️", "Micro non lancé");
+      setStatus("⚠️", digiyLang() === "en" ? "Microphone not started" : "Micro non lancé");
     }
   }
 
@@ -1639,7 +1951,29 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         || null;
   }
 
+  function pickBestEnglishVoice(){
+    const voices = window.speechSynthesis.getVoices() || [];
+    const priority = ["Daniel","Alex","Samantha","Google UK English Male","Google US English","Microsoft Guy Online (Natural) - English (United States)"];
+    for(const name of priority){
+      const v = voices.find(v => v.name && v.name === name && /^en/i.test(v.lang || ""));
+      if(v) return v;
+    }
+    return voices.find(v => v.lang && v.lang.toLowerCase() === "en-us" && v.localService)
+        || voices.find(v => v.lang && v.lang.toLowerCase().startsWith("en"))
+        || null;
+  }
+
+  function pickBestVoice(){
+    return digiyLang() === "en" ? (pickBestEnglishVoice() || pickBestFrenchVoice()) : pickBestFrenchVoice();
+  }
+
   function digiyVoiceText(text){
+    if(digiyLang() === "en"){
+      return String(text || "")
+        .replace(/DIGIYLYFE/g, "Diji life")
+        .replace(/DIGIY/g, "Diji")
+        .replace(/QR/g, "Q R");
+    }
     return String(text || "")
       .replace(/DIGIYLYFE/g, "Diji i laïfe")
       .replace(/DIGIY/g, "Diji i")
@@ -1663,13 +1997,13 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       audioFloat?.classList.remove("audio-on");
       return;
     }
-    const textToSpeak = digiyVoiceText(overrideText || audioText);
+    const textToSpeak = digiyVoiceText(overrideText || getAudioText());
     const u = new SpeechSynthesisUtterance(textToSpeak);
-    u.lang = "fr-FR";
+    u.lang = digiyLang() === "en" ? "en-US" : "fr-FR";
     u.rate = 0.82;
     u.pitch = 1.0;
     u.volume = 1;
-    const bestVoice = pickBestFrenchVoice();
+    const bestVoice = pickBestVoice();
     if(bestVoice) u.voice = bestVoice;
     u.onstart = () => {
       introBtn?.classList.add("audio-on");
@@ -1685,13 +2019,14 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     window.speechSynthesis.speak(u);
   }
 
-  consigneBtn?.addEventListener("click", () => speakIntro(consigneBtn, consigneText));
+  consigneBtn?.addEventListener("click", () => speakIntro(consigneBtn, getConsigneText()));
   introBtn?.addEventListener("click", () => speakIntro(introBtn));
   audioFloat?.addEventListener("click", () => speakIntro(audioFloat));
 })();
 </script>
 </body>
 </html>
+
 
 
 
