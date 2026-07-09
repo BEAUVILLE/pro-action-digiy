@@ -20,6 +20,17 @@ Le pro valide.
 Côté public : ouvert, mise en relation directe.
 Côté pro : protégé, actions métier en brouillon, validation humaine obligatoire.
 
+LA VOIX DIGIY est la porte publique intelligente de DIGIYLYFE.
+
+Elle permet à un utilisateur d’exprimer un besoin simple :
+artisan, chauffeur, logement, boutique, produit, réservation, emploi ou paiement.
+
+Le moteur interne ROUTE DIRECTE analyse la demande, reconnaît le métier, la zone et l’intention, puis remonte la bonne fiche publique ou le bon module DIGIY.
+
+LA VOIX écoute.
+L’OREILLE comprend.
+ROUTE DIRECTE ouvre la bonne porte.
+
 ## À faire avant publication
 
 Dans `pin.html`, remplacer :
