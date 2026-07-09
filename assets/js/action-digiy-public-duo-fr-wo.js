@@ -1,747 +1,799 @@
-/* DIGIYLYFE — La Voix du Business PUBLIC
-   Rôle : moteur public de mise en relation.
-   Doctrine : le public exprime un besoin, DIGIY fait remonter des fiches, contact direct. Aucun hub pro ouvert.
-   Version : action-digiy-public-duo-fr-wo-v2-20260607
+/*
+  action-digiy-public-duo-fr-wo.js
+  DIGIYLYFE — LA VOIX / Duo Français-Wolof
+
+  Version : 20260709-duo-fr-wo-route-directe-v1
+
+  Rôle :
+  - Gérer le micro public.
+  - Gérer le mode Français / Wolof / Duo automatique.
+  - Comprendre des phrases terrain Wolof simples.
+  - Transformer une parole locale en demande exploitable par ROUTE DIRECTE.
+  - Ne PAS refaire l’annuaire.
+  - Ne PAS ouvrir de cockpit pro.
+  - Ne PAS exposer de secret interne.
+
+  À brancher après :
+  <script src="./annuaire-public-digiy.js?v=20260709-route-directe-v1"></script>
+  <script src="./digiy-voix-annuaire-bridge.js?v=20260709-route-directe-bridge-v1"></script>
+  <script src="./action-digiy-public-duo-fr-wo.js?v=20260709-duo-fr-wo-route-directe-v1"></script>
 */
-(function(){
+
+(function () {
   "use strict";
 
-  var VERSION = "action-digiy-public-duo-fr-wo-v2-20260607";
-  var DIGIY_CONTACT = "221771342889";
-  var LISTEN_MAX_MS = 18000;
-  var SILENCE_AFTER_RESULT_MS = 5200;
+  const VERSION = "20260709-duo-fr-wo-route-directe-v1";
 
-  /* ─────────────────────────────────────────────
-     LANGUE — FRANÇAIS / WOLOF
-  ───────────────────────────────────────────── */
-  var LANG_STORAGE_KEY = "digiy_action_public_lang";
-  var currentLang = detectInitialLang();
+  const DIGIY_CONTACT = "221771342889";
+  const LANG_STORAGE_KEY = "digiy_action_public_lang_v2";
 
-  var UI = {
-    auto:{
-      label:"Duo FR/Wolof",
-      statusReady:"Prêt. Écris ou parle ton besoin.",
-      listen:"🎙️ Parler",
-      listening:"🎙️ J'écoute… parle tranquillement",
-      listenStatus:"J'écoute… prends ton temps, parle naturellement.",
-      listenMore:"Je t'écoute encore… tu peux compléter.",
-      voiceOk:"Voix captée. Les fiches remontent.",
-      micClosed:"Micro fermé. Tu peux recommencer ou écrire le besoin.",
-      micFragile:"Micro fragile. Tu peux écrire le besoin.",
-      micAlready:"Micro déjà lancé.",
-      micUnavailable:"🎙️ Micro indispo",
-      found:function(n){ return n + " fiche(s) remontée(s). Contact direct."; },
-      notFound:"Besoin compris, mais aucune fiche locale exacte. DIGIY peut t'orienter sur WhatsApp.",
-      msgPrefix:"Bonjour, je viens de La Voix du Business DIGIY. Voici mon besoin : ",
-      fallbackNeed:"Bonjour, je viens de DIGIY. Je cherche une mise en relation."
+  const LISTEN_MAX_MS = 18000;
+  const SILENCE_AFTER_RESULT_MS = 5200;
+
+  let currentLang = detectInitialLang();
+  let recognition = null;
+  let listening = false;
+  let hardTimer = null;
+  let silenceTimer = null;
+  let lastFinalText = "";
+
+  const UI = {
+    auto: {
+      label: "Duo FR/Wolof",
+      hint: "Duo automatique : français + mots terrain Wolof.",
+      ready: "Prêt. Écris ou parle ton besoin.",
+      listen: "👂 GO",
+      listening: "🎙️ J’écoute…",
+      listenStatus: "J’écoute… parle tranquillement.",
+      listenMore: "Je t’écoute encore… tu peux compléter.",
+      voiceOk: "Voix captée. ROUTE DIRECTE cherche les fiches.",
+      micClosed: "Micro fermé. Tu peux recommencer ou écrire le besoin.",
+      micFragile: "Micro fragile. Tu peux écrire le besoin.",
+      micUnavailable: "🎙️ Micro indispo",
+      micAlready: "Micro déjà lancé.",
+      search: "ROUTE DIRECTE cherche.",
+      noText: "Écris ou parle ton besoin d’abord.",
+      clear: "Demande effacée.",
+      msgPrefix: "Bonjour, je viens de La Voix du Business DIGIY. Voici mon besoin : ",
+      fallbackNeed: "Bonjour, je viens de DIGIY. Je cherche une mise en relation."
     },
-    fr:{
-      label:"Français",
-      statusReady:"Prêt. Écris ou parle ton besoin.",
-      listen:"🎙️ Parler",
-      listening:"🎙️ J'écoute… parle tranquillement",
-      listenStatus:"J'écoute… prends ton temps, parle naturellement.",
-      listenMore:"Je t'écoute encore… tu peux compléter.",
-      voiceOk:"Voix captée. Les fiches remontent.",
-      micClosed:"Micro fermé. Tu peux recommencer ou écrire le besoin.",
-      micFragile:"Micro fragile. Tu peux écrire le besoin.",
-      micAlready:"Micro déjà lancé.",
-      micUnavailable:"🎙️ Micro indispo",
-      found:function(n){ return n + " fiche(s) remontée(s). Contact direct."; },
-      notFound:"Besoin compris, mais aucune fiche locale exacte. DIGIY peut t'orienter sur WhatsApp.",
-      msgPrefix:"Bonjour, je viens de La Voix du Business DIGIY. Voici mon besoin : ",
-      fallbackNeed:"Bonjour, je viens de DIGIY. Je cherche une mise en relation."
+    fr: {
+      label: "Français",
+      hint: "Français devant, mots terrain reconnus derrière.",
+      ready: "Prêt. Écris ou parle ton besoin.",
+      listen: "👂 GO",
+      listening: "🎙️ J’écoute…",
+      listenStatus: "J’écoute… parle naturellement.",
+      listenMore: "Je t’écoute encore… tu peux compléter.",
+      voiceOk: "Voix captée. ROUTE DIRECTE cherche les fiches.",
+      micClosed: "Micro fermé. Tu peux recommencer ou écrire le besoin.",
+      micFragile: "Micro fragile. Tu peux écrire le besoin.",
+      micUnavailable: "🎙️ Micro indispo",
+      micAlready: "Micro déjà lancé.",
+      search: "ROUTE DIRECTE cherche.",
+      noText: "Écris ou parle ton besoin d’abord.",
+      clear: "Demande effacée.",
+      msgPrefix: "Bonjour, je viens de La Voix du Business DIGIY. Voici mon besoin : ",
+      fallbackNeed: "Bonjour, je viens de DIGIY. Je cherche une mise en relation."
     },
-    wo:{
-      label:"Wolof",
-      statusReady:"Jàmm. Bindal walla waxal sa soxla.",
-      listen:"🎙️ Waxal",
-      listening:"🎙️ Maa ngi déglu… waxal ndànk",
-      listenStatus:"Maa ngi déglu… waxal sa soxla ci lu leer.",
-      listenMore:"Maa ngi déglu ba tey… mën nga yokk.",
-      voiceOk:"Baax na. Fiche yi di génn.",
-      micClosed:"Micro tëju na. Mën nga dellu wax walla bind.",
-      micFragile:"Micro bi dafa doyadi. Mën nga bind sa soxla.",
-      micAlready:"Micro bi tàmbali na ba noppi.",
-      micUnavailable:"🎙️ Micro amul",
-      found:function(n){ return n + " fiche(s) génn nañu. Jokkook pro bi direct."; },
-      notFound:"Soxla bi déggoo nañu, waaye fiche bu leer amagul. DIGIY mën na la yóbbu ci WhatsApp.",
-      msgPrefix:"Bonjour, je viens de La Voix du Business DIGIY. Sama soxla mooy : ",
-      fallbackNeed:"Bonjour, je viens de DIGIY. Dama bëgg mise en relation."
+    wo: {
+      label: "Wolof",
+      hint: "Wolof devant, fiches directes derrière.",
+      ready: "Jàmm. Bindal walla waxal sa soxla.",
+      listen: "👂 GO",
+      listening: "🎙️ Maa ngi déglu…",
+      listenStatus: "Maa ngi déglu… waxal sa soxla ci lu leer.",
+      listenMore: "Maa ngi déglu ba tey… mën nga yokk.",
+      voiceOk: "Baax na. ROUTE DIRECTE di seet fiche yi.",
+      micClosed: "Micro tëju na. Mën nga dellu wax walla bind.",
+      micFragile: "Micro bi dafa doyadi. Mën nga bind sa soxla.",
+      micUnavailable: "🎙️ Micro amul",
+      micAlready: "Micro bi tàmbali na ba noppi.",
+      search: "ROUTE DIRECTE di seet fiche yi.",
+      noText: "Bindal walla waxal sa soxla ba pare.",
+      clear: "Soxla bi far na.",
+      msgPrefix: "Bonjour, je viens de La Voix du Business DIGIY. Sama soxla mooy : ",
+      fallbackNeed: "Bonjour, je viens de DIGIY. Dama bëgg mise en relation."
     }
   };
 
-  function $(id){ return document.getElementById(id); }
+  const WOLOF_EXPANSIONS = [
+    {
+      match: ["dama wut plombier", "damaa wut plombier", "plombier ci saly", "ndox mi", "robinet bi", "tuyau bi", "dama am fuite"],
+      add: "je cherche un plombier à Saly fuite robinet eau plomberie"
+    },
+    {
+      match: ["dama wut macon", "damaa wut macon", "dama wut maçon", "entrepreneur macon", "mur bi", "chantier bi", "defar ker", "defar kër"],
+      add: "je cherche un maçon entrepreneur construction rénovation chantier à Saly"
+    },
+    {
+      match: ["dama wut electricien", "damaa wut electricien", "courant bi", "kourant bi", "prise bi", "lamp bi", "panne courant"],
+      add: "je cherche un électricien électricité dépannage courant prise lumière à Saly"
+    },
+    {
+      match: ["dama wut solaire", "panneau solaire", "batterie bi", "regulateur bi", "energie solaire"],
+      add: "je cherche solaire installation panneau batterie régulateur dépannage Dakar Saly"
+    },
+    {
+      match: ["dama wut chauffeur", "damaa wut chauffeur", "dama begg taxi", "dama bëgg taxi", "yobbu ma", "yóbbu ma", "dem aibd", "dem dakar", "dem saly"],
+      add: "je cherche un chauffeur driver taxi transfert AIBD Dakar Saly"
+    },
+    {
+      match: ["dama begg chambre", "dama bëgg chambre", "dama wut chambre", "dama wut logement", "fan laa men a fanaane", "fan laa mën a fanaane", "guddi", "ker bi", "kër bi"],
+      add: "je cherche une chambre logement appartement location nuit dormir Saly Petite Côte"
+    },
+    {
+      match: ["dama begg lekk", "dama bëgg lekk", "fan lanuy lekk", "fan lañuy lekk", "table bi", "menu bi", "ceebu jen", "ceebu jën", "yassa", "mafe", "mafé"],
+      add: "je veux réserver une table restaurant manger menu ceebu jen yassa Saly"
+    },
+    {
+      match: ["dama begg jend", "dama bëgg jënd", "dama wut produit", "njeg bi", "njëg bi", "boutik bi", "jaay", "jaaykat"],
+      add: "je cherche un produit boutique commerce market acheter prix vente"
+    },
+    {
+      match: ["poulet", "poulets", "poulailler", "guinar", "ginaar", "volaille"],
+      add: "je cherche poulet poulets volaille vente directe Poulet Tonton 3500 FCFA"
+    },
+    {
+      match: ["dama begg liggeey", "dama bëgg liggéey", "maa ngi wut liggeey", "maa ngi wut liggéey", "job", "mission", "cv bi"],
+      add: "je cherche un emploi job mission travail candidat recrutement"
+    },
+    {
+      match: ["dama begg fay", "dama bëgg fay", "yonni ci wave", "yónni ci wave", "preuve bi", "wave bi", "xaalis bi", "fay bi"],
+      add: "je veux payer envoyer preuve Wave paiement reçu argent DIGIY PAY"
+    },
+    {
+      match: ["dama begg sortie", "dama bëgg sortie", "dama begg genn", "dama bëgg génn", "fan lanuy dem", "fan lañuy dem", "dem geej", "dem géej"],
+      add: "je veux une sortie visite activité tourisme explore Petite Côte"
+    },
+    {
+      match: ["dama begg annonce", "dama bëgg annonce", "dama begg fiche", "dama bëgg fiche", "qr bi", "xibaar bi", "visibilite", "visibilité"],
+      add: "je veux publier une annonce fiche QR visibilité réseau DIGIY"
+    }
+  ];
 
-  function normLang(v){
-    v = String(v || "").toLowerCase().trim();
-    if(v === "fr" || v.indexOf("fr-") === 0 || v.indexOf("fr_") === 0) return "fr";
-    if(v === "wo" || v === "wolof" || v.indexOf("wo-") === 0 || v.indexOf("wo_") === 0) return "wo";
-    if(v === "auto" || v === "duo") return "auto";
+  const COMMON_TERRAIN_EXPANSIONS = [
+    {
+      match: ["réparer l'eau", "reparer l eau", "problème d'eau", "probleme d eau"],
+      add: "plombier plomberie fuite robinet canalisation"
+    },
+    {
+      match: ["réparer courant", "reparer courant", "pas de courant", "problème électricité", "probleme electricite"],
+      add: "électricien électricité dépannage prise tableau"
+    },
+    {
+      match: ["aller aeroport", "aller aéroport", "aller aibd", "chercher aibd", "déposer aibd", "deposer aibd"],
+      add: "chauffeur driver taxi transfert AIBD"
+    },
+    {
+      match: ["dormir saly", "où dormir", "ou dormir", "chambre weekend", "chambre week end"],
+      add: "logement chambre appartement location Saly"
+    },
+    {
+      match: ["vendre poulet", "acheter poulet", "poulets disponibles", "poulet tonton"],
+      add: "poulet poulets volaille vente directe 3500 FCFA Poulet Tonton"
+    }
+  ];
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function normLang(value) {
+    const v = String(value || "").toLowerCase().trim();
+
+    if (v === "fr" || v.indexOf("fr-") === 0 || v.indexOf("fr_") === 0) return "fr";
+    if (v === "wo" || v === "wolof" || v.indexOf("wo-") === 0 || v.indexOf("wo_") === 0) return "wo";
+    if (v === "auto" || v === "duo") return "auto";
+
     return "";
   }
 
-  function detectInitialLang(){
-    try{
-      var params = new URLSearchParams(location.search || "");
-      var urlLang = normLang(params.get("lang") || params.get("l"));
-      if(urlLang) return urlLang;
-    }catch(_){}
+  function detectInitialLang() {
+    try {
+      const params = new URLSearchParams(location.search || "");
+      const urlLang = normLang(params.get("lang") || params.get("l"));
+      if (urlLang) return urlLang;
+    } catch (_) {}
 
-    try{
-      var stored = normLang(localStorage.getItem(LANG_STORAGE_KEY));
-      if(stored) return stored;
-    }catch(_){}
+    try {
+      const stored = normLang(localStorage.getItem(LANG_STORAGE_KEY));
+      if (stored) return stored;
+    } catch (_) {}
 
-    try{
-      var htmlLang = document.documentElement.getAttribute("lang") || "";
-      var bodyLang = document.body && (document.body.getAttribute("data-digiy-lang") || document.body.getAttribute("data-lang")) || "";
-      return normLang(bodyLang || htmlLang) || "auto";
-    }catch(_){}
+    try {
+      const htmlLang = document.documentElement.getAttribute("lang") || "";
+      const dataLang = document.documentElement.getAttribute("data-digiy-lang") || "";
+      return normLang(dataLang || htmlLang) || "auto";
+    } catch (_) {}
 
     return "auto";
   }
 
-  function ui(key){
-    var pack = UI[currentLang] || UI.auto;
+  function ui(key) {
+    const pack = UI[currentLang] || UI.auto;
     return pack[key] || UI.auto[key] || "";
   }
 
-  function foundLabel(n){
-    var pack = UI[currentLang] || UI.auto;
-    return (pack.found || UI.auto.found)(n);
+  function normalize(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[’‘ʼ`´]/g, "'")
+      .replace(/[^a-z0-9#?&=+\s'\-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
-  function speechLang(){
-    return currentLang === "wo" ? "fr-SN" : "fr-FR";
+  function clean(value) {
+    return String(value || "")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
-  function setLang(lang){
-    currentLang = normLang(lang) || "auto";
-    try{ localStorage.setItem(LANG_STORAGE_KEY, currentLang); }catch(_){}
-    updateLangUI();
+  function hasAny(text, words) {
+    const n = normalize(text);
 
-    var btn = $("listenBtn");
-    if(btn && !btn.classList.contains("isListening")) btn.textContent = ui("listen");
-
-    var status = $("status");
-    if(status && (!status.textContent || status.textContent === "Prêt.")) status.textContent = ui("statusReady");
-
-    render();
-    return currentLang;
+    return (words || []).some(function (word) {
+      const w = normalize(word);
+      return w && n.indexOf(w) >= 0;
+    });
   }
 
-  function getLang(){
-    return currentLang;
+  function uniqueAppend(base, extra) {
+    const b = clean(base);
+    const e = clean(extra);
+
+    if (!e) return b;
+    if (!b) return e;
+
+    const nb = normalize(b);
+    const ne = normalize(e);
+
+    if (nb.indexOf(ne) >= 0) return b;
+
+    return b + " " + e;
   }
 
-  /* ─────────────────────────────────────────────
-     STYLE DUO — PAS DE COLONNES
-  ───────────────────────────────────────────── */
-  function ensureDuoStyle(){
-    if(document.getElementById("digiy-duo-lang-style")) return;
+  function expandQuery(text) {
+    let original = clean(text);
+    let expanded = original;
 
-    var st = document.createElement("style");
+    if (!original) return "";
+
+    WOLOF_EXPANSIONS.forEach(function (item) {
+      if (hasAny(original, item.match)) {
+        expanded = uniqueAppend(expanded, item.add);
+      }
+    });
+
+    COMMON_TERRAIN_EXPANSIONS.forEach(function (item) {
+      if (hasAny(original, item.match)) {
+        expanded = uniqueAppend(expanded, item.add);
+      }
+    });
+
+    return expanded;
+  }
+
+  function displayOriginalQuery(text) {
+    const q = $("q");
+    if (!q) return;
+    q.value = clean(text);
+  }
+
+  function setStatus(icon, label) {
+    const status = $("status");
+    if (!status) return;
+
+    status.textContent = icon || "•";
+
+    if (label) {
+      status.setAttribute("title", label);
+      status.setAttribute("aria-label", label);
+    }
+  }
+
+  function dispatch(name, detail) {
+    try {
+      document.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+      window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+    } catch (_) {}
+  }
+
+  function routeDirecte(text, origin, options) {
+    const original = clean(text);
+    const expanded = expandQuery(original);
+
+    if (!original) {
+      setStatus("⚠️", ui("noText"));
+      return [];
+    }
+
+    setStatus("🔎", ui("search"));
+
+    dispatch("digiy:duo:query", {
+      version: VERSION,
+      origin: origin || "duo",
+      original: original,
+      expanded: expanded,
+      lang: currentLang
+    });
+
+    if (
+      window.DIGIY_VOIX_ANNUAIRE_BRIDGE &&
+      typeof window.DIGIY_VOIX_ANNUAIRE_BRIDGE.run === "function"
+    ) {
+      return window.DIGIY_VOIX_ANNUAIRE_BRIDGE.run(expanded, origin || "duo", Object.assign({ force: true }, options || {})) || [];
+    }
+
+    if (
+      window.DIGIY_ROUTE_DIRECTE &&
+      typeof window.DIGIY_ROUTE_DIRECTE.traiterDemande === "function"
+    ) {
+      return window.DIGIY_ROUTE_DIRECTE.traiterDemande(expanded, Object.assign({ force: true }, options || {})) || [];
+    }
+
+    if (
+      window.DIGIY_ANNUAIRE_MULTI &&
+      typeof window.DIGIY_ANNUAIRE_MULTI.traiterDemande === "function"
+    ) {
+      return window.DIGIY_ANNUAIRE_MULTI.traiterDemande(expanded, Object.assign({ force: true }, options || {})) || [];
+    }
+
+    setStatus("⏳", "ROUTE DIRECTE en attente");
+
+    dispatch("digiy:voice:final", {
+      version: VERSION,
+      text: expanded,
+      original: original,
+      lang: currentLang
+    });
+
+    return [];
+  }
+
+  function waLink(text) {
+    return "https://wa.me/" + DIGIY_CONTACT + "?text=" + encodeURIComponent(text);
+  }
+
+  function preparedMessage() {
+    const q = $("q");
+    const text = q && clean(q.value) ? clean(q.value) : ui("fallbackNeed");
+    const expanded = expandQuery(text);
+
+    location.href = waLink(ui("msgPrefix") + text + "\n\nRoute DIGIY : " + expanded);
+  }
+
+  function ensureDuoStyle() {
+    if (document.getElementById("digiy-duo-lang-style")) return;
+
+    const st = document.createElement("style");
     st.id = "digiy-duo-lang-style";
-    st.textContent =
-      ".duo-langbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 12px}" +
-      ".duo-langbar .duo-langbtn{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:inherit;border-radius:999px;padding:8px 12px;font-weight:900;cursor:pointer}" +
-      ".duo-langbar .duo-langbtn.isActive{background:linear-gradient(135deg,#f7d676,#b88423);color:#15100a;border-color:transparent;box-shadow:0 10px 24px rgba(0,0,0,.18)}" +
-      ".duo-langhint{opacity:.82;font-size:.88rem;font-weight:750}" +
-      "@media(max-width:520px){.duo-langbar{display:grid;grid-template-columns:1fr;gap:8px}.duo-langbar .duo-langbtn{width:100%;justify-content:center}.duo-langhint{display:block;text-align:center}}";
+
+    st.textContent = `
+      .duo-langbar{
+        display:flex;
+        gap:8px;
+        align-items:center;
+        flex-wrap:wrap;
+        margin:0 0 8px;
+      }
+      .duo-langbar .duo-langbtn{
+        border:1px solid rgba(18,60,45,.13);
+        background:rgba(255,255,255,.70);
+        color:#102f24;
+        border-radius:999px;
+        padding:8px 12px;
+        font-weight:1000;
+        cursor:pointer;
+        box-shadow:0 8px 18px rgba(18,60,45,.06);
+      }
+      .duo-langbar .duo-langbtn.isActive{
+        background:linear-gradient(135deg,#fff2bf,#f6c453);
+        border-color:rgba(246,196,83,.75);
+        color:#102f24;
+      }
+      .duo-langhint{
+        color:rgba(16,47,36,.72);
+        font-size:12px;
+        font-weight:900;
+      }
+      @media(max-width:520px){
+        .duo-langbar{
+          display:grid;
+          grid-template-columns:1fr 1fr 1fr;
+          gap:6px;
+        }
+        .duo-langbar .duo-langbtn{
+          width:100%;
+          padding:8px 6px;
+          font-size:12px;
+        }
+        .duo-langhint{
+          grid-column:1/-1;
+          text-align:center;
+        }
+      }
+    `;
+
     document.head.appendChild(st);
   }
 
-  function ensureDuoLangBar(){
-    var q = $("q");
-    if(!q || document.getElementById("digiy-duo-langbar")) return;
+  function ensureDuoLangBar() {
+    const q = $("q");
+
+    if (!q || document.getElementById("digiy-duo-langbar")) return;
 
     ensureDuoStyle();
 
-    var bar = document.createElement("div");
+    const bar = document.createElement("div");
     bar.id = "digiy-duo-langbar";
     bar.className = "duo-langbar";
     bar.setAttribute("aria-label", "Choix langue DIGIY");
 
-    ["auto","fr","wo"].forEach(function(l){
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "duo-langbtn";
-      b.setAttribute("data-digiy-lang-choice", l);
-      b.textContent = UI[l].label;
-      b.onclick = function(){ setLang(l); };
-      bar.appendChild(b);
+    ["auto", "fr", "wo"].forEach(function (lang) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "duo-langbtn";
+      btn.setAttribute("data-digiy-lang-choice", lang);
+      btn.textContent = UI[lang].label;
+
+      btn.addEventListener("click", function () {
+        setLang(lang);
+      });
+
+      bar.appendChild(btn);
     });
 
-    var hint = document.createElement("span");
+    const hint = document.createElement("span");
     hint.className = "duo-langhint";
-    hint.textContent = "Duo automatique : français + mots terrain Wolof.";
+    hint.textContent = ui("hint");
     bar.appendChild(hint);
 
-    var parent = q.parentNode;
-    if(parent) parent.insertBefore(bar, q);
+    q.parentNode.insertBefore(bar, q);
 
     updateLangUI();
   }
 
-  function updateLangUI(){
-    Array.prototype.forEach.call(document.querySelectorAll("[data-digiy-lang-choice]"), function(b){
-      b.classList.toggle("isActive", b.getAttribute("data-digiy-lang-choice") === currentLang);
+  function updateLangUI() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-digiy-lang-choice]"), function (btn) {
+      const active = btn.getAttribute("data-digiy-lang-choice") === currentLang;
+
+      btn.classList.toggle("isActive", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
     });
 
-    var manualSelect = $("digiyLang") || $("langMode");
-    if(manualSelect && manualSelect.value !== currentLang) manualSelect.value = currentLang;
+    const hint = document.querySelector("#digiy-duo-langbar .duo-langhint");
+    if (hint) hint.textContent = ui("hint");
 
-    var hint = document.querySelector("#digiy-duo-langbar .duo-langhint");
-    if(hint){
-      hint.textContent =
-        currentLang === "wo"
-          ? "Wolof devant, fiches directes derrière."
-          : currentLang === "fr"
-            ? "Français devant, mots terrain Wolof reconnus."
-            : "Duo automatique : français + mots terrain Wolof.";
+    const manualSelect = $("digiyLang") || $("langMode");
+    if (manualSelect && manualSelect.value !== currentLang) {
+      manualSelect.value = currentLang;
+    }
+
+    const listenBtn = $("listenBtn");
+    if (listenBtn && !listening) {
+      const span = listenBtn.querySelector("span");
+
+      if (span) span.textContent = "GO";
+      else listenBtn.textContent = ui("listen");
     }
   }
 
-  /* ─────────────────────────────────────────────
-     NORMALISATION
-  ───────────────────────────────────────────── */
-  function norm(s){
-    return String(s || "").toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-      .replace(/[’‘ʼ`´]/g,"'")
-      .replace(/[^a-z0-9#?&=+\s'\-]/g," ")
-      .replace(/\s+/g," ")
-      .trim();
-  }
+  function setLang(lang) {
+    currentLang = normLang(lang) || "auto";
 
-  function tokens(s){
-    return norm(s).split(/[\s,.\-!?;:()]+/).filter(function(w){ return w.length >= 3; });
-  }
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, currentLang);
+    } catch (_) {}
 
-  function waLink(txt){
-    return "https://wa.me/" + DIGIY_CONTACT + "?text=" + encodeURIComponent(txt);
-  }
+    updateLangUI();
 
-  /* ─────────────────────────────────────────────
-     LEXIQUE WOLOF TERRAIN — OFFICIEL DIGIY
-  ───────────────────────────────────────────── */
-  var EXTRA_KEYS = {
-    DRIVER:[
-      "foo bëgg dem","foo begg dem","dama bëgg taxi","dama begg taxi","dama bëgg chauffeur","dama begg chauffeur",
-      "damay dem","maa ngi dem","maa ngi dem ci kanam","waaw dem nanu","fëkk nanu","fekk nanu",
-      "maa ngi soxor","maa ngi dem ak jaambur","fay bi wave la wala cash","wave la wala cash",
-      "kanam dafa sëkk","kanam dafa sekk","duma mën dem","duma men dem","yóbbu ma","yobbu ma",
-      "chauffeur bi","taxi bi","voiture bi","auto bi","dem aibd","dem dakar","dem saly","dem mbour"
-    ],
-    EXPLORE:[
-      "dama bëgg génn","dama begg genn","fan lañuy dem","fan lanuy dem","dama bëgg sortie","dama begg sortie",
-      "dem plage","dem géej","dem geej","sortie géej","sortie geej","xoolal activité","xoolal activite",
-      "xoolal sortie","dama bëgg excursion","dama begg excursion","dama bëgg balade","dama begg balade",
-      "ñëw fegël","new fegel","jën bi","jen bi"
-    ],
-    BUILD:[
-      "dama am panne","dama am fuite","ndox mi","courant bi","lamp bi","defar kër","defar ker",
-      "dama bëgg artisan","dama begg artisan","dama bëgg devis","dama begg devis",
-      "liggéey kër","liggeey ker","chantier bi","robinet bi","tuyau bi","mur bi",
-      "am na dara ci liggeey bi","tey dinaa dem ci sa kër","tey dinaa dem ci sa ker"
-    ],
-    LOC:[
-      "dama bëgg chambre","dama begg chambre","dama bëgg kër","dama begg ker","dama bëgg logement",
-      "dama begg logement","fan laa mën a fanaane","fan laa men a fanaane","dama bëgg fanaane",
-      "kër bi mën a jënd","ker bi men a jend","guddi bu nekk","dalal ak jàmm ci kër bi",
-      "dalal ak jamm ci ker bi","yégël bi dégël na","yegel bi degel na","woo ma ci kanam"
-    ],
-    RESA:[
-      "dama bëgg yégël","dama begg yegel","dama bëgg réserver","dama begg reserver",
-      "yégël bi dégël na","yegel bi degel na","bés bou ñenn","bes bou nenn","waxt bou ñenn",
-      "waxt bou nenn","am nga dispo","am nga place","mën nga taxawal ci kanam","men nga taxawal ci kanam",
-      "nit ñu am ñaata lañu","nit nu am naata lanu","taxawal ma","réserve ma","reserve ma"
-    ],
-    RESTO:[
-      "dama bëgg lekk","dama begg lekk","loo bëgg lekk","loo begg lekk","loo bëgg naan","loo begg naan",
-      "fan lañuy lekk","fan lanuy lekk","am nga yégël","am nga yegel","bëgg nga yóbbu dem",
-      "begg nga yobbu dem","dalal ak jàmm ñëw fii","dalal ak jamm new fii","ceebu jën","ceebu jen",
-      "thiéboudienne","thieboudienne","yassa","mafé","mafe","menu bi","table bi"
-    ],
-    MARKET:[
-      "dama bëgg jënd","dama begg jend","dama bëgg produit","dama begg produit","dama bëgg prix",
-      "dama begg prix","njëg bi","njeg bi","boutique bi","boutik bi","maa ngi am ci teral",
-      "maa ngi bind sa dagga","fii la listu jaay bi","fii la sa papier jaay bi","nettali bi jeex na",
-      "jënd ci","jend ci","jaay","jaaykat"
-    ],
-    POS:[
-      "caisse bi","dama bëgg caisse","dama begg caisse","maa ngi ubbi ndefarati xaalis bi",
-      "maa ngi tëj ndefarati xaalis bi","maa ngi tej ndefarati xaalis bi","jaay bi dégël na",
-      "jaay bi degel na","fii la sa papier jaay bi","jaay bi taxawal na","stock bi","vente bi",
-      "dama bëgg gérer boutique","dama begg gerer boutique"
-    ],
-    PAY:[
-      "dama bëgg fay","dama begg fay","bëgg a fay léegi","begg a fay leegi","dama bëgg payer",
-      "dama begg payer","yónni ci wave","yonni ci wave","fay bi fëkk na","fay bi fekk na",
-      "fay bi fëkkul ba léegi","fay bi fekkul ba leegi","yóbbu foto fay bi","yobbu foto fay bi",
-      "xaalis bi","wave bi","orange money bi","preuve bi","abonnement bi"
-    ],
-    RESEAU_DIGIY:[
-      "dama bëgg annonce","dama begg annonce","dama bëgg visibilité","dama begg visibilite",
-      "dama bëgg fiche","dama begg fiche","dama bëgg qr","dama begg qr","ñëw bokk ci digiy réseau bi",
-      "new bokk ci digiy reseau bi","bokk sa qr code bi","bind sa xibaar bi ci réseau bi",
-      "bind sa xibaar bi ci reseau bi","soppi sa xibaar bi","xibaar liggeey bi","wone sama liggéey",
-      "wone sama liggeey"
-    ],
-    JOBS:[
-      "dama bëgg liggéey","dama begg liggeey","maa ngi bëgg liggeey","maa ngi begg liggeey",
-      "maa ngi wut liggéey","maa ngi wut liggeey","dama bëgg job","dama begg job",
-      "dama bëgg mission","dama begg mission","dama bëgg recruter","dama begg recruter",
-      "am naa liggeyéef bi","am naa liggeyeef bi","lan la xam xam mi","dinaa la woo ngir wax",
-      "jël naa la","jel naa la","cv bi","candidat bi"
-    ]
-  };
-
-  function allKeys(f){
-    var base = f && f.keys ? f.keys : [];
-    var extra = EXTRA_KEYS[(f && f.module) || ""] || [];
-    return base.concat(extra);
-  }
-
-  /* ─────────────────────────────────────────────
-     FICHES PUBLIQUES — CARTES, PAS COLONNES
-  ───────────────────────────────────────────── */
-  var FICHES = [
-    {
-      module:"DRIVER",icon:"🚗",tag:"#chauffeur",title:"Chauffeur / transfert AIBD",zone:"Saly · Dakar · AIBD",
-      desc:"Demande de trajet, transfert, horaire et contact direct.",
-      keys:[
-        "chauffeur","driver","taxi","aibd","aeroport","aéroport","course","trajet","dakar","saly",
-        "conduire","conduite","voiture","vehicule","véhicule","transport","transfert","navette",
-        "aller","partir","emmener","ride","moto","mototaxi","sept places","7 places","vdm","diamniadio",
-        "mbour","thiès","thies","ziguinchor","jëridkat","jëride","shirfer","wecckat","dem","dem ci",
-        "wëcc","dem ak","bëgg dem","dem aibd","dem dakar","dem saly","dem mbour","maa ngi dem",
-        "jaambur","dëkk","foo bëgg dem","waaw dem nanu","fay bi wave la wala cash"
-      ],
-      url:"https://galerie-chauffeurs.digiylyfe.com/",
-      cta:"Voir chauffeurs",
-      wa:"Bonjour, je cherche un chauffeur / transfert AIBD via DIGIY."
-    },
-    {
-      module:"EXPLORE",icon:"🎣",tag:"#sortie",title:"Sortie pêche / EXPLORE",zone:"Petite Côte",
-      desc:"Sortie, visite, balade, découverte, activité locale et contact direct.",
-      keys:[
-        "peche","pêche","sortie","mer","pirogue","petite cote","petite côte","explore","visite",
-        "excursion","balade","activite","activité","loisir","bateau","plage","ocean","océan",
-        "poisson","sport nautique","kayak","promenade","detente","détente","tourisme","decouverte",
-        "découverte","week-end","weekend","vacances","fegël","fegëlkat","dem géej","géej","jën",
-        "jën bi","dëkk bu bees","yégëlef","ñëw fegël"
-      ],
-      url:"https://explore.digiylyfe.com/",
-      cta:"Voir EXPLORE",
-      wa:"Bonjour, je souhaite des informations sur une sortie ou une activité locale via DIGIY EXPLORE."
-    },
-    {
-      module:"BUILD",icon:"🧰",tag:"#artisan",title:"Artisan / dépannage BUILD",zone:"Sénégal",
-      desc:"Fuite, réparation, chantier, entretien : la demande est préparée clairement.",
-      keys:[
-        "fuite","plomberie","plombier","electricien","électricien","artisan","reparation","réparation",
-        "build","travaux","chantier","depannage","dépannage","maçon","macon","carrelage","peinture",
-        "peintre","menuisier","menuiserie","soudure","soudeur","climatisation","clim","electrique",
-        "électrique","installation","branchement","coupure","panne","robinet","wc","toilette","tuyau",
-        "canalisation","toiture","toit","dalle","fondation","renovation","rénovation","entretien",
-        "maintenance","entrepreneur","construire","construction","batir","bâtir","bâtiment","batiment",
-        "gros oeuvre","gros œuvre","maison","villa","immeuble","local","bungalow","structure","plan",
-        "devis","architecte","ingenieur","ingénieur","terrassement","terrassier","ferrailleur","coffreur",
-        "cloture","clôture","mur","ciment","beton","béton","parpaing","agglo","amenagement","aménagement",
-        "finition","carreleur","piscine","garage","extension","agrandissement","wallufkat","liggeey",
-        "xam-xam","dem liggeey","jeex","jeex na","kër","kër bi","tuyau bi"
-      ],
-      url:"https://build.digiylyfe.com/",
-      cta:"Décrire le besoin",
-      wa:"Bonjour, j'ai besoin d'un artisan / entrepreneur / dépannage via DIGIY BUILD."
-    },
-    {
-      module:"LOC",icon:"🏠",tag:"#logement",title:"Chez Baptiste — Saly",zone:"Saly · Petite Côte",
-      desc:"Fiche logement démo : contact direct propriétaire, 0% commission DIGIY.",
-      keys:[
-        "chez baptiste","baptiste","logement saly","chambre saly","maison saly","villa saly",
-        "dormir saly","saly","petite cote","petite côte","loc","location","logement","chambre",
-        "villa","maison","kër","kër bi","dëkk","joxeel kër","joxeel","guddi","nekk saly","dëkk saly"
-      ],
-      url:"https://loc.digiylyfe.com/",
-      cta:"Voir Chez Baptiste",
-      wa:"Bonjour, je cherche un logement à Saly. Je souhaite voir Chez Baptiste via DIGIY LOC."
-    },
-    {
-      module:"LOC",icon:"🏠",tag:"#logement",title:"Chambre / logement LOC",zone:"Saly · Petite Côte",
-      desc:"Besoin de chambre, villa, réservation ou disponibilité.",
-      keys:[
-        "chambre","logement","villa","maison","nuit","week-end","weekend","reservation","réservation",
-        "loc","saly","location","studio","appartement","appart","hebergement","hébergement","dormir",
-        "coucher","séjour","sejour","louer","loue","disponible","dispo","airbnb","gite","gîte",
-        "mbour","ngaparou","somone","saloum","nianing","kër","kër bi","joxeel kër","guddi bu nekk",
-        "dugg","génn","bëgg nekk","dëkk ci","yégël kër"
-      ],
-      url:"https://loc.digiylyfe.com/",
-      cta:"Voir LOC",
-      wa:"Bonjour, je cherche un logement / une chambre via DIGIY LOC."
-    },
-    {
-      module:"RESA",icon:"📅",tag:"#réservation",title:"Réserver / demander une disponibilité",zone:"Restaurant · logement · service",
-      desc:"Le public formule une intention. Le pro confirme ensuite côté module protégé.",
-      keys:[
-        "resa","réservation","reservation","reserver","réserver","dispo","disponible","creneau","créneau",
-        "date","heure","planning","rendez-vous","rdv","agenda","booker","booking","calendrier","place",
-        "confirmer","confirmation","retenir","retient","bloquer","yégël","yégël bi","bés bi","waxt",
-        "dégël","taxawal","mën a yégël","bëgg a suur","wax ci kanam","ci kanam","dama bëgg yégël"
-      ],
-      url:"https://resto.digiylyfe.com/",
-      cta:"Demander une réservation",
-      wa:"Bonjour, je souhaite faire une demande de réservation via DIGIY."
-    },
-    {
-      module:"RESTO",icon:"🍽️",tag:"#resto",title:"Restaurant / table / menu",zone:"Saly · Dakar · Sénégal",
-      desc:"Besoin de table, restaurant, menu, information ou contact direct.",
-      keys:[
-        "resto","restaurant","table","menu","manger","dejeuner","déjeuner","diner","dîner","repas",
-        "commande","nourriture","cuisine","gastronomie","chef","plat","grillades","fruits de mer",
-        "brochette","poisson grille","soir","midi","brunch","buffet","lunch","snack","bar","terrasse",
-        "brasserie","cantine","lekk","lekk bi","dëkk bu lekk","bëgg lekk","jën ak ceeb","ceeb",
-        "thiéboudienne","thiep","yassa","mafé","ceebu jën","lekkal","table bi","jënd lekk",
-        "loo bëgg lekk","loo bëgg naan","am nga yégël"
-      ],
-      url:"https://resto.digiylyfe.com/",
-      cta:"Voir RESTO",
-      wa:"Bonjour, je cherche un restaurant / une table via DIGIY RESTO."
-    },
-    {
-      module:"MARKET",icon:"🛍️",tag:"#market",title:"Produits et commerces locaux",zone:"Sénégal",
-      desc:"Boutiques, produits, offres locales, contact direct vendeur.",
-      keys:[
-        "produit","acheter","boutique","market","commerce","serviette","drap","savon","article","prix",
-        "stock","vendre","vente","magasin","epicerie","épicerie","superette","supérette","parapharmacie",
-        "pharmacie","cosmétique","cosmetique","tissu","pagne","vetement","vêtement","chaussure",
-        "accessoire","bijou","electronique","électronique","telephone","téléphone","informatique",
-        "fourniture","materiel","matériel","alimentaire","alimentation","eau","boisson","huile","riz",
-        "farine","condiment","locale","local","jaay","jaaykat","jënd","jëndkat","njëg","njëg bi",
-        "marché","listu jaay","dagga","bëgg jënd","boutik","boutik bi","riz bi"
-      ],
-      url:"https://market.digiylyfe.com/",
-      cta:"Voir MARKET",
-      wa:"Bonjour, je cherche un produit ou une boutique via DIGIY MARKET."
-    },
-    {
-      module:"POS",icon:"🧾",tag:"#commerce",title:"Commerce / caisse POS",zone:"Professionnels",
-      desc:"Information POS côté public. La caisse réelle reste côté pro protégé.",
-      keys:[
-        "pos","caisse","ticket","vente","vendre","encaisser","boutique","commerce","marchandise",
-        "tpe","terminal","recu","reçu","facture","tva","compte","gestion","inventaire","stock",
-        "ndefarati xaalis","papier jaay","jaay bi","jënd bi","caisse wolof","fay ci caisse","encaisse",
-        "maa ngi ubbi ndefarati xaalis bi","jaay bi dégël na"
-      ],
-      url:"https://commencer-a-payer.digiylyfe.com/?module=POS",
-      cta:"Activer POS",
-      wa:"Bonjour, je souhaite des informations sur DIGIY POS / caisse commerce."
-    },
-    {
-      module:"PAY",icon:"💳",tag:"#pay",title:"Paiement / PAY",zone:"Wave · Cash · caisse",
-      desc:"Question paiement, activation, preuve ou mise en relation PAY.",
-      keys:[
-        "pay","paiement","payer","wave","orange money","cash","preuve","recu","reçu","abonnement",
-        "activer","virement","transfert","envoyer argent","recevoir argent","solde","mobile money",
-        "free money","e-money","emoney","carte","depot","dépôt","retrait","transaction","règlement",
-        "reglement","xaalis","fay","fay bi","xaalis bi","dooro","ndëy","wave bi","envoye xaalis",
-        "bëgg a fay léegi","yónni ci wave","fay bi fëkk na","yóbbu foto fay bi"
-      ],
-      url:"https://commencer-a-payer.digiylyfe.com/?module=PAY",
-      cta:"Voir PAY",
-      wa:"Bonjour, je souhaite une information PAY / paiement DIGIY."
-    },
-    {
-      module:"RESEAU_DIGIY",icon:"📣",tag:"#réseau",title:"Réseau DIGIY / annonce",zone:"Visibilité locale",
-      desc:"Annonce, fiche, QR, partage et visibilité dans le réseau.",
-      keys:[
-        "reseau","réseau","annonce","visibilite","visibilité","fiche","qr","partage","publier",
-        "promotion","communiquer","communication","affichage","flyer","prospectus","pub","publicite",
-        "publicité","mettre en avant","référencer","referencer","notoriete","notoriété","connu","trouver",
-        "bokk","xibaar","xibaar liggeey","bokk sa qr code bi","bind sa xibaar bi","soppi sa xibaar bi",
-        "ñëw bokk ci digiy réseau bi"
-      ],
-      url:"https://reseau-digiy.digiylyfe.com/",
-      cta:"Voir RÉSEAU",
-      wa:"Bonjour, je souhaite une information sur RÉSEAU DIGIY / annonce."
-    },
-    {
-      module:"JOBS",icon:"💼",tag:"#jobs",title:"Emploi / service terrain",zone:"Sénégal",
-      desc:"Recherche de poste, service, recrutement ou mission.",
-      keys:[
-        "emploi","job","jobs","travail","serveur","serveuse","recrute","recruter","mission","candidat",
-        "cv","stage","stagiaire","embauche","embaucher","poste","contrat","cdi","cdd","interim",
-        "intérim","freelance","prestation","service","technicien","agent","gardien","veilleur",
-        "cuisinier","cuisinière","receptionniste","réceptionniste","femme chambre","femme de chambre",
-        "lingere","lingère","animateur","commerciale","commercial","vendeur","vendeuse","chauffeur emploi",
-        "livreur","bëgg liggeey","liggeeykat","liggeyéef","xam-xam","maa ngi bëgg liggeey",
-        "am naa liggeyéef bi","dinaa la woo ngir wax","jël naa la"
-      ],
-      url:"https://jobs.digiylyfe.com/",
-      cta:"Voir JOBS",
-      wa:"Bonjour, je cherche une information JOBS via DIGIY."
-    }
-  ];
-
-  /* ─────────────────────────────────────────────
-     MATCHING
-  ───────────────────────────────────────────── */
-  function matchFiches(text){
-    var n = norm(text);
-    var toks = tokens(text);
-
-    if(!n || toks.length === 0){
-      return FICHES.slice(0, 3);
+    if (!listening) {
+      setStatus("•", ui("ready"));
     }
 
-    var scored = FICHES.map(function(f){
-      var score = 0;
-      var title = norm(f.title);
-      var desc = norm(f.desc);
-      var moduleName = norm(f.module);
-
-      toks.forEach(function(tok){
-        if(tok === moduleName) score += 6;
-        if(title.indexOf(tok) >= 0) score += 2;
-        if(desc.indexOf(tok) >= 0) score += 1;
-
-        allKeys(f).forEach(function(k){
-          var nk = norm(k);
-          if(!nk) return;
-
-          if(tok === nk) score += 5;
-          else if(nk.indexOf(tok) >= 0) score += 3;
-          else if(tok.indexOf(nk) >= 0 && nk.length >= 4) score += 2;
-        });
-      });
-
-      allKeys(f).forEach(function(k){
-        var nk = norm(k);
-        if(nk.indexOf(" ") >= 0 && n.indexOf(nk) >= 0) score += 7;
-      });
-
-      return Object.assign({}, f, {score: score});
-    });
-
-    var matched = scored
-      .filter(function(f){ return f.score > 0; })
-      .sort(function(a,b){ return b.score - a.score; })
-      .slice(0, 6);
-
-    if(matched.length === 0){
-      return [FICHES[0], FICHES[2], FICHES[4]];
-    }
-
-    return matched;
+    return currentLang;
   }
 
-  /* ─────────────────────────────────────────────
-     RENDU — CARTES
-  ───────────────────────────────────────────── */
-  function render(){
-    var q = $("q");
-    var cards = $("cards");
-    var status = $("status");
-    var empty = $("empty");
+  function getLang() {
+    return currentLang;
+  }
 
-    if(!q || !cards) return;
+  function speechLang() {
+    if (currentLang === "wo") return "fr-SN";
+    return "fr-FR";
+  }
 
-    var text = q.value.trim();
-    var res = matchFiches(text);
+  function stopTimers() {
+    clearTimeout(hardTimer);
+    clearTimeout(silenceTimer);
+  }
 
-    cards.innerHTML = "";
-    if(empty) empty.style.display = (res.length === 0) ? "block" : "none";
+  function setListening(on) {
+    listening = !!on;
 
-    res.forEach(function(f){
-      var msg = text ? f.wa + "\n\nBesoin client : " + text : f.wa;
+    const btn = $("listenBtn");
+    if (!btn) return;
 
-      var el = document.createElement("article");
-      el.className = "card";
-      el.innerHTML =
-        '<div class="cover">' + f.icon + '</div>' +
-        '<div class="body">' +
-          '<span class="tag">' + f.tag + ' · ' + f.zone + '</span>' +
-          '<h3>' + f.title + '</h3>' +
-          '<p>' + f.desc + '</p>' +
-          '<div class="card-actions">' +
-            '<a class="btn primary" href="' + f.url + '">' + (f.cta || "Voir fiche") + '</a>' +
-            '<a class="btn green" target="_blank" rel="noopener noreferrer" href="' + waLink(msg) + '">WhatsApp</a>' +
-          '</div>' +
-        '</div>';
+    btn.classList.toggle("listening", listening);
+    btn.classList.toggle("isListening", listening);
 
-      cards.appendChild(el);
-    });
-
-    if(status){
-      status.textContent = res.length ? foundLabel(res.length) : ui("notFound");
+    const span = btn.querySelector("span");
+    if (span) {
+      span.textContent = listening ? "..." : "GO";
+    } else {
+      btn.textContent = listening ? ui("listening") : ui("listen");
     }
   }
 
-  /* ─────────────────────────────────────────────
-     WHATSAPP
-  ───────────────────────────────────────────── */
-  function preparedMessage(){
-    var q = $("q");
-    var text = q && q.value.trim() ? q.value.trim() : ui("fallbackNeed");
-    location.href = waLink(ui("msgPrefix") + text);
+  function stopListen() {
+    try {
+      if (recognition) recognition.stop();
+    } catch (_) {}
   }
 
-  /* ─────────────────────────────────────────────
-     MICRO
-  ───────────────────────────────────────────── */
-  function setupSpeech(){
-    var btn = $("listenBtn");
-    var q = $("q");
-    var status = $("status");
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    var recog = null;
-    var hardTimer = null;
-    var silenceTimer = null;
-    var listening = false;
+  function setupSpeech() {
+    const btn = $("listenBtn");
+    const q = $("q");
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    function setListening(on){
-      listening = !!on;
-      if(btn) btn.textContent = on ? ui("listening") : ui("listen");
-      if(btn) btn.classList.toggle("isListening", on);
-    }
+    if (!btn || !q) return;
 
-    function stopTimers(){
-      clearTimeout(hardTimer);
-      clearTimeout(silenceTimer);
-    }
-
-    function stopListen(){
-      try{ if(recog) recog.stop(); }catch(_){}
-    }
-
-    if(!btn) return;
-
-    if(!SR){
-      btn.textContent = ui("micUnavailable");
+    if (!SR) {
+      btn.setAttribute("aria-label", ui("micUnavailable"));
+      setStatus("⚠️", ui("micUnavailable"));
       return;
     }
 
-    recog = new SR();
-    recog.lang = speechLang();
-    recog.interimResults = true;
-    recog.continuous = true;
-    recog.maxAlternatives = 1;
+    recognition = new SR();
+    recognition.lang = speechLang();
+    recognition.interimResults = true;
+    recognition.continuous = true;
+    recognition.maxAlternatives = 1;
 
-    recog.onstart = function(){
+    recognition.onstart = function () {
       setListening(true);
-      if(status) status.textContent = ui("listenStatus");
+      setStatus("🎙️", ui("listenStatus"));
+
       stopTimers();
-      hardTimer = setTimeout(stopListen, LISTEN_MAX_MS);
+
+      hardTimer = setTimeout(function () {
+        stopListen();
+      }, LISTEN_MAX_MS);
     };
 
-    recog.onresult = function(e){
-      var txt = "";
-      for(var i = 0; i < e.results.length; i++){
-        txt += e.results[i][0].transcript;
+    recognition.onresult = function (event) {
+      let interim = "";
+      let finalText = "";
+
+      for (let i = 0; i < event.results.length; i++) {
+        const part = event.results[i][0] && event.results[i][0].transcript
+          ? event.results[i][0].transcript
+          : "";
+
+        if (event.results[i].isFinal) finalText += part + " ";
+        else interim += part + " ";
       }
 
-      if(q) q.value = txt.trim();
-      if(status) status.textContent = ui("listenMore");
+      const combined = clean((finalText || interim || "").trim());
+
+      if (combined) {
+        q.value = combined;
+        lastFinalText = combined;
+
+        dispatch("digiy:voice:result", {
+          version: VERSION,
+          text: expandQuery(combined),
+          original: combined,
+          lang: currentLang,
+          final: !!finalText
+        });
+      }
+
+      setStatus("🎙️", ui("listenMore"));
 
       clearTimeout(silenceTimer);
-      silenceTimer = setTimeout(stopListen, SILENCE_AFTER_RESULT_MS);
+
+      silenceTimer = setTimeout(function () {
+        stopListen();
+      }, SILENCE_AFTER_RESULT_MS);
     };
 
-    recog.onend = function(){
+    recognition.onend = function () {
       stopTimers();
       setListening(false);
 
-      if(status){
-        status.textContent = q && q.value.trim() ? ui("voiceOk") : ui("micClosed");
+      const original = clean(q.value || lastFinalText);
+
+      if (original) {
+        setStatus("✅", ui("voiceOk"));
+
+        const expanded = expandQuery(original);
+
+        dispatch("digiy:voice:final", {
+          version: VERSION,
+          text: expanded,
+          original: original,
+          lang: currentLang
+        });
+
+        routeDirecte(original, "speech-final", { force: true });
+      } else {
+        setStatus("•", ui("micClosed"));
       }
-
-      render();
     };
 
-    recog.onerror = function(){
+    recognition.onerror = function () {
       stopTimers();
       setListening(false);
-      if(status) status.textContent = ui("micFragile");
+      setStatus("⚠️", ui("micFragile"));
     };
 
-    btn.onclick = function(){
-      if(listening){
+    btn.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      if (listening) {
         stopListen();
         return;
       }
 
-      try{
-        recog.lang = speechLang();
-        recog.start();
-      }catch(_){
-        if(status) status.textContent = ui("micAlready");
+      try {
+        lastFinalText = "";
+        recognition.lang = speechLang();
+        recognition.start();
+      } catch (_) {
+        setStatus("⚠️", ui("micAlready"));
       }
-    };
-  }
-
-  /* ─────────────────────────────────────────────
-     BIND
-  ───────────────────────────────────────────── */
-  function bind(){
-    var searchBtn = $("searchBtn");
-    var msgBtn = $("msgBtn");
-    var clearBtn = $("clearBtn");
-    var q = $("q");
-    var status = $("status");
-
-    ensureDuoLangBar();
-
-    var manualSelect = $("digiyLang") || $("langMode");
-    if(manualSelect){
-      manualSelect.value = currentLang;
-      manualSelect.onchange = function(){ setLang(manualSelect.value); };
-    }
-
-    if(searchBtn) searchBtn.onclick = render;
-    if(msgBtn) msgBtn.onclick = preparedMessage;
-
-    if(clearBtn){
-      clearBtn.onclick = function(){
-        if(q) q.value = "";
-        render();
-        if(status) status.textContent = ui("statusReady");
-      };
-    }
-
-    Array.prototype.forEach.call(document.querySelectorAll("[data-q]"), function(b){
-      b.onclick = function(){
-        if(q) q.value = b.getAttribute("data-q") || "";
-        render();
-      };
     });
-
-    if(status && !status.textContent) status.textContent = ui("statusReady");
-
-    setupSpeech();
-    render();
   }
 
-  /* ─────────────────────────────────────────────
-     EXPOSITION
-  ───────────────────────────────────────────── */
+  function bindSearchButton() {
+    const searchBtn = $("searchBtn");
+    const q = $("q");
+
+    if (!searchBtn || !q || searchBtn.dataset.digiyDuoSearchBound === "1") return;
+
+    searchBtn.dataset.digiyDuoSearchBound = "1";
+
+    searchBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      const text = clean(q.value);
+
+      if (!text) {
+        setStatus("⚠️", ui("noText"));
+        return;
+      }
+
+      routeDirecte(text, "duo-search-click", { force: true });
+    }, true);
+  }
+
+  function bindMessageButton() {
+    const msgBtn = $("msgBtn");
+
+    if (!msgBtn || msgBtn.dataset.digiyDuoMsgBound === "1") return;
+
+    msgBtn.dataset.digiyDuoMsgBound = "1";
+
+    msgBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      preparedMessage();
+    });
+  }
+
+  function bindClearButton() {
+    const clearBtn = $("clearBtn");
+    const q = $("q");
+    const cards = $("cards");
+    const empty = $("empty");
+
+    if (!clearBtn || !q || clearBtn.dataset.digiyDuoClearBound === "1") return;
+
+    clearBtn.dataset.digiyDuoClearBound = "1";
+
+    clearBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      q.value = "";
+      lastFinalText = "";
+
+      if (cards) {
+        cards.innerHTML = '<div class="emptyIcon" aria-hidden="true">👆</div>';
+      }
+
+      if (empty) empty.style.display = "none";
+
+      setStatus("•", ui("ready"));
+      dispatch("digiy:duo:clear", { version: VERSION });
+    });
+  }
+
+  function bindQuickButtons() {
+    const q = $("q");
+
+    if (!q) return;
+
+    Array.prototype.forEach.call(document.querySelectorAll("[data-q]"), function (btn) {
+      if (btn.dataset.digiyDuoQuickBound === "1") return;
+
+      btn.dataset.digiyDuoQuickBound = "1";
+
+      btn.addEventListener("click", function (event) {
+        const text = clean(btn.getAttribute("data-q") || "");
+
+        if (!text) return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        displayOriginalQuery(text);
+        routeDirecte(text, "duo-quick-button", { force: true });
+      }, true);
+    });
+  }
+
+  function bindManualLangSelect() {
+    const manualSelect = $("digiyLang") || $("langMode");
+
+    if (!manualSelect || manualSelect.dataset.digiyDuoLangBound === "1") return;
+
+    manualSelect.dataset.digiyDuoLangBound = "1";
+    manualSelect.value = currentLang;
+
+    manualSelect.addEventListener("change", function () {
+      setLang(manualSelect.value);
+    });
+  }
+
+  function bindInputEnter() {
+    const q = $("q");
+
+    if (!q || q.dataset.digiyDuoEnterBound === "1") return;
+
+    q.dataset.digiyDuoEnterBound = "1";
+
+    q.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        routeDirecte(q.value, "duo-enter", { force: true });
+      }
+    });
+  }
+
+  function boot() {
+    ensureDuoLangBar();
+    bindManualLangSelect();
+    bindSearchButton();
+    bindMessageButton();
+    bindClearButton();
+    bindQuickButtons();
+    bindInputEnter();
+    setupSpeech();
+
+    updateLangUI();
+    setStatus("•", ui("ready"));
+  }
+
   window.DIGIY_ACTION_PUBLIC = {
     version: VERSION,
-    fiches: FICHES,
-    matchFiches: matchFiches,
-    render: render,
     setLang: setLang,
-    getLang: getLang
+    getLang: getLang,
+    expandQuery: expandQuery,
+    routeDirecte: routeDirecte,
+    preparedMessage: preparedMessage
   };
 
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", bind);
-  }else{
-    bind();
+  window.DIGIY_DUO_FR_WO = window.DIGIY_ACTION_PUBLIC;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
   }
-
 })();
-
 
