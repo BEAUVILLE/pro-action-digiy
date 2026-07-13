@@ -1,6 +1,6 @@
 /* DIGIYLYFE — digiy-retour-voix.js
    Rôle : bouton fixe retour La Voix du Business sur toutes les pages publiques.
-   Version : retour-voix-20260606-v4
+   Version : retour-voix-20260713-v5
 */
 (function(){
   "use strict";
@@ -40,17 +40,128 @@
     document.body.appendChild(btn);
   }
 
+  function isDriverGallery(){
+    var host = String(location.hostname || "").toLowerCase();
+    var path = String(location.pathname || "").toLowerCase();
+    return host === "galerie-chauffeurs.digiylyfe.com" ||
+      (host.endsWith(".github.io") && path.indexOf("galerie-chauffeurs") !== -1);
+  }
+
+  function containsRemovedDriver(node){
+    if(!node) return false;
+    var text = String(node.textContent || "").toLowerCase();
+    var links = Array.prototype.slice.call(node.querySelectorAll ? node.querySelectorAll("a[href]") : []);
+    return text.indexOf("baptiste") !== -1 || links.some(function(a){
+      return String(a.getAttribute("href") || "").toLowerCase().indexOf("digiy-driver-part-bapt") !== -1;
+    });
+  }
+
+  function genericFeaturedCopy(){
+    var title = document.querySelector("#featuredCardWrap .featured-head .title");
+    var sub = document.querySelector("#featuredCardWrap .featured-head .sub");
+
+    if(title){
+      title.removeAttribute("data-i18n");
+      title.textContent = "Chauffeur en vitrine";
+    }
+    if(sub){
+      sub.removeAttribute("data-i18n");
+      sub.textContent = "Le premier profil visible selon les filtres apparaît ici. Ouvrez sa fiche officielle puis contactez-le directement.";
+    }
+  }
+
+  function cleanDriverGallery(){
+    if(!isDriverGallery()) return;
+
+    [
+      "cardBtnTop",
+      "heroCardBtn",
+      "cardBtnSection",
+      "cardBtnBottom",
+      "chauffeur-baptiste",
+      "baptisteDirectMain",
+      "baptisteDirectAlt"
+    ].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.remove();
+    });
+
+    document.querySelectorAll('a[href*="digiy-driver-part-bapt"]').forEach(function(el){
+      el.remove();
+    });
+
+    document.querySelectorAll("#drivers .driver").forEach(function(card){
+      if(containsRemovedDriver(card)) card.remove();
+    });
+
+    var featured = document.getElementById("featuredCardArea");
+    if(featured && containsRemovedDriver(featured)){
+      featured.className = "featured-empty";
+      featured.textContent = "Ce profil n’est plus disponible. Choisissez un autre chauffeur dans la galerie.";
+    }
+
+    genericFeaturedCopy();
+
+    var visible = document.querySelectorAll("#drivers .driver").length;
+    var count = document.getElementById("countPill");
+    if(count && visible >= 0) count.textContent = visible + " chauffeur(s)";
+  }
+
+  function protectAudioCopy(){
+    if(!isDriverGallery() || typeof window.t !== "function" || window.t.__digiyRemovedDriver) return;
+
+    var original = window.t;
+    var wrapped = function(key){
+      var args = Array.prototype.slice.call(arguments, 1);
+      if(key === "audio_spoken"){
+        return "Bienvenue dans DIGIY DRIVER Ambassadeur. Ici, le client regarde les profils, la zone, le véhicule et la fiche du chauffeur avant de choisir. Il contacte ensuite directement le chauffeur par WhatsApp ou par SMS. Zéro commission. Le chauffeur garde sa relation, son nom et son argent. Le terrain garde la main.";
+      }
+      if(key === "featured_title") return "Chauffeur en vitrine";
+      if(key === "featured_sub") return "Le premier profil visible selon les filtres apparaît ici. Ouvrez sa fiche officielle puis contactez-le directement.";
+      return original.apply(this, [key].concat(args));
+    };
+    wrapped.__digiyRemovedDriver = true;
+    window.t = wrapped;
+  }
+
+  var cleaning = false;
+  function scheduleClean(){
+    if(cleaning) return;
+    cleaning = true;
+    requestAnimationFrame(function(){
+      cleaning = false;
+      protectAudioCopy();
+      cleanDriverGallery();
+    });
+  }
+
   /* Tentatives multiples pour couvrir tous les cas */
   if(document.body){
     inject();
+    scheduleClean();
   }
   if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", inject);
+    document.addEventListener("DOMContentLoaded", function(){
+      inject();
+      scheduleClean();
+    });
   } else {
     inject();
+    scheduleClean();
   }
-  window.addEventListener("load", inject);
+  window.addEventListener("load", function(){
+    inject();
+    scheduleClean();
+  });
+
+  if(isDriverGallery() && "MutationObserver" in window){
+    var observer = new MutationObserver(scheduleClean);
+    observer.observe(document.documentElement, {childList:true, subtree:true});
+  }
+
   setTimeout(inject, 500);
   setTimeout(inject, 1500);
-
+  setTimeout(scheduleClean, 100);
+  setTimeout(scheduleClean, 700);
+  setTimeout(scheduleClean, 1800);
 })();
