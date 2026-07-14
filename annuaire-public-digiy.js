@@ -1,10 +1,10 @@
 /*
   annuaire-public-digiy.js
   DIGIYLYFE — Annuaire public officiel de LA VOIX
-  Version : 20260714-babacar-v2
+  Version : 20260714-deux-plombiers-v3
 
   Résultats attendus :
-  plombier     → Babacar
+  plombier     → Babacar + Helage
   électricien  → Kourant
   maçon        → Mbaye
   chauffeur    → Lamine
@@ -13,7 +13,7 @@
 (function (global) {
   "use strict";
 
-  const VERSION = "20260714-babacar-v2";
+  const VERSION = "20260714-deux-plombiers-v3";
   const MAX_RESULTS = 6;
 
   const DIRECTORY = [
@@ -86,6 +86,77 @@
 
       wa:
         "Bonjour Babacar Plombier Pro, je viens de DIGIYLYFE pour un besoin de plomberie."
+    },
+
+    {
+      id: "helage-plombier-saly",
+      kind: "directory",
+      public: true,
+
+      icon: "🔧",
+
+      nom: "Helage",
+      title: "Helage — Plombier Saly",
+
+      metier: "plombier",
+      activite:
+        "Plomberie · dépannage · multi-services",
+
+      categorie: "BUILD",
+      sousCategorie: "plomberie",
+
+      secteur: "Saly",
+      zones: [
+        "Saly",
+        "Mbour",
+        "Ngaparou",
+        "Somone",
+        "Petite Côte"
+      ],
+
+      statut: "partenaire_qualifie",
+      labelStatut:
+        "Partenaire qualifié DIGIY BUILD",
+
+      priorite: 90,
+
+      phone: "221774513523",
+      whatsapp: "221774513523",
+
+      url:
+        "https://helage-plombier.digiylyfe.com/",
+
+      description:
+        "Plomberie multi-services, dépannage, fuites, robinets, WC, évacuations et installations sanitaires.",
+
+      keys: [
+        "helage",
+        "plombier",
+        "plomberie",
+        "fuite",
+        "fuites",
+        "robinet",
+        "robinetterie",
+        "wc",
+        "toilette",
+        "lavabo",
+        "douche",
+        "chauffe-eau",
+        "chauffe eau",
+        "desengorgement",
+        "désengorgement",
+        "evacuation",
+        "évacuation",
+        "depannage",
+        "dépannage",
+        "installation",
+        "salle de bain",
+        "sanitaire",
+        "ndox"
+      ],
+
+      wa:
+        "Bonjour Helage, je viens de DIGIYLYFE pour votre service de plomberie à Saly."
     },
 
     {
