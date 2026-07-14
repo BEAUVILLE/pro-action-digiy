@@ -1,6 +1,6 @@
 /* DIGIYLYFE — digiy-retour-voix.js
-   Rôle : bouton fixe retour La Voix du Business sur toutes les pages publiques.
-   Version : retour-voix-20260713-v5
+   Rôle : bouton fixe retour La Voix du Business + nettoyage galerie DRIVER.
+   Version : retour-voix-20260714-v6
 */
 (function(){
   "use strict";
@@ -40,19 +40,47 @@
     document.body.appendChild(btn);
   }
 
+  function normalize(value){
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+  }
+
   function isDriverGallery(){
-    var host = String(location.hostname || "").toLowerCase();
-    var path = String(location.pathname || "").toLowerCase();
+    var host = normalize(location.hostname);
+    var path = normalize(location.pathname);
     return host === "galerie-chauffeurs.digiylyfe.com" ||
       (host.endsWith(".github.io") && path.indexOf("galerie-chauffeurs") !== -1);
   }
 
+  function isRemovedName(value){
+    var text = normalize(value);
+    return text.indexOf("baptiste") !== -1 ||
+      text.indexOf("babacar") !== -1 ||
+      text.indexOf("babacard") !== -1;
+  }
+
+  function isRemovedHref(value){
+    var href = normalize(value);
+    return href.indexOf("digiy-driver-part-bapt") !== -1 ||
+      href.indexOf("chauffeur-baptiste") !== -1 ||
+      href.indexOf("babacar") !== -1 ||
+      href.indexOf("babacard") !== -1;
+  }
+
   function containsRemovedDriver(node){
     if(!node) return false;
-    var text = String(node.textContent || "").toLowerCase();
-    var links = Array.prototype.slice.call(node.querySelectorAll ? node.querySelectorAll("a[href]") : []);
-    return text.indexOf("baptiste") !== -1 || links.some(function(a){
-      return String(a.getAttribute("href") || "").toLowerCase().indexOf("digiy-driver-part-bapt") !== -1;
+
+    if(isRemovedName(node.textContent)) return true;
+
+    var links = Array.prototype.slice.call(
+      node.querySelectorAll ? node.querySelectorAll("a[href]") : []
+    );
+
+    return links.some(function(a){
+      return isRemovedHref(a.getAttribute("href"));
     });
   }
 
@@ -64,15 +92,14 @@
       title.removeAttribute("data-i18n");
       title.textContent = "Chauffeur en vitrine";
     }
+
     if(sub){
       sub.removeAttribute("data-i18n");
-      sub.textContent = "Le premier profil visible selon les filtres apparaît ici. Ouvrez sa fiche officielle puis contactez-le directement.";
+      sub.textContent = "Le premier profil disponible selon les filtres apparaît ici. Ouvrez sa fiche officielle puis contactez-le directement.";
     }
   }
 
-  function cleanDriverGallery(){
-    if(!isDriverGallery()) return;
-
+  function removeKnownStaticBlocks(){
     [
       "cardBtnTop",
       "heroCardBtn",
@@ -86,10 +113,12 @@
       if(el) el.remove();
     });
 
-    document.querySelectorAll('a[href*="digiy-driver-part-bapt"]').forEach(function(el){
-      el.remove();
+    document.querySelectorAll("a[href]").forEach(function(el){
+      if(isRemovedHref(el.getAttribute("href"))) el.remove();
     });
+  }
 
+  function removeDynamicCards(){
     document.querySelectorAll("#drivers .driver").forEach(function(card){
       if(containsRemovedDriver(card)) card.remove();
     });
@@ -99,35 +128,50 @@
       featured.className = "featured-empty";
       featured.textContent = "Ce profil n’est plus disponible. Choisissez un autre chauffeur dans la galerie.";
     }
+  }
 
-    genericFeaturedCopy();
-
+  function refreshVisibleCount(){
     var visible = document.querySelectorAll("#drivers .driver").length;
     var count = document.getElementById("countPill");
-    if(count && visible >= 0) count.textContent = visible + " chauffeur(s)";
+    if(count) count.textContent = visible + " chauffeur(s)";
+  }
+
+  function cleanDriverGallery(){
+    if(!isDriverGallery()) return;
+
+    removeKnownStaticBlocks();
+    removeDynamicCards();
+    genericFeaturedCopy();
+    refreshVisibleCount();
   }
 
   function protectAudioCopy(){
-    if(!isDriverGallery() || typeof window.t !== "function" || window.t.__digiyRemovedDriver) return;
+    if(!isDriverGallery() || typeof window.t !== "function" || window.t.__digiyRemovedDrivers) return;
 
     var original = window.t;
     var wrapped = function(key){
       var args = Array.prototype.slice.call(arguments, 1);
+
       if(key === "audio_spoken"){
-        return "Bienvenue dans DIGIY DRIVER Ambassadeur. Ici, le client regarde les profils, la zone, le véhicule et la fiche du chauffeur avant de choisir. Il contacte ensuite directement le chauffeur par WhatsApp ou par SMS. Zéro commission. Le chauffeur garde sa relation, son nom et son argent. Le terrain garde la main.";
+        return "Bienvenue dans DIGIY DRIVER Ambassadeur. Ici, le client regarde les profils disponibles, la zone, le véhicule et la fiche du chauffeur avant de choisir. Il contacte ensuite directement le chauffeur par WhatsApp ou par SMS. Zéro commission. Le chauffeur garde sa relation, son nom et son argent. Le terrain garde la main.";
       }
+
       if(key === "featured_title") return "Chauffeur en vitrine";
-      if(key === "featured_sub") return "Le premier profil visible selon les filtres apparaît ici. Ouvrez sa fiche officielle puis contactez-le directement.";
+      if(key === "featured_sub") return "Le premier profil disponible selon les filtres apparaît ici. Ouvrez sa fiche officielle puis contactez-le directement.";
+
       return original.apply(this, [key].concat(args));
     };
-    wrapped.__digiyRemovedDriver = true;
+
+    wrapped.__digiyRemovedDrivers = true;
     window.t = wrapped;
   }
 
   var cleaning = false;
+
   function scheduleClean(){
     if(cleaning) return;
     cleaning = true;
+
     requestAnimationFrame(function(){
       cleaning = false;
       protectAudioCopy();
@@ -135,11 +179,11 @@
     });
   }
 
-  /* Tentatives multiples pour couvrir tous les cas */
   if(document.body){
     inject();
     scheduleClean();
   }
+
   if(document.readyState === "loading"){
     document.addEventListener("DOMContentLoaded", function(){
       inject();
@@ -149,6 +193,7 @@
     inject();
     scheduleClean();
   }
+
   window.addEventListener("load", function(){
     inject();
     scheduleClean();
@@ -156,7 +201,10 @@
 
   if(isDriverGallery() && "MutationObserver" in window){
     var observer = new MutationObserver(scheduleClean);
-    observer.observe(document.documentElement, {childList:true, subtree:true});
+    observer.observe(document.documentElement, {
+      childList:true,
+      subtree:true
+    });
   }
 
   setTimeout(inject, 500);
@@ -164,4 +212,5 @@
   setTimeout(scheduleClean, 100);
   setTimeout(scheduleClean, 700);
   setTimeout(scheduleClean, 1800);
+  setTimeout(scheduleClean, 3500);
 })();
