@@ -395,7 +395,7 @@
     },
 
     {
-      id: "digiy-solaire",
+      id: "digiy-solaire-installation-depannage",
       kind: "directory",
       public: true,
 
