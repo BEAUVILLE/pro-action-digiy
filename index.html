@@ -1479,12 +1479,18 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function isBuildingText(t){
     return [
       "artisan","plombier","electricien","électricien","macon","maçon","travaux","reparer","réparer",
-      "reparation","réparation","chantier","construction","batiment","bâtiment","fuite","maçonnerie","maconnerie"
+      "reparation","réparation","chantier","construction","batiment","bâtiment","fuite","maçonnerie","maconnerie",
+      "solaire","panneau","panneaux","batterie","energie","énergie","regulateur","régulateur"
     ].some(k => t.includes(clean(k)));
   }
 
   function isGenericProfessionalSearch(t){
-    return ["professionnel","professionnels","professional","professionals","service","services"].some(k => t.includes(clean(k)));
+    return [
+      "professionnel",
+      "professionnels",
+      "professional",
+      "professionals"
+    ].some(k => t.includes(clean(k)));
   }
 
   function directRelevance(item, t, secteur){
@@ -1645,9 +1651,15 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     });
     if(hasControlledPlumberVariant) extra += " plombier plomberie";
     if(/\b(plumber|plumbing|leak|pipe|tap|faucet|toilet|bathroom)\b/.test(t)) extra += " plombier plomberie fuite robinet wc sanitaire";
-    if(/\b(mason|masonry|builder|building|construction|renovation|wall|concrete|repair|contractor)\b/.test(t)) extra += " macon maçon maçonnerie chantier construction travaux réparation artisan";
-    if(/\b(electrician|electricity|electrical|power|socket|switch|wire|wiring)\b/.test(t)) extra += " electricien électricien électricité courant dépannage";
-    if(/\b(solar|panel|battery|energy|inverter)\b/.test(t)) extra += " solaire panneau batterie énergie installation dépannage";
+    if(/\b(mason|masonry|builder|building|construction|renovation|wall|concrete|repair|contractor)\b/.test(t)){
+      extra += " macon maçon maçonnerie batisseur bâtisseur construction";
+    }
+    if(/\b(electrician|electricity|electrical|power|socket|switch|wire|wiring)\b/.test(t)){
+      extra += " electricien électricien electricite électricité courant";
+    }
+    if(/\b(solar|panel|battery|energy|inverter)\b/.test(t)){
+      extra += " solaire panneau panneaux batterie energie énergie regulateur régulateur";
+    }
     if(/\b(driver|taxi|airport|ride|trip|transfer|car)\b/.test(t)) extra += " chauffeur driver taxi aibd trajet transfert voiture";
     if(/\b(room|apartment|flat|house|villa|lodging|accommodation|hotel|sleep|night|weekend|week-end)\b/.test(t)) extra += " chambre appartement logement location villa dormir nuit hébergement hôtel";
     if(/\b(book|booking|reserve|reservation|table|restaurant|dinner|lunch|eat)\b/.test(t)) extra += " réserver reservation réservation table restaurant manger diner";
@@ -2225,6 +2237,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
 
 
 
