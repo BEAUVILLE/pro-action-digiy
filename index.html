@@ -241,6 +241,19 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   padding:10px;
   min-height:168px;
 }
+.resultsSummary{
+  margin:4px 0 10px;
+  padding:10px 12px;
+  border:1px solid rgba(22,129,67,.20);
+  border-radius:18px;
+  background:rgba(216,255,230,.58);
+  color:#102f24;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:900;
+}
+.resultsSummary strong{display:block;font-size:15px;font-weight:1000}
+.resultsSummary[hidden]{display:none!important}
 .cards{
   display:flex;
   gap:10px;
@@ -432,9 +445,13 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 }
 @media(max-width:380px){
   .quickGrid{grid-template-columns:repeat(4,1fr)}
-  .topbar{grid-template-columns:54px 1fr repeat(4,46px)}
-  .logo{height:54px;width:54px}.navIcon,.iconBtn{height:46px;width:46px}
-  .card{flex-basis:48vw}
+  .topbar{height:50px;grid-template-columns:46px minmax(0,1fr) repeat(4,40px);gap:4px}
+  .logo{height:46px;width:46px;border-radius:17px}
+  .navIcon,.iconBtn{height:40px;width:40px;border-radius:15px;font-size:19px}
+  .langSwitch{min-width:0;gap:2px}
+  .langSwitch button{min-height:30px;padding:0 4px;font-size:9px}
+  .card{flex-basis:min(86vw,320px)}
+  .card-actions .btn{font-size:10px;letter-spacing:.01em}
 }
 
 /* ══ DIGIY PATCH — FICHES DIRECTES MÉTIER + SECTEUR + CATÉGORIE ══ */
@@ -504,8 +521,11 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   font-weight:1000;
 }
 .card.directoryCard .card-actions .btn{
-  font-size:0;
+  font-size:10px;
+  font-weight:1000;
+  white-space:nowrap;
 }
+.card.directoryCard .card-actions .btn::before{content:none}
 
 
 /* ══ DIGIY CONSIGNES MOBILE — petit lecteur rassurant non bloquant ══ */
@@ -614,7 +634,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <button class="examplesToggle" id="examplesToggle" type="button" aria-expanded="false" aria-controls="examplesPanel">🟥 EXEMPLES POUR PARLER</button>
       <div class="examplesPanel" id="examplesPanel" hidden aria-label="Exemples de phrases terrain pour les fiches partenaires DIGIY">
-        <button class="examplePhrase" type="button" data-q="Je cherche un plombier à Saly"><span class="mod">🔧 BABACAR</span><span class="fr">Je cherche un plombier à Saly</span><span class="wo">Damaa wut plombier ci Saly.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un plombier à Saly"><span class="mod">🔧 TROUVER UN PLOMBIER</span><span class="fr">Je cherche un plombier à Saly</span><span class="wo">Damaa wut plombier ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche un entrepreneur maçon à Saly"><span class="mod">🧱 MBAYE</span><span class="fr">Je cherche un entrepreneur maçon à Saly</span><span class="wo">Damaa wut entrepreneur maçon ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche un électricien à Saly"><span class="mod">⚡ KOURANT</span><span class="fr">Je cherche un électricien à Saly</span><span class="wo">Damaa wut électricien ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche du solaire à Dakar"><span class="mod">☀️ DIGIY SOLAIRE</span><span class="fr">Je cherche du solaire à Dakar</span><span class="wo">Damaa wut solaire ci Dakar.</span></button>
@@ -644,6 +664,13 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
     <section class="panel results" aria-label="Résultats directs">
       <h2 class="resultTitle">Fiches qui remontent</h2>
       <p class="resultIntro">Les résultats remontent directement après la demande.</p>
+      <div
+        class="resultsSummary"
+        id="resultsSummary"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
       <div class="empty" id="empty">Aucune fiche exacte.</div>
       <div class="cards" id="cards" aria-live="polite">
         <div class="emptyIcon" aria-hidden="true">👆</div>
@@ -839,6 +866,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const $ = (id) => document.getElementById(id);
   const q = $("q");
   const cards = $("cards");
+  const resultsSummary = $("resultsSummary");
   const status = $("status");
   const empty = $("empty");
   const introBtn = $("introBtn");
@@ -1378,7 +1406,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       kind: "directory",
       sourceId: src.id || "",
       public: src.public !== false,
-      priority: Number(src.priorite || src.priority || 1),
+      priority:
+        Number(
+          src.priority ??
+          src.priorite ??
+          0
+        ) || 0,
       icon: src.icon || "📍",
       title,
       metier,
@@ -1437,7 +1470,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     ].some(k => t.includes(clean(k)));
   }
 
-  function directScore(item, t, secteur){
+  function isGenericProfessionalSearch(t){
+    return ["professionnel","professionnels","service","services"].some(k => t.includes(clean(k)));
+  }
+
+  function directRelevance(item, t, secteur){
     const keys = Array.isArray(item.keys) ? item.keys : [];
     const family = clean([item.metier, item.categorie, item.title, item.sousCategorie].filter(Boolean).join(" "));
 
@@ -1446,15 +1483,15 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
        - Une fiche LOC peut contenir "réserver" ou "ce soir", mais elle ne doit pas voler une table resto.
        - LOC ne remonte que si le besoin parle vraiment logement/chambre/nuit/appartement. */
     if(isRestaurantReservationText(t) && !family.includes("restaurant") && !family.includes("reservation") && !family.includes("réservation")){
-      return 0;
+      return null;
     }
 
     if((family.includes("loc") || family.includes("logement") || family.includes("appartement")) && !isHousingText(t)){
-      return 0;
+      return null;
     }
 
-    if((family.includes("artisan") || family.includes("plombier") || family.includes("electricien") || family.includes("macon")) && !isBuildingText(t)){
-      return 0;
+    if((family.includes("artisan") || family.includes("plombier") || family.includes("electricien") || family.includes("macon")) && !isBuildingText(t) && !isGenericProfessionalSearch(t)){
+      return null;
     }
 
     /* Mots métier / produit / besoin : c'est la vraie clé.
@@ -1475,17 +1512,20 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     ));
 
     /* Protection anti-remontée partout : pas de besoin clair = pas de fiche directe. */
-    if(!keyHit && !mainHit) return 0;
+    const genericHit = isGenericProfessionalSearch(t);
+    if(!keyHit && !mainHit && !genericHit) return null;
 
-    let score = 0;
-    if(keyHit) score += 50;
-    if(mainHit) score += 20;
-    if(zoneHit) score += 15;
-    if(item.statut && /pro|fiche|qualifie/i.test(item.statut)) score += 3;
-
-    /* La priorité départage seulement après une vraie correspondance. */
-    score += Math.min(Number(item.priority || 0), 10);
-    return score;
+    return {
+      need: (mainHit ? 2 : 0) + (keyHit ? 1 : 0),
+      zone: zoneHit ? 1 : 0,
+      status: item.statut && /pro|fiche|qualifie/i.test(item.statut) ? 1 : 0,
+      priority:
+        Number(
+          item.priority ??
+          item.priorite ??
+          0
+        ) || 0
+    };
   }
 
   function matchDirectFiches(text){
@@ -1493,9 +1533,14 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const secteur = detectSecteurFromCleanText(t);
     const scored = FICHES_PUBLICS
       .filter(item => item && item.public !== false)
-      .map(item => ({item, score: directScore(item, t, secteur)}))
-      .filter(x => x.score > 0)
-      .sort((a,b) => b.score - a.score)
+      .map(item => ({item, relevance: directRelevance(item, t, secteur)}))
+      .filter(x => x.relevance)
+      .sort((a,b) =>
+        b.relevance.need - a.relevance.need ||
+        b.relevance.zone - a.relevance.zone ||
+        b.relevance.status - a.relevance.status ||
+        b.relevance.priority - a.relevance.priority
+      )
       .map(x => {
         const item = Object.assign({}, x.item);
         if(secteur && Array.isArray(item.zones) && item.zones.some(z => clean(z) === clean(secteur.label))){
@@ -1580,6 +1625,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const raw = String(text || "");
     const t = clean(raw);
     let extra = "";
+    const plumberVariants = ["plombier","plomier","plombir","plombié"];
+    const hasControlledPlumberVariant = plumberVariants.some(variant => {
+      const token = clean(variant).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp("(?:^|\\s)" + token + "(?:$|\\s)").test(t);
+    });
+    if(hasControlledPlumberVariant) extra += " plombier plomberie";
     if(/\b(plumber|plumbing|leak|pipe|tap|faucet|toilet|bathroom)\b/.test(t)) extra += " plombier plomberie fuite robinet wc sanitaire";
     if(/\b(mason|masonry|builder|building|construction|renovation|wall|concrete|repair|contractor)\b/.test(t)) extra += " macon maçon maçonnerie chantier construction travaux réparation artisan";
     if(/\b(electrician|electricity|electrical|power|socket|switch|wire|wiring)\b/.test(t)) extra += " electricien électricien électricité courant dépannage";
@@ -1629,6 +1680,54 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return "https://wa.me/" + p + "?text=" + encodeURIComponent(message || "Bonjour, je viens de La Voix du Business DIGIY.");
   }
 
+  const RESULT_PROFESSION_INTENTS = [
+    {singular:"plombier", plural:"plombiers", variants:["plombier","plomier","plombir","plombié"]},
+    {singular:"électricien", plural:"électriciens", variants:["électricien","electricien"]},
+    {singular:"maçon", plural:"maçons", variants:["maçon","macon"]},
+    {singular:"chauffeur", plural:"chauffeurs", variants:["chauffeur","driver","taxi"]}
+  ];
+
+  function containsControlledVariant(text, variants){
+    const normalized = " " + clean(text).replace(/[^a-z0-9]+/g, " ").trim() + " ";
+    return variants.some(variant => normalized.includes(" " + clean(variant) + " "));
+  }
+
+  function detectResultsProfessionIntent(queryText){
+    const detected = RESULT_PROFESSION_INTENTS.filter(intent =>
+      containsControlledVariant(queryText, intent.variants)
+    );
+    return detected.length === 1 ? detected[0] : null;
+  }
+
+  function listMatchesProfessionIntent(list, intent){
+    if(!intent) return false;
+    return list.every(item => containsControlledVariant(
+      [item.metier, item.categorie, item.title].filter(Boolean).join(" "),
+      intent.variants
+    ));
+  }
+
+  function updateResultsSummary(list, queryText){
+    if(!resultsSummary) return;
+    if(!list.length){
+      resultsSummary.hidden = true;
+      resultsSummary.innerHTML = "";
+      return;
+    }
+    const count = list.length;
+    const detectedIntent = detectResultsProfessionIntent(queryText);
+    const intent = listMatchesProfessionIntent(list, detectedIntent) ? detectedIntent : null;
+    const secteur = detectSecteurFromCleanText(clean(queryText));
+    const profession = intent
+      ? (count === 1 ? intent.singular : intent.plural)
+      : (count === 1 ? "professionnel" : "professionnels");
+    const zone = secteur ? " à " + secteur.label : "";
+    resultsSummary.innerHTML =
+      "<strong>" + count + " " + profession + " disponible" + (count > 1 ? "s" : "") + zone + "</strong>" +
+      "Consultez les fiches et choisissez librement votre professionnel.";
+    resultsSummary.hidden = false;
+  }
+
   const PRO_PAY_ENTRY_URL = "https://pro-pay.digiylyfe.com/hub.html";
 
   function proPayAccessUrl(){
@@ -1638,9 +1737,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
 
-  function render(list){
+  function render(list, queryText){
     if(!cards) return;
     cards.innerHTML = "";
+    updateResultsSummary(list, queryText || "");
     if(!list.length){
       if(empty) empty.style.display = "block";
       cards.innerHTML = '<div class="emptyIcon" aria-hidden="true">👆</div>';
@@ -1665,9 +1765,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
               <span>${item.secteur || (digiyLang() === "en" ? "Area" : "Secteur")}</span>
             </div>
             <div class="card-actions">
-              <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">↗️</a>
-              <a class="btn green" href="${waLinkPhone(item.phone, item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬</a>
-              <a class="btn" href="tel:+${String(item.phone || '221771342889').replace(/[^0-9]/g, '')}" aria-label="Appeler ${item.title}">📞</a>
+              <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">↗ FICHE</a>
+              <a class="btn green" href="${waLinkPhone(item.phone, item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬 WHATSAPP</a>
+              <a class="btn" href="tel:+${String(item.phone || '221771342889').replace(/[^0-9]/g, '')}" aria-label="Appeler ${item.title}">📞 APPELER</a>
             </div>
           </div>`;
       }else if(item.kind === "route"){
@@ -1734,7 +1834,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const seq = ++digiySearchSeq;
 
     if(!val){
-      render([]);
+      render([], val);
       if(move) bringResultsIntoView();
       return;
     }
@@ -1742,7 +1842,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const list = await matchCardsPublic(val);
     if(seq !== digiySearchSeq) return;
 
-    render(list);
+    render(list, val);
     if(move) bringResultsIntoView();
   }
 
