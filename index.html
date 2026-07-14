@@ -592,6 +592,19 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   .langSwitch button{min-height:31px;padding:0 6px;font-size:10px}
 }
 
+@media(max-width:380px){
+  .langSwitch{
+    min-width:0;
+    gap:2px;
+  }
+
+  .langSwitch button{
+    min-width:0;
+    padding:0 3px;
+    font-size:9px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1471,7 +1484,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function isGenericProfessionalSearch(t){
-    return ["professionnel","professionnels","service","services"].some(k => t.includes(clean(k)));
+    return ["professionnel","professionnels","professional","professionals","service","services"].some(k => t.includes(clean(k)));
   }
 
   function directRelevance(item, t, secteur){
@@ -1681,11 +1694,15 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   const RESULT_PROFESSION_INTENTS = [
-    {singular:"plombier", plural:"plombiers", variants:["plombier","plomier","plombir","plombié"]},
-    {singular:"électricien", plural:"électriciens", variants:["électricien","electricien"]},
-    {singular:"maçon", plural:"maçons", variants:["maçon","macon"]},
-    {singular:"chauffeur", plural:"chauffeurs", variants:["chauffeur","driver","taxi"]}
+    {fr:{singular:"plombier", plural:"plombiers"}, en:{singular:"plumber", plural:"plumbers"}, variants:["plombier","plomier","plombir","plombié","plumber","plumbing"]},
+    {fr:{singular:"électricien", plural:"électriciens"}, en:{singular:"electrician", plural:"electricians"}, variants:["électricien","electricien","electrician"]},
+    {fr:{singular:"maçon", plural:"maçons"}, en:{singular:"builder", plural:"builders"}, variants:["maçon","macon","bâtisseur","batisseur","mason","builder"]},
+    {fr:{singular:"chauffeur", plural:"chauffeurs"}, en:{singular:"driver", plural:"drivers"}, variants:["chauffeur","driver","taxi"]}
   ];
+
+  const PROFESSIONAL_RESULT_VARIANTS = RESULT_PROFESSION_INTENTS
+    .flatMap(intent => intent.variants)
+    .concat(["artisan","artisans","professionnel","professionnels"]);
 
   function containsControlledVariant(text, variants){
     const normalized = " " + clean(text).replace(/[^a-z0-9]+/g, " ").trim() + " ";
@@ -1693,10 +1710,18 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function detectResultsProfessionIntent(queryText){
+    const expandedQuery = digiyExpandQuery(queryText || "");
     const detected = RESULT_PROFESSION_INTENTS.filter(intent =>
-      containsControlledVariant(queryText, intent.variants)
+      containsControlledVariant(expandedQuery, intent.variants)
     );
     return detected.length === 1 ? detected[0] : null;
+  }
+
+  function isProfessionalResult(item){
+    return containsControlledVariant(
+      [item.metier, item.categorie, item.title].filter(Boolean).join(" "),
+      PROFESSIONAL_RESULT_VARIANTS
+    );
   }
 
   function listMatchesProfessionIntent(list, intent){
@@ -1714,17 +1739,30 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       resultsSummary.innerHTML = "";
       return;
     }
-    const count = list.length;
+    const expandedQuery = digiyExpandQuery(queryText || "");
+    const professionalResults = list.filter(isProfessionalResult);
     const detectedIntent = detectResultsProfessionIntent(queryText);
-    const intent = listMatchesProfessionIntent(list, detectedIntent) ? detectedIntent : null;
-    const secteur = detectSecteurFromCleanText(clean(queryText));
-    const profession = intent
-      ? (count === 1 ? intent.singular : intent.plural)
-      : (count === 1 ? "professionnel" : "professionnels");
-    const zone = secteur ? " à " + secteur.label : "";
-    resultsSummary.innerHTML =
-      "<strong>" + count + " " + profession + " disponible" + (count > 1 ? "s" : "") + zone + "</strong>" +
-      "Consultez les fiches et choisissez librement votre professionnel.";
+    const professionalQuery = !!detectedIntent || isGenericProfessionalSearch(clean(expandedQuery));
+    const intent = listMatchesProfessionIntent(professionalResults, detectedIntent) ? detectedIntent : null;
+    const secteur = detectSecteurFromCleanText(clean(expandedQuery));
+    const en = digiyLang() === "en";
+
+    if(professionalQuery && professionalResults.length){
+      const count = professionalResults.length;
+      const labels = intent ? intent[en ? "en" : "fr"] : null;
+      const profession = labels
+        ? (count === 1 ? labels.singular : labels.plural)
+        : (en ? (count === 1 ? "professional" : "professionals") : (count === 1 ? "professionnel" : "professionnels"));
+      const zone = secteur ? (en ? " in " : " à ") + secteur.label : "";
+      resultsSummary.innerHTML = en
+        ? "<strong>" + count + " " + profession + " available" + zone + "</strong>Open the cards and choose freely."
+        : "<strong>" + count + " " + profession + " disponible" + (count > 1 ? "s" : "") + zone + "</strong>Consultez les fiches et choisissez librement votre professionnel.";
+    }else{
+      const count = list.length;
+      resultsSummary.innerHTML = en
+        ? "<strong>" + count + " result" + (count > 1 ? "s" : "") + " available</strong>Open the available result" + (count > 1 ? "s" : "") + "."
+        : "<strong>" + count + " résultat" + (count > 1 ? "s" : "") + " disponible" + (count > 1 ? "s" : "") + "</strong>Ouvrez le" + (count > 1 ? "s" : "") + " résultat" + (count > 1 ? "s" : "") + " disponible" + (count > 1 ? "s" : "") + ".";
+    }
     resultsSummary.hidden = false;
   }
 
@@ -2187,6 +2225,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
 
 
 
