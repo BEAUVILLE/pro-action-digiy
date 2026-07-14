@@ -1,6 +1,6 @@
 /* DIGIYLYFE — digiy-retour-voix.js
    Rôle : bouton fixe retour La Voix du Business + nettoyage galerie DRIVER.
-   Version : retour-voix-20260714-v6
+   Version : retour-voix-20260714-v7
 */
 (function(){
   "use strict";
@@ -53,6 +53,19 @@
     var path = normalize(location.pathname);
     return host === "galerie-chauffeurs.digiylyfe.com" ||
       (host.endsWith(".github.io") && path.indexOf("galerie-chauffeurs") !== -1);
+  }
+
+  function loadLocalGalleryFix(){
+    if(!isDriverGallery()) return;
+    if(document.getElementById("digiyGalerieRuntimeFix")) return;
+
+    var script = document.createElement("script");
+    script.id = "digiyGalerieRuntimeFix";
+    script.defer = true;
+    script.src = location.hostname.toLowerCase().endsWith(".github.io")
+      ? "/galerie-chauffeurs/galerie-runtime-fix.js?v=20260714-1"
+      : "/galerie-runtime-fix.js?v=20260714-1";
+    document.head.appendChild(script);
   }
 
   function isRemovedName(value){
@@ -181,21 +194,25 @@
 
   if(document.body){
     inject();
+    loadLocalGalleryFix();
     scheduleClean();
   }
 
   if(document.readyState === "loading"){
     document.addEventListener("DOMContentLoaded", function(){
       inject();
+      loadLocalGalleryFix();
       scheduleClean();
     });
   } else {
     inject();
+    loadLocalGalleryFix();
     scheduleClean();
   }
 
   window.addEventListener("load", function(){
     inject();
+    loadLocalGalleryFix();
     scheduleClean();
   });
 
@@ -209,6 +226,8 @@
 
   setTimeout(inject, 500);
   setTimeout(inject, 1500);
+  setTimeout(loadLocalGalleryFix, 100);
+  setTimeout(loadLocalGalleryFix, 900);
   setTimeout(scheduleClean, 100);
   setTimeout(scheduleClean, 700);
   setTimeout(scheduleClean, 1800);
