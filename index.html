@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="pro-action-intentions-babacar-kourant-mbaye-lamine-20260714-v2"/>
+<meta name="digiy-build" content="pro-action-intentions-deux-plombiers-20260714-v3"/>
 <meta name="digiy-lang" content="fr-en-20260620"/>
 <style>
 :root{
@@ -660,7 +660,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, pay, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260714-babacar-v2"></script>
+<script src="./annuaire-public-digiy.js?v=20260714-deux-plombiers-v3"></script>
 <script>
 (function(){
   "use strict";
@@ -1139,6 +1139,32 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       wa:"Bonjour Babacar Plombier Pro, je viens de DIGIYLYFE pour un besoin de plomberie à Saly."
     },
     {
+      id:"helage-plombier-saly",
+      kind:"directory",
+      public:true,
+      priority:90,
+      priorite:90,
+      icon:"🔧",
+      title:"Helage — Plombier Saly",
+      titre:"Helage — Plombier Saly",
+      nom:"Helage",
+      metier:"plombier",
+      activite:"Plomberie · Dépannage · Multi-services",
+      categorie:"BUILD",
+      sousCategorie:"plomberie",
+      secteur:"Saly",
+      zones:["Saly","Mbour","Ngaparou","Somone","Petite Côte"],
+      statut:"partenaire_qualifie",
+      labelStatut:"Partenaire qualifié DIGIY BUILD",
+      phone:"221774513523",
+      whatsapp:"221774513523",
+      keys:["helage","plombier","plomberie","fuite","fuites","robinet","robinetterie","wc","toilette","lavabo","douche","chauffe-eau","chauffe eau","desengorgement","désengorgement","evacuation","évacuation","depannage","dépannage","installation","salle de bain","sanitaire","ndox"],
+      mots:["helage","plombier","plomberie","fuite","fuites","robinet","robinetterie","wc","toilette","lavabo","douche","chauffe-eau","chauffe eau","desengorgement","désengorgement","evacuation","évacuation","depannage","dépannage","installation","salle de bain","sanitaire","ndox"],
+      description:"Helage, partenaire qualifié DIGIY BUILD à Saly : plomberie multi-services, dépannage, fuites, robinets, WC, évacuations et installations sanitaires.",
+      url:"https://helage-plombier.digiylyfe.com/",
+      wa:"Bonjour Helage, je viens de DIGIYLYFE pour votre service de plomberie à Saly."
+    },
+    {
       id:"partenaires-mbaye",
       kind:"directory",
       public:true,
@@ -1497,10 +1523,25 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(direct){
       const zone = direct.secteur ? (en ? " in " : " à ") + direct.secteur : (secteur ? (en ? " in " : " à ") + secteur.label : "");
       const titleClean = clean(direct.title || "");
+      const plumberSearch = t.includes("plombier") || t.includes("plomberie");
+      const plumberCount = (list || []).filter(item => {
+        const family = clean([item.metier, item.activite, item.categorie, item.sousCategorie, item.title].filter(Boolean).join(" "));
+        return family.includes("plombier") || family.includes("plomberie");
+      }).length;
+      if(plumberSearch && plumberCount >= 2){
+        return en
+          ? "I understood: you are looking for a plumber in Saly. Two plumbers are available: Babacar Plombier Pro, with his official DIGIY BUILD card, and Helage, a qualified partner. I bring up both cards with direct contact."
+          : "J’ai compris : tu cherches un plombier à Saly. J’ai deux plombiers disponibles : Babacar Plombier Pro, avec sa fiche officielle DIGIY BUILD, et Helage, partenaire qualifié. Je te remonte leurs deux fiches avec contact direct.";
+      }
       if(titleClean.includes("babacar")){
         return en
           ? "I understood: you are looking for a plumber in Saly. I bring up Babacar Plombier Pro with his official DIGIY BUILD card and direct contact."
           : "J’ai compris : tu cherches un plombier à Saly. Je te remonte Babacar Plombier Pro avec sa fiche officielle DIGIY BUILD et son contact direct.";
+      }
+      if(titleClean.includes("helage")){
+        return en
+          ? "I understood: you are looking for Helage. I bring up his qualified DIGIY BUILD partner card and direct contact."
+          : "J’ai compris : tu cherches Helage. Je te remonte sa fiche de partenaire qualifié DIGIY BUILD avec son contact direct.";
       }
       if(titleClean.includes("mbaye")){
         return en
