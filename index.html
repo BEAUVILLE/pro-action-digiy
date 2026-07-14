@@ -58,7 +58,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .topbar{
   height:58px;
   display:grid;
-  grid-template-columns:58px 1fr repeat(4,50px);
+  grid-template-columns:58px 1fr repeat(3,50px);
   gap:8px;
   align-items:center;
 }
@@ -445,7 +445,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 }
 @media(max-width:380px){
   .quickGrid{grid-template-columns:repeat(4,1fr)}
-  .topbar{height:50px;grid-template-columns:46px minmax(0,1fr) repeat(4,40px);gap:4px}
+  .topbar{height:50px;grid-template-columns:46px minmax(0,1fr) repeat(3,40px);gap:4px}
   .logo{height:46px;width:46px;border-radius:17px}
   .navIcon,.iconBtn{height:40px;width:40px;border-radius:15px;font-size:19px}
   .langSwitch{min-width:0;gap:2px}
@@ -617,7 +617,6 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
     </div>
     <a class="navIcon" href="https://digiylyfe.com/" aria-label="Site DIGIYLYFE">🌍</a>
     <a class="navIcon" href="https://digiy-hub.digiylyfe.com/" aria-label="HUB DIGIY">🧭</a>
-    <a class="navIcon" href="./pin.html" aria-label="Espace professionnel protégé">🔒</a>
     <button class="iconBtn" id="introBtn" type="button" aria-label="Écouter l’explication">🎧</button>
   </header>
 
@@ -1051,7 +1050,6 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     document.querySelector(".logo")?.setAttribute("aria-label", ui.home);
     document.querySelectorAll(".navIcon")[0]?.setAttribute("aria-label", ui.site);
     document.querySelectorAll(".navIcon")[1]?.setAttribute("aria-label", ui.hub);
-    document.querySelectorAll(".navIcon")[2]?.setAttribute("aria-label", ui.pro);
     introBtn?.setAttribute("aria-label", ui.intro);
 
     askPanel?.setAttribute("aria-label", ui.ask);
@@ -2237,3 +2235,4 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
