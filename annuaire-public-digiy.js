@@ -1,19 +1,20 @@
 /*
   annuaire-public-digiy.js
   DIGIYLYFE — Annuaire public officiel de LA VOIX
-  Version : 20260714-deux-plombiers-v3
+  Version : 20260720-bcheikh-v1
 
   Résultats attendus :
   plombier     → Babacar + Helage
   électricien  → Kourant
   maçon        → Mbaye
   chauffeur    → Lamine
+  vêtements    → BCHEIKH
 */
 
 (function (global) {
   "use strict";
 
-  const VERSION = "20260714-deux-plombiers-v3";
+  const VERSION = "20260720-bcheikh-v1";
   const MAX_RESULTS = 6;
 
   const DIRECTORY = [
@@ -518,6 +519,79 @@
     },
 
     {
+      id: "bcheikh-market-saly",
+      kind: "directory",
+      public: true,
+
+      icon: "👕",
+
+      nom: "BCHEIKH",
+      title: "BCHEIKH — Vêtements à Saly",
+
+      metier: "boutique de vêtements",
+      activite:
+        "Tee-shirts · polos · caleçons · packs de 3 pièces",
+
+      categorie: "MARKET",
+      sousCategorie: "vêtements homme",
+
+      secteur: "Saly",
+
+      zones: [
+        "Saly",
+        "Mbour",
+        "Petite Côte"
+      ],
+
+      statut: "fiche_publique",
+      labelStatut:
+        "Fiche publique DIGIY MARKET",
+
+      priorite: 101,
+
+      phone: "",
+      whatsapp: "",
+
+      url:
+        "https://bcheikh.digiylyfe.com/",
+
+      description:
+        "Tee-shirts et polos à 7 000 FCFA l’unité, pack de 3 pièces à 20 000 FCFA et poche de 3 caleçons à 7 000 FCFA. Paiement direct au vendeur.",
+
+      keys: [
+        "bcheikh",
+        "b cheikh",
+        "vetement",
+        "vetements",
+        "habit",
+        "habits",
+        "mode",
+        "boutique vetements",
+        "tee-shirt",
+        "tee shirt",
+        "t-shirt",
+        "tshirt",
+        "polo",
+        "polos",
+        "calecon",
+        "calecons",
+        "sous-vetement",
+        "sous vetement",
+        "sous-vetements",
+        "sous vetements",
+        "pack 3 pieces",
+        "pack de 3 pieces",
+        "trois pieces",
+        "poche de 3 calecons",
+        "7000 fcfa",
+        "20000 fcfa"
+      ],
+
+      wa:
+        "Bonjour BCHEIKH, je viens de DIGIYLYFE pour voir vos vêtements."
+    },
+
+    {
       id: "poulet-tonton",
       kind: "directory",
       public: true,
@@ -697,6 +771,38 @@
         "serviette",
         "drap",
         "robe"
+      ]
+    },
+
+    {
+      canon: "vêtements",
+      module: "MARKET",
+
+      mots: [
+        "bcheikh",
+        "b cheikh",
+        "vetement",
+        "vetements",
+        "habit",
+        "habits",
+        "mode",
+        "boutique vetements",
+        "tee-shirt",
+        "tee shirt",
+        "t-shirt",
+        "tshirt",
+        "polo",
+        "polos",
+        "calecon",
+        "calecons",
+        "sous-vetement",
+        "sous vetement",
+        "sous-vetements",
+        "sous vetements",
+        "pack 3 pieces",
+        "pack de 3 pieces",
+        "trois pieces",
+        "poche de 3 calecons"
       ]
     },
 
@@ -1571,3 +1677,4 @@
     );
   } catch (_) {}
 })(window);
+
