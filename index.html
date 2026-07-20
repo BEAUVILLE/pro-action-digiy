@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="pro-action-intentions-deux-plombiers-20260714-v3"/>
+<meta name="digiy-build" content="pro-action-bcheikh-market-20260720-v1"/>
 <meta name="digiy-lang" content="fr-en-20260620"/>
 <style>
 :root{
@@ -526,6 +526,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   white-space:nowrap;
 }
 .card.directoryCard .card-actions .btn::before{content:none}
+.card.directoryCard .card-actions:has(.btn:only-child){grid-template-columns:1fr}
 
 
 /* ══ DIGIY CONSIGNES MOBILE — petit lecteur rassurant non bloquant ══ */
@@ -699,7 +700,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260714-deux-plombiers-v3"></script>
+<script src="./annuaire-public-digiy.js?v=20260720-bcheikh-v1"></script>
 <script>
 (function(){
   "use strict";
@@ -1309,6 +1310,32 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       wa:"Bonjour Astou Boutique, je viens de DIGIYLYFE pour voir vos produits."
     },
     {
+      id:"bcheikh-market-saly",
+      kind:"directory",
+      public:true,
+      priority:101,
+      priorite:101,
+      icon:"👕",
+      title:"BCHEIKH — Vêtements à Saly",
+      titre:"BCHEIKH — Vêtements à Saly",
+      nom:"BCHEIKH",
+      metier:"boutique de vêtements",
+      activite:"Tee-shirts · Polos · Caleçons · Packs de 3 pièces",
+      categorie:"MARKET",
+      sousCategorie:"vetements-homme",
+      secteur:"Saly",
+      zones:["Saly","Mbour","Petite Côte"],
+      statut:"fiche_market_publique",
+      labelStatut:"Fiche boutique DIGIY MARKET",
+      phone:"",
+      whatsapp:"",
+      keys:["bcheikh","b cheikh","vêtement","vetement","vêtements","vetements","habit","habits","mode","boutique vêtements","boutique vetements","tee-shirt","tee shirt","t-shirt","tshirt","polo","polos","caleçon","calecon","caleçons","calecons","sous-vêtement","sous vetement","sous-vêtements","sous vetements","pack 3 pièces","pack 3 pieces","trois pièces","trois pieces","poche de 3 caleçons","poche de 3 calecons","7000 fcfa","20000 fcfa"],
+      mots:["bcheikh","b cheikh","vêtement","vetement","vêtements","vetements","habit","habits","mode","boutique vêtements","boutique vetements","tee-shirt","tee shirt","t-shirt","tshirt","polo","polos","caleçon","calecon","caleçons","calecons","sous-vêtement","sous vetement","sous-vêtements","sous vetements","pack 3 pièces","pack 3 pieces","trois pièces","trois pieces","poche de 3 caleçons","poche de 3 calecons","7000 fcfa","20000 fcfa"],
+      description:"BCHEIKH à Saly : tee-shirts et polos à 7 000 FCFA l’unité, pack de 3 pièces à 20 000 FCFA et poche de 3 caleçons à 7 000 FCFA. Paiement direct au vendeur.",
+      url:"https://bcheikh.digiylyfe.com/",
+      wa:"Bonjour BCHEIKH, je viens de DIGIYLYFE pour voir vos vêtements."
+    },
+    {
       id:"chez-baptiste-appartement-saly",
       kind:"directory",
       public:true,
@@ -1615,6 +1642,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
           ? "I understood: you are looking for an electrician. I bring up Kourant Electrician with his official DIGIY BUILD card and direct contact."
           : "J’ai compris : tu cherches un électricien. Je te remonte Kourant Électricien avec sa fiche officielle DIGIY BUILD et son contact direct.";
       }
+      if(titleClean.includes("bcheikh")){
+        return en
+          ? "I understood: you are looking for clothing in Saly. I bring up the BCHEIKH public shop with its products, prices and direct storefront."
+          : "J’ai compris : tu cherches des vêtements à Saly. Je te remonte la boutique publique BCHEIKH avec ses produits, ses prix et sa vitrine directe.";
+      }
       if(titleClean.includes("solaire")){
         return en
           ? "I understood: you are looking for solar service" + zone + ". I bring up DIGIY Solar for installation, repair, diagnosis and maintenance."
@@ -1814,8 +1846,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
             </div>
             <div class="card-actions">
               <a class="btn primary" href="${item.url}" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir ${item.title}">↗ FICHE</a>
-              <a class="btn green" href="${waLinkPhone(item.phone, item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬 WHATSAPP</a>
-              <a class="btn" href="tel:+${String(item.phone || '221771342889').replace(/[^0-9]/g, '')}" aria-label="Appeler ${item.title}">📞 APPELER</a>
+              ${item.phone ? `<a class="btn green" href="${waLinkPhone(item.phone, item.wa)}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${item.title}">💬 WHATSAPP</a>` : ``}
+              ${item.phone ? `<a class="btn" href="tel:+${String(item.phone).replace(/[^0-9]/g, '')}" aria-label="Appeler ${item.title}">📞 APPELER</a>` : ``}
             </div>
           </div>`;
       }else if(item.kind === "route"){
@@ -2235,4 +2267,6 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 </body>
 </html>
+
+
 
