@@ -1,7 +1,7 @@
 /*
   annuaire-public-digiy.js
   DIGIYLYFE — Annuaire public officiel de LA VOIX
-  Version : 20260720-bcheikh-v1
+  Version : 20260725-sarlat-v1
 
   Résultats attendus :
   plombier     → Babacar + Helage
@@ -14,7 +14,7 @@
 (function (global) {
   "use strict";
 
-  const VERSION = "20260720-bcheikh-v1";
+  const VERSION = "20260725-sarlat-v1";
   const MAX_RESULTS = 6;
 
   const DIRECTORY = [
@@ -592,6 +592,76 @@
     },
 
     {
+      id: "sarlat-entre-2",
+      kind: "directory",
+      public: true,
+      icon: "🍕",
+      nom: "L’Entre 2",
+      title: "L’Entre 2 — Restaurant à Sarlat",
+      metier: "restaurant",
+      activite: "Brasserie · Pizzeria · Terrasse",
+      categorie: "RESA",
+      sousCategorie: "restaurant",
+      secteur: "Sarlat",
+      zones: ["Sarlat", "Périgord Noir", "Dordogne"],
+      statut: "fiche_officielle",
+      labelStatut: "Fiche restaurant directe DIGIYLYFE",
+      priorite: 110,
+      phone: "33673274427",
+      whatsapp: "",
+      url: "https://malraux-entre2.digiylyfe.com/",
+      description: "Brasserie, pizzeria et terrasse à Sarlat. Carte, photos et contact direct.",
+      keys: ["l entre 2", "entre 2", "restaurant", "resto", "brasserie", "pizzeria", "pizza", "terrasse", "manger à sarlat", "restaurant à sarlat"],
+      wa: "Bonjour L’Entre 2, je viens de DIGIYLYFE pour une demande à Sarlat."
+    },
+    {
+      id: "sarlat-le-malraux",
+      kind: "directory",
+      public: true,
+      icon: "🍷",
+      nom: "Le Malraux",
+      title: "Le Malraux — Restaurant à Sarlat",
+      metier: "restaurant",
+      activite: "Cuisine périgourdine · Salle chaleureuse",
+      categorie: "RESA",
+      sousCategorie: "restaurant",
+      secteur: "Sarlat",
+      zones: ["Sarlat", "Périgord Noir", "Dordogne"],
+      statut: "fiche_officielle",
+      labelStatut: "Fiche restaurant directe DIGIYLYFE",
+      priorite: 109,
+      phone: "33642160657",
+      whatsapp: "",
+      url: "https://malraux-entre2.digiylyfe.com/",
+      description: "Cuisine périgourdine et salle chaleureuse à Sarlat. Photos et contact direct.",
+      keys: ["le malraux", "malraux", "restaurant", "resto", "cuisine périgourdine", "gastronomie", "manger à sarlat", "restaurant à sarlat"],
+      wa: "Bonjour Le Malraux, je viens de DIGIYLYFE pour une demande à Sarlat."
+    },
+    {
+      id: "sarlat-chez-baptiste",
+      kind: "directory",
+      public: true,
+      icon: "🛏️",
+      nom: "SARLAT CHEZ BAPTISTE",
+      title: "SARLAT CHEZ BAPTISTE — Chambre privée",
+      metier: "hébergement chez l’habitant",
+      activite: "Chambre privée · Salle de bain privative · Arrivée autonome",
+      categorie: "LOC",
+      sousCategorie: "chambre-chez-habitant",
+      secteur: "Sarlat",
+      zones: ["Sarlat", "Périgord Noir", "Dordogne"],
+      statut: "fiche_officielle",
+      labelStatut: "Fiche hébergement directe DIGIYLYFE",
+      priorite: 110,
+      phone: "",
+      whatsapp: "33638329423",
+      url: "https://sarlat-chez-baptiste.digiylyfe.com/",
+      description: "Chambre privée chez l’habitant à Sarlat, salle de bain privative et arrivée autonome. Demande directe.",
+      keys: ["sarlat chez baptiste", "chez baptiste sarlat", "chambre", "chambre privée", "chez l habitant", "dormir", "hébergement", "logement", "nuit", "dormir à sarlat", "chambre à sarlat"],
+      wa: "Bonjour Baptiste, je viens d’ACTION PRO pour une demande directe à Sarlat."
+    },
+
+    {
       id: "poulet-tonton",
       kind: "directory",
       public: true,
@@ -932,6 +1002,16 @@
         "somone",
         "nianning",
         "popenguine"
+      ]
+    },
+
+    {
+      canon: "Sarlat",
+      mots: [
+        "sarlat",
+        "sarlat la caneda",
+        "perigord noir",
+        "dordogne"
       ]
     },
 

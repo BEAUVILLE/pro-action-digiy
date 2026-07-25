@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="pro-action-bcheikh-market-20260720-v1"/>
+<meta name="digiy-build" content="action-pro-sarlat-territoire-20260725-v1"/>
 <meta name="digiy-lang" content="fr-en-20260620"/>
 <style>
 :root{
@@ -628,6 +628,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <div class="quickGrid" aria-label="Choix rapides — portes publiques">
         <button class="chip" type="button" data-q="Je veux dire ma recherche à DIGIY" aria-label="VOIX">🎙️</button>
+        <button class="chip" type="button" data-q="Je veux découvrir les adresses de Sarlat" aria-label="SARLAT">🏰</button>
         <button class="chip" type="button" data-q="Je veux une idée de sortie sur la Petite Côte" aria-label="EXPLORE">🗺️</button>
         <button class="chip" type="button" data-q="Je cherche un chauffeur pour AIBD demain matin" aria-label="DRIVER">🚗</button>
         <button class="chip" type="button" data-q="Je veux voir les chauffeurs disponibles" aria-label="GALERIE CHAUFFEURS">👑</button>
@@ -656,6 +657,8 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
         <button class="examplePhrase" type="button" data-q="Je cherche un chauffeur pour AIBD"><span class="mod">🚗 DRIVER</span><span class="fr">Je cherche un chauffeur pour AIBD</span><span class="wo">Damaa wut chauffeur ngir AIBD.</span></button>
         <button class="examplePhrase" type="button" data-q="Je veux une idée de sortie sur la Petite Côte"><span class="mod">🗺️ EXPLORE</span><span class="fr">Je veux une idée de sortie sur la Petite Côte</span><span class="wo">Damaa bëgg idée sortie ci Petite Côte.</span></button>
         <button class="examplePhrase" type="button" data-q="Je veux réserver une table ce soir"><span class="mod">📅 RÉSERVATION</span><span class="fr">Je veux réserver une table ce soir</span><span class="wo">Damaa bëgg réserver table ngoon sii.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un restaurant à Sarlat"><span class="mod">🍽️ MANGER À SARLAT</span><span class="fr">Je cherche un restaurant à Sarlat</span><span class="wo">Damaa wut restaurant ci Sarlat.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche une chambre à Sarlat"><span class="mod">🛏️ DORMIR À SARLAT</span><span class="fr">Je cherche une chambre à Sarlat</span><span class="wo">Damaa wut chambre ci Sarlat.</span></button>
         <button class="examplePhrase" type="button" data-q="Je veux envoyer une preuve Wave"><span class="mod">💳 DIGIY CARNET</span><span class="fr">Je veux envoyer une preuve Wave</span><span class="wo">Damaa bëgg yónnee preuve Wave.</span></button>
       </div>
 
@@ -697,10 +700,10 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 <button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter les consignes téléphone">🎧 <span>GO</span></button>
 
 <p id="audioText" class="sr-only">
-Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
+Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260720-bcheikh-v1"></script>
+<script src="./annuaire-public-digiy.js?v=20260725-sarlat-v1"></script>
 <script>
 (function(){
   "use strict";
@@ -1118,6 +1121,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   const DATA = [
     {keys:["voix","parler","recherche","demande","besoin","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"#voix", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
+    {keys:["sarlat","sarlat la caneda","sarlat-la-caneda","périgord noir","perigord noir","dordogne","territoire sarlat","adresses sarlat"], icon:"🏰", title:"SARLAT", url:"https://digiylyfe.com/sarlat.html", wa:"Bonjour, je souhaite découvrir les adresses DIGIYLYFE de Sarlat."},
+    {keys:["manger à sarlat","manger a sarlat","restaurant à sarlat","restaurant a sarlat","restaurants sarlat","table sarlat","dîner sarlat","diner sarlat"], icon:"🍽️", title:"MANGER À SARLAT", url:"https://digiylyfe.com/sarlat.html#manger", wa:"Bonjour, je cherche où manger à Sarlat via DIGIYLYFE."},
+    {keys:["dormir à sarlat","dormir a sarlat","chambre à sarlat","chambre a sarlat","hébergement sarlat","hebergement sarlat","logement sarlat","nuit sarlat"], icon:"🛏️", title:"DORMIR À SARLAT", url:"https://digiylyfe.com/sarlat.html#dormir", wa:"Bonjour, je cherche où dormir à Sarlat via DIGIYLYFE."},
     {keys:["sortie","pêche","peche","explore","visite","activité","activite","découvrir","decouvrir","idée","idee","territoire","petite cote","petite côte","genn","génn"], icon:"🗺️", title:"EXPLORE", url:"https://explore.digiylyfe.com/", wa:"Bonjour, je cherche une sortie ou une idée de découverte via DIGIY."},
     {keys:["chauffeur","aibd","taxi","driver","course","conduire","trajet","mobilite","mobilité","yobbu","yóbbu"], icon:"🚗", title:"DRIVER", url:"https://driver-client.digiylyfe.com/", wa:"Bonjour, je cherche un chauffeur via DIGIY."},
     {keys:["chauffeurs disponibles","galerie chauffeur","chauffeurs","nos chauffeurs","visage","conducteur"], icon:"👑", title:"GALERIE", url:"https://galerie-chauffeurs.digiylyfe.com/", wa:"Bonjour, je veux voir les chauffeurs disponibles via DIGIY."},
@@ -1148,6 +1154,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {label:"AIBD", keys:["aibd","diass"]},
     {label:"Ngaparou", keys:["ngaparou"]},
     {label:"Somone", keys:["somone"]},
+    {label:"Sarlat", keys:["sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne"]},
     {label:"Petite Côte", keys:["petite cote","petite côte"]}
   ];
 
@@ -1387,6 +1394,84 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       description:"Lamine assure les transferts AIBD, trajets privés et déplacements vers Saly, Mbour, Thiès, Dakar et la Petite Côte.",
       url:"https://partenaire-lamine.digiylyfe.com/",
       wa:"Bonjour Lamine, je viens de DIGIYLYFE pour un besoin de transport."
+    },
+    {
+      id:"sarlat-entre-2",
+      kind:"directory",
+      public:true,
+      priority:110,
+      priorite:110,
+      icon:"🍕",
+      title:"L’Entre 2 — Restaurant à Sarlat",
+      titre:"L’Entre 2 — Restaurant à Sarlat",
+      nom:"L’Entre 2",
+      metier:"restaurant",
+      activite:"Brasserie · Pizzeria · Terrasse",
+      categorie:"RESA",
+      sousCategorie:"restaurant",
+      secteur:"Sarlat",
+      zones:["Sarlat","Périgord Noir","Dordogne"],
+      statut:"fiche_officielle",
+      labelStatut:"Fiche restaurant directe DIGIYLYFE",
+      phone:"33673274427",
+      whatsapp:"",
+      keys:["l entre 2","l’entre 2","entre 2","restaurant","resto","brasserie","pizzeria","pizza","terrasse","manger à sarlat","manger a sarlat","restaurant à sarlat","restaurant a sarlat","table à sarlat","table a sarlat"],
+      mots:["l entre 2","l’entre 2","entre 2","restaurant","resto","brasserie","pizzeria","pizza","terrasse","manger à sarlat","manger a sarlat","restaurant à sarlat","restaurant a sarlat","table à sarlat","table a sarlat"],
+      description:"L’Entre 2 à Sarlat : brasserie, pizzeria et terrasse. Carte, photos et contact direct.",
+      url:"https://malraux-entre2.digiylyfe.com/",
+      wa:"Bonjour L’Entre 2, je viens de DIGIYLYFE pour une demande à Sarlat."
+    },
+    {
+      id:"sarlat-le-malraux",
+      kind:"directory",
+      public:true,
+      priority:109,
+      priorite:109,
+      icon:"🍷",
+      title:"Le Malraux — Restaurant à Sarlat",
+      titre:"Le Malraux — Restaurant à Sarlat",
+      nom:"Le Malraux",
+      metier:"restaurant",
+      activite:"Cuisine périgourdine · Salle chaleureuse",
+      categorie:"RESA",
+      sousCategorie:"restaurant",
+      secteur:"Sarlat",
+      zones:["Sarlat","Périgord Noir","Dordogne"],
+      statut:"fiche_officielle",
+      labelStatut:"Fiche restaurant directe DIGIYLYFE",
+      phone:"33642160657",
+      whatsapp:"",
+      keys:["le malraux","malraux","restaurant","resto","cuisine périgourdine","cuisine perigourdine","gastronomie","manger à sarlat","manger a sarlat","restaurant à sarlat","restaurant a sarlat","table à sarlat","table a sarlat"],
+      mots:["le malraux","malraux","restaurant","resto","cuisine périgourdine","cuisine perigourdine","gastronomie","manger à sarlat","manger a sarlat","restaurant à sarlat","restaurant a sarlat","table à sarlat","table a sarlat"],
+      description:"Le Malraux à Sarlat : cuisine périgourdine, salle chaleureuse, photos et contact direct.",
+      url:"https://malraux-entre2.digiylyfe.com/",
+      wa:"Bonjour Le Malraux, je viens de DIGIYLYFE pour une demande à Sarlat."
+    },
+    {
+      id:"sarlat-chez-baptiste",
+      kind:"directory",
+      public:true,
+      priority:110,
+      priorite:110,
+      icon:"🛏️",
+      title:"SARLAT CHEZ BAPTISTE — Chambre privée",
+      titre:"SARLAT CHEZ BAPTISTE — Chambre privée",
+      nom:"SARLAT CHEZ BAPTISTE",
+      metier:"hébergement chez l’habitant",
+      activite:"Chambre privée · Salle de bain privative · Arrivée autonome",
+      categorie:"LOC",
+      sousCategorie:"chambre-chez-habitant",
+      secteur:"Sarlat",
+      zones:["Sarlat","Périgord Noir","Dordogne"],
+      statut:"fiche_officielle",
+      labelStatut:"Fiche hébergement directe DIGIYLYFE",
+      phone:"",
+      whatsapp:"33638329423",
+      keys:["sarlat chez baptiste","chez baptiste sarlat","chambre","chambre privée","chambre privee","chez l habitant","chez l’habitant","dormir","hébergement","hebergement","logement","nuit","78 euros","dormir à sarlat","dormir a sarlat","chambre à sarlat","chambre a sarlat"],
+      mots:["sarlat chez baptiste","chez baptiste sarlat","chambre","chambre privée","chambre privee","chez l habitant","chez l’habitant","dormir","hébergement","hebergement","logement","nuit","78 euros","dormir à sarlat","dormir a sarlat","chambre à sarlat","chambre a sarlat"],
+      description:"Chambre privée chez l’habitant à Sarlat, pour 2 voyageurs maximum, salle de bain privative, cuisine partagée et arrivée autonome de 16 h à 22 h. Demande directe.",
+      url:"https://sarlat-chez-baptiste.digiylyfe.com/",
+      wa:"Bonjour Baptiste, je viens d’ACTION PRO pour une demande directe à Sarlat."
     }
   ];
 
@@ -1642,6 +1727,16 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
           ? "I understood: you are looking for an electrician. I bring up Kourant Electrician with his official DIGIY BUILD card and direct contact."
           : "J’ai compris : tu cherches un électricien. Je te remonte Kourant Électricien avec sa fiche officielle DIGIY BUILD et son contact direct.";
       }
+      if(titleClean.includes("entre 2") || titleClean.includes("malraux")){
+        return en
+          ? "I understood: you want to eat in Sarlat. I bring up L’Entre 2 and Le Malraux with menus, photos and direct contact."
+          : "J’ai compris : tu veux manger à Sarlat. Je te remonte L’Entre 2 et Le Malraux avec leurs cartes, leurs photos et le contact direct.";
+      }
+      if(titleClean.includes("sarlat chez baptiste")){
+        return en
+          ? "I understood: you want to stay in Sarlat. I bring up SARLAT CHEZ BAPTISTE, a private room with direct request and no DIGIYLYFE commission."
+          : "J’ai compris : tu veux dormir à Sarlat. Je te remonte SARLAT CHEZ BAPTISTE, chambre privée chez l’habitant avec demande directe et 0 % de commission DIGIYLYFE.";
+      }
       if(titleClean.includes("bcheikh")){
         return en
           ? "I understood: you are looking for clothing in Saly. I bring up the BCHEIKH public shop with its products, prices and direct storefront."
@@ -1696,6 +1791,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(/\b(shop|store|market|product|buy|towel|towels|sheet|sheets|boutique)\b/.test(t)) extra += " boutique market produit acheter serviette serviettes drap commerce";
     if(/\b(job|work|mission|employment|hire|hiring)\b/.test(t)) extra += " emploi travail job mission recrute postuler";
     if(/\b(outing|visit|discover|tour|activity|idea|place|petite cote|petite coast)\b/.test(t)) extra += " sortie visite découvrir idée activité explore petite cote";
+    if(/\b(sarlat|perigord|dordogne)\b/.test(t)) extra += " sarlat périgord noir dordogne territoire";
     if(/\b(payment|pay|money|wave|proof|receipt)\b/.test(t)) extra += " paiement pay argent wave preuve reçu";
     if(/\b(address|route|directions|come|map|location)\b/.test(t)) extra += " adresse route venir carte localisation";
     if(/\b(announcement|ad|network|publish|visibility)\b/.test(t)) extra += " annonce réseau publier visibilité";
