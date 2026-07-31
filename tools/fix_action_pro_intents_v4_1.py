@@ -32,22 +32,40 @@ if 'isRestaurantReservationText(t) && !namedBaptisteHit' not in index:
         'barrière restaurant',
     )
 
-# Séparer réservation générique et vraie demande table/restaurant.
+# MOTEUR NATIF : séparer réserver d'une vraie demande table/restaurant.
+old_native_booking = 'if(/\\b(book|booking|reserve|reservation|table|restaurant|dinner|lunch|eat)\\b/.test(t)) extra += " réserver reservation réservation table restaurant manger diner";'
+if old_native_booking in index:
+    index = index.replace(
+        old_native_booking,
+        'if(/\\b(table|restaurant|dinner|lunch|eat)\\b/.test(t)) extra += " réserver reservation réservation table restaurant manger diner";\n    if(/\\b(book|booking|reserve|reservation)\\b/.test(t)) extra += " réserver reservation réservation";',
+        1,
+    )
+
+# MOTEUR NATIF : séparer AUDIO de ASSISTANT/AIDE.
+old_native_audio = 'if(/\\b(audio|listen|vision|assistant|guide|help)\\b/.test(t)) extra += " audio écouter vision assistant aide guide";'
+if old_native_audio in index:
+    index = index.replace(
+        old_native_audio,
+        'if(/\\b(audio|listen|vision)\\b/.test(t)) extra += " audio écouter vision";\n    if(/\\b(assistant|guide|help)\\b/.test(t)) extra += " assistant aide guide";',
+        1,
+    )
+
+# COUCHE 7 LANGUES : séparer réservation générique et table/restaurant.
 if '"réserver reservation"],' not in index:
     index = sub_once(
         index,
         r'\s*\[/réserv\|reserv\|booking\|book\|table\|restaurant\|dinner\|lunch\|mesa\|comer\|tisch\|essen\|prenotar\|tavolo\|mangiare\|tafel\|eten\|حجز\|طاولة\|مطعم\|عشاء/,"réserver reservation table restaurant manger diner"\],',
         '\n    [/table|restaurant|dinner|lunch|mesa|comer|tisch|essen|tavolo|mangiare|tafel|eten|طاولة|مطعم|عشاء/,"réserver reservation table restaurant manger diner"],\n    [/réserv|reserv|booking|book|prenotar|حجز/,"réserver reservation"],',
-        'règles réservation',
+        'règles réservation 7 langues',
     )
 
-# Séparer AUDIO de ASSISTANT/AIDE.
+# COUCHE 7 LANGUES : séparer AUDIO de ASSISTANT/AIDE.
 if '"assistant aide guide"]' not in index:
     index = sub_once(
         index,
         r'\s*\[/audio\|écouter\|ecouter\|vision\|assistant\|guide\|help\|listen\|escuchar\|ayuda\|hören\|hilfe\|ascoltare\|aiuto\|luisteren\|hulp\|استماع\|صوت\|مساعدة/,"audio écouter vision assistant aide guide"\]',
         '\n    [/audio|écouter|ecouter|vision|listen|escuchar|hören|ascoltare|luisteren|استماع|صوت/,"audio écouter vision"],\n    [/assistant|guide|help|ayuda|hilfe|aiuto|hulp|مساعدة|إرشاد/,"assistant aide guide"]',
-        'règles audio assistant',
+        'règles audio assistant 7 langues',
     )
 
 # Forcer le navigateur à recharger l'annuaire corrigé.
@@ -67,6 +85,8 @@ required_index = [
     '"réserver reservation"',
     '"audio écouter vision"',
     '"assistant aide guide"',
+    'if(/\\b(book|booking|reserve|reservation)\\b/.test(t))',
+    'if(/\\b(assistant|guide|help)\\b/.test(t))',
     'annuaire-public-digiy.js?v=20260731-routing-v4-1',
 ]
 for marker in required_index:
@@ -76,6 +96,8 @@ for marker in required_index:
 for forbidden in [
     'audio écouter vision assistant aide guide',
     '/réserv|reserv|booking|book|table|restaurant|dinner|lunch',
+    '(book|booking|reserve|reservation|table|restaurant|dinner|lunch|eat)',
+    '(audio|listen|vision|assistant|guide|help)',
 ]:
     if forbidden in index:
         raise SystemExit(f'intention encore mélangée: {forbidden}')
@@ -85,4 +107,4 @@ if '20260731-routing-v4-1' not in annuaire:
 
 index_path.write_text(index, encoding='utf-8')
 annuaire_path.write_text(annuaire, encoding='utf-8')
-print('ACTION PRO v4.1 : intentions séparées et contrôlées.')
+print('ACTION PRO v4.1 : moteurs natif et 7 langues séparés et contrôlés.')
