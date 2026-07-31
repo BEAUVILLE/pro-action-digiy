@@ -1,7 +1,7 @@
 /*
   annuaire-public-digiy.js
   DIGIYLYFE — Annuaire public officiel de LA VOIX
-  Version : 20260725-sarlat-v1
+  Version : 20260731-routing-v4
 
   Résultats attendus :
   plombier     → Babacar + Helage
@@ -14,7 +14,7 @@
 (function (global) {
   "use strict";
 
-  const VERSION = "20260725-sarlat-v1";
+  const VERSION = "20260731-routing-v4";
   const MAX_RESULTS = 6;
 
   const DIRECTORY = [
@@ -657,7 +657,7 @@
       whatsapp: "33638329423",
       url: "https://sarlat-chez-baptiste.digiylyfe.com/",
       description: "Chambre privée chez l’habitant à Sarlat, salle de bain privative et arrivée autonome. Demande directe.",
-      keys: ["sarlat chez baptiste", "chez baptiste sarlat", "chambre", "chambre privée", "chez l habitant", "dormir", "hébergement", "logement", "nuit", "dormir à sarlat", "chambre à sarlat"],
+      keys: ["sarlat chez baptiste", "chez baptiste sarlat", "chez baptiste", "baptiste", "chez batist", "batist", "باتيست", "chambre", "chambre privée", "chez l habitant", "dormir", "hébergement", "logement", "nuit", "dormir à sarlat", "chambre à sarlat"],
       wa: "Bonjour Baptiste, je viens d’ACTION PRO pour une demande directe à Sarlat."
     },
 
