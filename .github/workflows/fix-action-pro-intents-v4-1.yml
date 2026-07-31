@@ -1,0 +1,58 @@
+name: Fix ACTION PRO intents v4.1
+
+on:
+  push:
+    branches:
+      - feature/action-pro-intents-separated-v4-1
+    paths:
+      - tools/fix_action_pro_intents_v4_1.py
+      - .github/workflows/fix-action-pro-intents-v4-1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/action-pro-intents-separated-v4-1
+          fetch-depth: 0
+
+      - name: Apply intent fix
+        run: python3 tools/fix_action_pro_intents_v4_1.py
+
+      - name: Check JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?![^>]*src=)(?![^>]*application/ld\+json)[^>]*>(.*?)</script>',html,flags=re.S|re.I)
+          out=Path('/tmp/action-intents-js');out.mkdir(exist_ok=True)
+          for i,script in enumerate(scripts):
+              (out/f'{i}.js').write_text(script,encoding='utf-8')
+          print(len(scripts))
+          PY
+          for file in /tmp/action-intents-js/*.js; do node --check "$file"; done
+          node --check annuaire-public-digiy.js
+          git diff --check
+
+      - name: Verify intent separation
+        run: |
+          grep -q 'action-pro-7lang-monofichier-20260731-v4-1-intents' index.html
+          grep -q 'audio écouter vision' index.html
+          grep -q 'assistant aide guide' index.html
+          grep -q 'annuaire-public-digiy.js?v=20260731-routing-v4-1' index.html
+          ! grep -q 'audio écouter vision assistant aide guide' index.html
+
+      - name: Commit public files
+        run: |
+          if git diff --quiet -- index.html annuaire-public-digiy.js; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html annuaire-public-digiy.js
+          git commit -m 'Séparer logement, réservation, assistant et audio'
+          git push origin HEAD:feature/action-pro-intents-separated-v4-1
