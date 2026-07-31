@@ -1,0 +1,65 @@
+name: Fix ACTION PRO routing 7 languages v4
+
+on:
+  push:
+    branches:
+      - feature/action-pro-routing-7lang-v4
+    paths:
+      - tools/fix_action_pro_routing_7lang_v4.py
+      - .github/workflows/fix-action-pro-routing-7lang-v4.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/action-pro-routing-7lang-v4
+          fetch-depth: 0
+
+      - name: Apply deterministic patch
+        run: python3 tools/fix_action_pro_routing_7lang_v4.py
+
+      - name: Check HTML inline JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('index.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script(?![^>]*src=)(?![^>]*application/ld\+json)[^>]*>(.*?)</script>', html, flags=re.S|re.I)
+          if not scripts:
+              raise SystemExit('Aucun script inline trouvé')
+          out = Path('/tmp/digiy-inline-js')
+          out.mkdir(exist_ok=True)
+          for i, script in enumerate(scripts):
+              (out / f'script-{i}.js').write_text(script, encoding='utf-8')
+          print(f'{len(scripts)} scripts extraits')
+          PY
+          for file in /tmp/digiy-inline-js/*.js; do node --check "$file"; done
+          node --check annuaire-public-digiy.js
+
+      - name: Functional markers
+        run: |
+          grep -q 'action-pro-7lang-monofichier-20260731-v4-routing' index.html
+          grep -q 'const namedBaptisteHit' index.html
+          grep -q 'window.digiyExpandQuery=function(value)' index.html
+          grep -q '20260731-routing-v4' annuaire-public-digiy.js
+          ! grep -q '"recherche","demande","besoin"' index.html
+          git diff --check
+
+      - name: Commit generated public files
+        run: |
+          if git diff --quiet -- index.html annuaire-public-digiy.js; then
+            echo 'No generated change to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html annuaire-public-digiy.js
+          git commit -m 'Corriger Chez Baptiste et fiabiliser le moteur 7 langues'
+          git push origin HEAD:feature/action-pro-routing-7lang-v4
