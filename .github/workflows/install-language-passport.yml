@@ -1,0 +1,60 @@
+name: Installer le passeport de langue DIGIY
+
+on:
+  push:
+    branches:
+      - feature/digiy-language-passport
+    paths:
+      - tools/install_digiy_language_passport.py
+      - .github/workflows/install-language-passport.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer la branche
+        uses: actions/checkout@v4
+        with:
+          ref: feature/digiy-language-passport
+          fetch-depth: 0
+
+      - name: Installer le passeport
+        run: python3 tools/install_digiy_language_passport.py
+
+      - name: Contrôler le fichier autonome
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('index.html').read_text(encoding='utf-8')
+          assert 'DIGIY LANGUAGE PASSPORT 7L v1' in html
+          assert 'action-pro-7lang-monofichier-20260731-v3-passport' in html
+          assert 'localStorage.setItem("digiy-lang",lang)' in html
+          assert 'function propagateLanguage(root)' in html
+          assert '<iframe' not in html.lower()
+
+          match = re.search(r'<script id="digiy-action-7lang-runtime">(.*?)</script>', html, re.S)
+          assert match, 'runtime introuvable'
+          Path('/tmp/action-pro-runtime.js').write_text(match.group(1), encoding='utf-8')
+          print('Contrôles HTML validés')
+          PY
+          node --check /tmp/action-pro-runtime.js
+
+      - name: Publier sur la branche pilote
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "Aucune modification"
+            exit 0
+          fi
+          git config user.name "DIGIYLYFE Build"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "ACTION PRO : transmettre la langue aux modules"
+          git push origin HEAD:feature/digiy-language-passport
