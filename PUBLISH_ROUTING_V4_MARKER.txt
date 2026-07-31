@@ -1,0 +1,2 @@
+ACTION PRO v4-routing vérifié le 2026-07-31.
+Fichiers publics à publier uniquement : index.html et annuaire-public-digiy.js.
