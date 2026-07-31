@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="action-pro-7lang-monofichier-20260731-v4-3-market-aliases"/>
+<meta name="digiy-build" content="action-pro-7lang-monofichier-20260731-v4-4-astou-direct"/>
 <meta name="digiy-lang" content="fr-en-es-de-it-nl-ar-20260731"/>
 <style>
 :root{
@@ -703,7 +703,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260731-routing-v4-3"></script>
+<script src="./annuaire-public-digiy.js?v=20260731-routing-v4-4"></script>
 <script>
 (function(){
   "use strict";
@@ -1603,7 +1603,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     ].some(k => t.includes(clean(k)));
   }
 
-  function directRelevance(item, t, secteur){
+  function directRelevance(item, t, secteur, rawT){
     const keys = Array.isArray(item.keys) ? item.keys : [];
     const family = clean([item.metier, item.categorie, item.title, item.sousCategorie].filter(Boolean).join(" "));
     const namedBaptisteHit = (
@@ -1633,6 +1633,17 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     /* Mots métier / produit / besoin : c'est la vraie clé.
        On ignore les mots qui sont seulement des zones, sinon "Saly" ferait tout remonter. */
+    const rawKeyHits = keys
+      .map(k => clean(k))
+      .filter(ck => ck && !isOnlyZoneWord(ck) && rawT.includes(ck));
+
+    const rawNameHit = [item.nom, item.title, item.titre]
+      .filter(Boolean)
+      .some(v => {
+        const cv = clean(v);
+        return cv && rawT.includes(cv);
+      });
+
     const keyHit = keys.some(k => {
       const ck = clean(k);
       return ck && !isOnlyZoneWord(ck) && t.includes(ck);
@@ -1650,10 +1661,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     /* Protection anti-remontée partout : pas de besoin clair = pas de fiche directe. */
     const genericHit = isGenericProfessionalSearch(t);
-    if(!keyHit && !mainHit && !genericHit && !namedBaptisteHit) return null;
+    if(!rawKeyHits.length && !rawNameHit && !keyHit && !mainHit && !genericHit && !namedBaptisteHit) return null;
 
     return {
-      need: (namedBaptisteHit ? 4 : 0) + (mainHit ? 2 : 0) + (keyHit ? 1 : 0),
+      need: (namedBaptisteHit ? 30 : 0) + (rawNameHit ? 20 : 0) + (rawKeyHits.length ? 12 + Math.min(rawKeyHits.length, 6) : 0) + (mainHit ? 2 : 0) + (keyHit ? 1 : 0),
       zone: zoneHit ? 1 : 0,
       status: item.statut && /pro|fiche|qualifie/i.test(item.statut) ? 1 : 0,
       priority:
@@ -1666,11 +1677,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function matchDirectFiches(text){
+    const rawT = clean(text);
     const t = clean(digiyExpandQuery(text));
     const secteur = detectSecteurFromCleanText(t);
     const scored = FICHES_PUBLICS
       .filter(item => item && item.public !== false)
-      .map(item => ({item, relevance: directRelevance(item, t, secteur)}))
+      .map(item => ({item, relevance: directRelevance(item, t, secteur, rawT)}))
       .filter(x => x.relevance)
       .sort((a,b) =>
         b.relevance.need - a.relevance.need ||
@@ -1744,6 +1756,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         return en
           ? "I understood: you want to stay in Sarlat. I bring up SARLAT CHEZ BAPTISTE, a private room with direct request and no DIGIYLYFE commission."
           : "J’ai compris : tu veux dormir à Sarlat. Je te remonte SARLAT CHEZ BAPTISTE, chambre privée chez l’habitant avec demande directe et 0 % de commission DIGIYLYFE.";
+      }
+      if(titleClean.includes("astou")){
+        return en
+          ? "I understood: you are looking for home linen or beach products in Saly. I bring up Astou Boutique with direct contact."
+          : "J’ai compris : tu cherches du linge de maison ou des articles de plage à Saly. Je te remonte Astou Boutique avec son contact direct.";
       }
       if(titleClean.includes("bcheikh")){
         return en

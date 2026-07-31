@@ -1,7 +1,7 @@
 /*
   annuaire-public-digiy.js
   DIGIYLYFE — Annuaire public officiel de LA VOIX
-  Version : 20260731-routing-v4-3
+  Version : 20260731-routing-v4-4
 
   Résultats attendus :
   plombier     → Babacar + Helage
@@ -14,7 +14,7 @@
 (function (global) {
   "use strict";
 
-  const VERSION = "20260731-routing-v4-3";
+  const VERSION = "20260731-routing-v4-4";
   const MAX_RESULTS = 6;
 
   const DIRECTORY = [
@@ -1178,7 +1178,7 @@
       )
 
       .replace(
-        /[^a-z0-9\s]/g,
+        /[^a-z0-9\u0600-\u06FF\s]/g,
         " "
       )
 
