@@ -14,6 +14,13 @@ def sub_once(text: str, pattern: str, replacement: str, label: str) -> str:
     return updated
 
 
+def sub_once_callable(text: str, pattern: str, replacement_fn, label: str) -> str:
+    updated, count = re.subn(pattern, replacement_fn, text, count=1, flags=re.S)
+    if count != 1:
+        raise SystemExit(f'{label}: remplacement attendu 1, trouvé {count}')
+    return updated
+
+
 # Version publique explicite et idempotente.
 if 'action-pro-7lang-monofichier-20260731-v4-2-written' not in index:
     index = sub_once(
@@ -86,7 +93,12 @@ if core_marker not in index:
     writtenMultilingualRules.forEach(function(rule){
       if(rule[0].test(t)) extra += rule[1];
     });'''
-    index = sub_once(index, anchor_pattern, r'\1' + core_block, 'moteur écrit multilingue')
+    index = sub_once_callable(
+        index,
+        anchor_pattern,
+        lambda match: match.group(1) + core_block,
+        'moteur écrit multilingue',
+    )
 
 # COUCHE 7 LANGUES : séparer réservation générique et table/restaurant.
 if '"réserver reservation"],' not in index:
