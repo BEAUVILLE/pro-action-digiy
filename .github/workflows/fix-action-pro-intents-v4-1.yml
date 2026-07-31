@@ -1,4 +1,4 @@
-name: Fix ACTION PRO intents v4.1
+name: Fix ACTION PRO written search 7 languages
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
           ref: feature/action-pro-intents-separated-v4-1
           fetch-depth: 0
 
-      - name: Apply intent fix
+      - name: Apply multilingual written-search fix
         run: python3 tools/fix_action_pro_intents_v4_1.py
 
       - name: Check JavaScript syntax
@@ -31,22 +31,31 @@ jobs:
           import re
           html=Path('index.html').read_text(encoding='utf-8')
           scripts=re.findall(r'<script(?![^>]*src=)(?![^>]*application/ld\+json)[^>]*>(.*?)</script>',html,flags=re.S|re.I)
-          out=Path('/tmp/action-intents-js');out.mkdir(exist_ok=True)
+          out=Path('/tmp/action-written-js');out.mkdir(exist_ok=True)
           for i,script in enumerate(scripts):
               (out/f'{i}.js').write_text(script,encoding='utf-8')
           print(len(scripts))
           PY
-          for file in /tmp/action-intents-js/*.js; do node --check "$file"; done
+          for file in /tmp/action-written-js/*.js; do node --check "$file"; done
           node --check annuaire-public-digiy.js
           git diff --check
 
-      - name: Verify intent separation
+      - name: Verify routing and written search
         run: |
-          grep -q 'action-pro-7lang-monofichier-20260731-v4-1-intents' index.html
+          grep -Eq 'action-pro-7lang-monofichier-20260731-v4-(1-intents|2-written)' index.html
+          grep -q 'isRestaurantReservationText(t) && !namedBaptisteHit' index.html
           grep -q 'audio écouter vision' index.html
           grep -q 'assistant aide guide' index.html
-          grep -q 'annuaire-public-digiy.js?v=20260731-routing-v4-1' index.html
           ! grep -q 'audio écouter vision assistant aide guide' index.html
+          if grep -q 'v4-2-written' index.html; then
+            grep -q 'DIGIY CORE MULTILINGUE ÉCRIT 7L' index.html
+            grep -q 'fontaner' index.html
+            grep -q 'klempner' index.html
+            grep -q 'idraulic' index.html
+            grep -q 'loodgieter' index.html
+            grep -q 'سباك' index.html
+            grep -q 'annuaire-public-digiy.js?v=20260731-routing-v4-2' index.html
+          fi
 
       - name: Commit public files
         run: |
@@ -54,5 +63,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html annuaire-public-digiy.js
-          git commit -m 'Séparer logement, réservation, assistant et audio'
+          git commit -m 'Fiabiliser la recherche écrite dans les 7 langues'
           git push origin HEAD:feature/action-pro-intents-separated-v4-1
