@@ -1,7 +1,7 @@
 /*
   annuaire-public-digiy.js
   DIGIYLYFE — Annuaire public officiel de LA VOIX
-  Version : 20260731-routing-v4-2-1
+  Version : 20260731-routing-v4-3
 
   Résultats attendus :
   plombier     → Babacar + Helage
@@ -14,7 +14,7 @@
 (function (global) {
   "use strict";
 
-  const VERSION = "20260731-routing-v4-2-1";
+  const VERSION = "20260731-routing-v4-3";
   const MAX_RESULTS = 6;
 
   const DIRECTORY = [
@@ -503,10 +503,63 @@
         "magasin",
 
         "linge",
+        "linge de maison",
         "serviette",
+        "serviettes",
         "drap",
+        "draps",
         "peignoir",
+        "peignoirs",
         "fouta",
+        "foutas",
+
+        "towel",
+        "towels",
+        "sheet",
+        "sheets",
+        "bathrobe",
+        "bed linen",
+        "home linen",
+
+        "toalla",
+        "toallas",
+        "sabana",
+        "sabanas",
+        "sábana",
+        "sábanas",
+        "albornoz",
+        "albornoces",
+        "ropa de cama",
+
+        "handtuch",
+        "handtucher",
+        "handtücher",
+        "bettwasche",
+        "bettwäsche",
+        "bettlaken",
+        "bademantel",
+
+        "asciugamano",
+        "asciugamani",
+        "lenzuolo",
+        "lenzuola",
+        "accappatoio",
+        "biancheria casa",
+
+        "handdoek",
+        "handdoeken",
+        "laken",
+        "lakens",
+        "beddengoed",
+        "badjas",
+
+        "منشفة",
+        "مناشف",
+        "ملاءة",
+        "ملاءات",
+        "رداء حمام",
+        "مفروشات",
+        "بياضات",
 
         "plage",
         "robe",
@@ -839,7 +892,41 @@
         "produit",
         "linge",
         "serviette",
+        "serviettes",
         "drap",
+        "draps",
+        "peignoir",
+        "towel",
+        "towels",
+        "sheet",
+        "sheets",
+        "bathrobe",
+        "toalla",
+        "toallas",
+        "sabana",
+        "sabanas",
+        "albornoz",
+        "handtuch",
+        "handtucher",
+        "bettwasche",
+        "bettlaken",
+        "bademantel",
+        "asciugamano",
+        "asciugamani",
+        "lenzuolo",
+        "lenzuola",
+        "accappatoio",
+        "handdoek",
+        "handdoeken",
+        "laken",
+        "lakens",
+        "beddengoed",
+        "badjas",
+        "منشفة",
+        "مناشف",
+        "ملاءة",
+        "ملاءات",
+        "رداء حمام",
         "robe"
       ]
     },
