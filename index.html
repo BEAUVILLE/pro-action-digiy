@@ -7,7 +7,7 @@
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
-<meta name="digiy-build" content="action-pro-7lang-monofichier-20260731-v2-voice"/>
+<meta name="digiy-build" content="action-pro-7lang-monofichier-20260731-v3-passport"/>
 <meta name="digiy-lang" content="fr-en-es-de-it-nl-ar-20260731"/>
 <style>
 :root{
@@ -2467,12 +2467,37 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function actual(){try{return safe(new URLSearchParams(location.search).get("lang")||localStorage.getItem(KEY)||navigator.language)}catch(_){return"fr"}}
   function base(lang){return lang==="en"?"en":"fr"}
   function locale(){return LOCALE[actual()]||"fr-FR"}
-  function persist(lang){try{localStorage.setItem(KEY,lang);localStorage.setItem(LEGACY,base(lang))}catch(_){}}
+  function persist(lang){try{localStorage.setItem(KEY,lang);localStorage.setItem(LEGACY,base(lang));localStorage.setItem("digiy-lang",lang)}catch(_){}}
   function nativeButton(lang){return document.querySelector('[data-lang-choice="'+base(lang)+'"], [data-lang="'+base(lang)+'"]')}
   function setText(selector,value){const el=document.querySelector(selector);if(el&&value!=null&&el.textContent!==value)el.textContent=value}
   function setAria(selector,value){const el=document.querySelector(selector);if(el&&value!=null)el.setAttribute("aria-label",value)}
   function normalize(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
   function expand(value){const source=String(value||"");const n=normalize(source);let extra="";RULES.forEach(function(rule){if(rule[0].test(n))extra+=" "+rule[1]});return source+extra}
+
+  /* DIGIY LANGUAGE PASSPORT 7L v1 */
+  function isDigiyHost(hostname){
+    const host=String(hostname||"").toLowerCase();
+    return host==="digiylyfe.com"||host.endsWith(".digiylyfe.com");
+  }
+
+  function linkWithLanguage(href){
+    try{
+      const url=new URL(href,location.href);
+      if(!/^https?:$/.test(url.protocol)||!isDigiyHost(url.hostname))return href;
+      url.searchParams.set("lang",actual());
+      return url.toString();
+    }catch(_){return href}
+  }
+
+  function propagateLanguage(root){
+    const scope=root&&root.querySelectorAll?root:document;
+    scope.querySelectorAll('a[href]').forEach(function(link){
+      const current=link.getAttribute("href");
+      if(!current||current.startsWith("#"))return;
+      const next=linkWithLanguage(current);
+      if(next!==current)link.setAttribute("href",next);
+    });
+  }
 
   function buildBar(){
     if(document.getElementById("digiyLang7"))return;
@@ -2496,6 +2521,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     setText(".resultTitle",u.resultTitle);setText(".resultIntro",u.resultIntro);setText("#empty",u.empty);setText("footer",u.footer);
     (QUICK[lang]||QUICK.fr).forEach(function(text,index){const el=document.querySelectorAll(".chip[data-q]")[index];if(el){el.dataset.q=text;el.setAttribute("aria-label",text);el.title=text}});
     (EXAMPLES[lang]||EXAMPLES.fr).forEach(function(text,index){const el=document.querySelectorAll(".examplePhrase[data-q]")[index];if(el){el.dataset.q=text;const visible=el.querySelector(".fr")||el.querySelector("span")||el;if(visible.textContent!==text)visible.textContent=text}});
+    propagateLanguage(document);
     applying=false;
   }
 
@@ -2649,8 +2675,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   },true);
 
   buildBar();setLanguage(actual());
-  const cards=document.getElementById("cards");if(cards)new MutationObserver(function(){requestAnimationFrame(applyDynamic)}).observe(cards,{childList:true});
-  window.addEventListener("storage",function(e){if(e.key===KEY)setLanguage(e.newValue||"fr")});
+  const cards=document.getElementById("cards");if(cards)new MutationObserver(function(){requestAnimationFrame(function(){applyDynamic();propagateLanguage(cards)})}).observe(cards,{childList:true});
+  const passportObserver=new MutationObserver(function(){requestAnimationFrame(function(){propagateLanguage(document)})});
+  passportObserver.observe(document.body,{childList:true,subtree:true});
+  propagateLanguage(document);
+  window.addEventListener("storage",function(e){if(e.key===KEY||e.key==="digiy-lang")setLanguage(e.newValue||"fr")});
 })();
 </script>
 
