@@ -1,0 +1,65 @@
+name: Build ACTION PRO 7 langues
+
+on:
+  push:
+    branches:
+      - feature/action-pro-7-langues-monofichier
+    paths:
+      - tools/build_action_pro_7lang.py
+      - .github/workflows/build-action-pro-7lang.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer la branche de test
+        uses: actions/checkout@v4
+        with:
+          ref: feature/action-pro-7-langues-monofichier
+          fetch-depth: 0
+
+      - name: Construire le fichier autonome
+        run: python3 tools/build_action_pro_7lang.py
+
+      - name: Contrôler le HTML et le JavaScript
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('index.html').read_text(encoding='utf-8')
+          assert '<iframe' not in html.lower(), 'iframe interdit'
+          assert 'DIGIY ACTION PRO 7 LANGUES MONOFICHIER' in html
+          assert 'annuaire-public-digiy.js' in html
+          assert 'action-pro-7lang-monofichier-20260731-v1' in html
+
+          match = re.search(
+              r'<script id="digiy-action-7lang-runtime">(.*?)</script>',
+              html,
+              re.S,
+          )
+          assert match, 'runtime sept langues introuvable'
+          Path('/tmp/action-pro-7lang-runtime.js').write_text(
+              match.group(1), encoding='utf-8'
+          )
+          print('Contrôle HTML validé')
+          PY
+          node --check /tmp/action-pro-7lang-runtime.js
+
+      - name: Publier uniquement sur la branche de test
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "Aucune modification à publier"
+            exit 0
+          fi
+          git config user.name "DIGIYLYFE Build"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "ACTION PRO : étendre le fichier stable aux 7 langues"
+          git push origin HEAD:feature/action-pro-7-langues-monofichier
