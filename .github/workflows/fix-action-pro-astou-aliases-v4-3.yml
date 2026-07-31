@@ -1,0 +1,61 @@
+name: Fix ACTION PRO Astou aliases v4.3
+
+on:
+  push:
+    branches:
+      - feature/action-pro-astou-aliases-v4-3
+    paths:
+      - tools/fix_action_pro_astou_aliases_v4_3.py
+      - .github/workflows/fix-action-pro-astou-aliases-v4-3.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/action-pro-astou-aliases-v4-3
+          fetch-depth: 0
+
+      - name: Apply Astou multilingual aliases
+        run: python3 tools/fix_action_pro_astou_aliases_v4_3.py
+
+      - name: Check JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('index.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script(?![^>]*src=)(?![^>]*application/ld\+json)[^>]*>(.*?)</script>', html, flags=re.S|re.I)
+          out = Path('/tmp/action-astou-js')
+          out.mkdir(exist_ok=True)
+          for i, script in enumerate(scripts):
+              (out / f'{i}.js').write_text(script, encoding='utf-8')
+          print(f'{len(scripts)} scripts extraits')
+          PY
+          for file in /tmp/action-astou-js/*.js; do node --check "$file"; done
+          node --check annuaire-public-digiy.js
+          git diff --check
+
+      - name: Verify Astou written searches
+        run: |
+          grep -q 'action-pro-7lang-monofichier-20260731-v4-3-market-aliases' index.html
+          grep -q 'annuaire-public-digiy.js?v=20260731-routing-v4-3' index.html
+          grep -q '"toallas"' annuaire-public-digiy.js
+          grep -q '"handtücher"' annuaire-public-digiy.js
+          grep -q '"asciugamani"' annuaire-public-digiy.js
+          grep -q '"handdoeken"' annuaire-public-digiy.js
+          grep -q '"مناشف"' annuaire-public-digiy.js
+
+      - name: Commit public files
+        run: |
+          if git diff --quiet -- index.html annuaire-public-digiy.js; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html annuaire-public-digiy.js
+          git commit -m 'ACTION PRO : reconnaître le catalogue Astou en 7 langues'
+          git push origin HEAD:feature/action-pro-astou-aliases-v4-3
