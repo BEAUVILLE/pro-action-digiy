@@ -85,3 +85,5 @@ jobs:
             git commit -m "Ajouter Nazir Driver à ACTION PRO"
             git push
           fi
+
+# Relance contrôlée DIGIY — 2026-08-01
