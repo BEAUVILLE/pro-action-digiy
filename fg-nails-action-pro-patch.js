@@ -10,7 +10,7 @@
     nom: "FG NAILS",
     title: "FG NAILS — Onglerie · Beauté · Bien-être à Saly",
     metier: "onglerie et soins de beauté",
-    activite: "Onglerie · Soins de beauté · Massage modelant · Lipocavitation · Produits d’hygiène femme et homme",
+    activite: "Onglerie · Soins de beauté · Massage modelant · Lipocavitation ventre · Produits d’hygiène femme et homme",
     categorie: "BEAUTÉ",
     sousCategorie: "onglerie · esthétique · bien-être · hygiène",
     secteur: "Résidence Nafil · Saly",
@@ -25,18 +25,18 @@
     url: "https://f-g-nails.digiylyfe.com/",
     productsUrl: "https://f-g-nails.digiylyfe.com/hygiene-bien-etre-saly.html",
     cardImageUrl: "https://f-g-nails.digiylyfe.com/fg-nails-carte-officielle.webp",
-    description: "FG NAILS accueille sa clientèle à la Résidence Nafil à Saly pour l’onglerie, les soins de beauté, le massage modelant, la lipocavitation et les produits d’hygiène pour femmes et hommes. Contact direct par téléphone ou WhatsApp.",
+    description: "FG NAILS accueille sa clientèle à la Résidence Nafil à Saly pour l’onglerie, les soins de beauté, le massage modelant, la lipocavitation ventre et les produits d’hygiène pour femmes et hommes. Contact direct par téléphone ou WhatsApp.",
     keys: [
       "fg nails", "f g nails", "fama", "onglerie", "ongles", "manucure", "pedicure", "pédicure",
       "beaute", "beauté", "esthetique", "esthétique", "soins de beaute", "soins de beauté",
-      "bien etre", "bien-être", "massage modelant", "lipocavitation", "hygiene femme", "hygiène femme",
-      "hygiene homme", "hygiène homme", "cosmetique", "cosmétique", "produits de beauté",
-      "nail salon", "nails", "manicure", "pedicure", "beauty care", "beauty products", "women hygiene", "men hygiene",
-      "salon de uñas", "uñas", "manicura", "pedicura", "belleza", "productos de higiene",
-      "nagelstudio", "nagelpflege", "maniküre", "pediküre", "schönheit", "hygieneprodukte",
-      "salone unghie", "unghie", "manicure", "pedicure", "bellezza", "prodotti per l igiene",
-      "nagelsalon", "nagelverzorging", "manicure", "pedicure", "schoonheid", "hygieneproducten",
-      "صالون أظافر", "العناية بالأظافر", "مانيكير", "باديكير", "تجميل", "منتجات النظافة",
+      "bien etre", "bien-être", "massage modelant", "lipocavitation", "lipocavitation ventre", "ventre",
+      "hygiene femme", "hygiène femme", "hygiene homme", "hygiène homme", "cosmetique", "cosmétique", "produits de beauté",
+      "nail salon", "nails", "manicure", "pedicure", "beauty care", "beauty products", "women hygiene", "men hygiene", "abdominal lipocavitation", "abdomen",
+      "salon de uñas", "uñas", "manicura", "pedicura", "belleza", "productos de higiene", "lipocavitación abdominal",
+      "nagelstudio", "nagelpflege", "maniküre", "pediküre", "schönheit", "hygieneprodukte", "lipokavitation am bauch",
+      "salone unghie", "unghie", "manicure", "pedicure", "bellezza", "prodotti per l igiene", "lipocavitazione addominale",
+      "nagelsalon", "nagelverzorging", "manicure", "pedicure", "schoonheid", "hygieneproducten", "lipocavitatie voor de buik",
+      "صالون أظافر", "العناية بالأظافر", "مانيكير", "باديكير", "تجميل", "منتجات النظافة", "ليبـوكافيتيشن البطن", "البطن",
       "saly", "résidence nafil", "residence nafil", "clinique des yeux", "petite côte", "petite cote"
     ],
     forbidden: ["garage", "chauffeur", "plomberie", "maçon", "macon", "électricité", "electricite"],
@@ -45,13 +45,13 @@
 
   const LANGS = ["fr", "en", "es", "de", "it", "nl", "ar"];
   const TEXT = {
-    fr: { label: "💅 FG NAILS", query: "Je cherche une onglerie ou des soins de beauté à Saly", line: "Je cherche une onglerie ou des soins de beauté à Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Je cherche une onglerie à Saly" },
-    en: { label: "💅 FG NAILS", query: "I need a nail salon or beauty care in Saly", line: "I need a nail salon or beauty care in Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "I need a nail salon in Saly" },
-    es: { label: "💅 FG NAILS", query: "Busco manicura o cuidados de belleza en Saly", line: "Busco manicura o cuidados de belleza en Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Busco manicura en Saly" },
-    de: { label: "💅 FG NAILS", query: "Ich suche ein Nagelstudio oder Schönheitspflege in Saly", line: "Ich suche ein Nagelstudio oder Schönheitspflege in Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Ich suche ein Nagelstudio in Saly" },
-    it: { label: "💅 FG NAILS", query: "Cerco un salone unghie o trattamenti di bellezza a Saly", line: "Cerco un salone unghie o trattamenti di bellezza a Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Cerco un salone unghie a Saly" },
-    nl: { label: "💅 FG NAILS", query: "Ik zoek een nagelsalon of schoonheidsbehandeling in Saly", line: "Ik zoek een nagelsalon of schoonheidsbehandeling in Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Ik zoek een nagelsalon in Saly" },
-    ar: { label: "💅 FG NAILS", query: "أبحث عن صالون أظافر أو خدمات تجميل في سالي", line: "أبحث عن صالون أظافر أو خدمات تجميل في سالي", sub: "FG NAILS · Résidence Nafil · Saly", chip: "أبحث عن صالون أظافر في سالي" }
+    fr: { label: "💅 FG NAILS", query: "Je cherche une onglerie, des soins de beauté ou une lipocavitation ventre à Saly", line: "Je cherche une onglerie ou des soins de beauté à Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Je cherche une onglerie à Saly" },
+    en: { label: "💅 FG NAILS", query: "I need a nail salon, beauty care or abdominal lipocavitation in Saly", line: "I need a nail salon or beauty care in Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "I need a nail salon in Saly" },
+    es: { label: "💅 FG NAILS", query: "Busco manicura, cuidados de belleza o lipocavitación abdominal en Saly", line: "Busco manicura o cuidados de belleza en Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Busco manicura en Saly" },
+    de: { label: "💅 FG NAILS", query: "Ich suche ein Nagelstudio, Schönheitspflege oder Lipokavitation am Bauch in Saly", line: "Ich suche ein Nagelstudio oder Schönheitspflege in Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Ich suche ein Nagelstudio in Saly" },
+    it: { label: "💅 FG NAILS", query: "Cerco un salone unghie, trattamenti di bellezza o lipocavitazione addominale a Saly", line: "Cerco un salone unghie o trattamenti di bellezza a Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Cerco un salone unghie a Saly" },
+    nl: { label: "💅 FG NAILS", query: "Ik zoek een nagelsalon, schoonheidsbehandeling of lipocavitatie voor de buik in Saly", line: "Ik zoek een nagelsalon of schoonheidsbehandeling in Saly", sub: "FG NAILS · Résidence Nafil · Saly", chip: "Ik zoek een nagelsalon in Saly" },
+    ar: { label: "💅 FG NAILS", query: "أبحث عن صالون أظافر أو خدمات تجميل أو ليبـوكافيتيشن البطن في سالي", line: "أبحث عن صالون أظافر أو خدمات تجميل في سالي", sub: "FG NAILS · Résidence Nafil · Saly", chip: "أبحث عن صالون أظافر في سالي" }
   };
 
   function addFgNails(source) {
@@ -76,11 +76,11 @@
   global.DIGIY_PUBLIC_DIRECTORY = addFgNails(global.DIGIY_PUBLIC_DIRECTORY);
 
   if (global.DIGIY_ANNUAIRE_PUBLIC) {
-    global.DIGIY_ANNUAIRE_PUBLIC.version = "20260805-fg-nails-action-pro-v2";
+    global.DIGIY_ANNUAIRE_PUBLIC.version = "20260805-fg-nails-action-pro-v3";
     global.DIGIY_ANNUAIRE_PUBLIC.fiches = addFgNails(global.DIGIY_ANNUAIRE_PUBLIC.fiches);
   }
   if (global.DIGIY_ANNUAIRE_MULTI) {
-    global.DIGIY_ANNUAIRE_MULTI.version = "20260805-fg-nails-action-pro-v2";
+    global.DIGIY_ANNUAIRE_MULTI.version = "20260805-fg-nails-action-pro-v3";
     global.DIGIY_ANNUAIRE_MULTI.annuaire = addFgNails(global.DIGIY_ANNUAIRE_MULTI.annuaire);
   }
 
@@ -190,7 +190,7 @@
 
   try {
     global.dispatchEvent(new CustomEvent("digiy:fg-nails-ready", {
-      detail: { id: FG_NAILS.id, phone: FG_NAILS.phone, version: "v2" }
+      detail: { id: FG_NAILS.id, phone: FG_NAILS.phone, version: "v3" }
     }));
   } catch (_) {}
 })(window);
