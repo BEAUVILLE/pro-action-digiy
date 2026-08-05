@@ -2,6 +2,7 @@
   DIGIYLYFE — Chargeur annuaire public stable + fiches partenaires
   Le cœur historique reste figé sur le commit validé du 31 juillet 2026.
   Les compléments partenaires sont chargés immédiatement après, avant le moteur ACTION PRO.
+  Version chargeur : 20260805-fg-nails-action-pro-v2
 */
 (function () {
   "use strict";
@@ -15,6 +16,6 @@
   );
 
   document.write(
-    '<script src="./fg-nails-action-pro-patch.js?v=20260805-fg-nails-saly"></script>'
+    '<script src="./fg-nails-action-pro-patch.js?v=20260805-fg-nails-action-pro-v2"></script>'
   );
 })();
