@@ -1,7 +1,7 @@
 /*
-  DIGIYLYFE — Chargeur annuaire public stable + fiche Nazir Driver
+  DIGIYLYFE — Chargeur annuaire public stable + fiches partenaires
   Le cœur historique reste figé sur le commit validé du 31 juillet 2026.
-  Le complément Nazir est chargé immédiatement après, avant le moteur ACTION PRO.
+  Les compléments partenaires sont chargés immédiatement après, avant le moteur ACTION PRO.
 */
 (function () {
   "use strict";
@@ -12,5 +12,9 @@
 
   document.write(
     '<script src="./nazir-action-pro-patch.js?v=20260801-nazir-driver"></script>'
+  );
+
+  document.write(
+    '<script src="./fg-nails-action-pro-patch.js?v=20260805-fg-nails-saly"></script>'
   );
 })();
