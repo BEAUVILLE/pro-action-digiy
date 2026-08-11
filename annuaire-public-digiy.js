@@ -4,7 +4,8 @@
   Les compléments partenaires sont chargés immédiatement après, avant le moteur ACTION PRO.
   Puis la couche services + intentions transforme les services réels en mots compris par LA VOIX.
   Enfin la couche voix rapide préchauffe le moteur vocal et raccourcit l'attente après transcription.
-  Version chargeur : 20260808-voice-fast-v2
+  WORLD8 ajoute la couche d'interface 8 langues sans toucher au cœur annuaire.
+  Version chargeur : 20260811-world8-v1
 */
 (function () {
   "use strict";
@@ -27,5 +28,21 @@
 
   document.write(
     '<script src="./action-pro-voice-fast.js?v=20260808-voice-fast-v2"></script>'
+  );
+
+  document.write(
+    '<script src="./world8-dict.js?v=20260811-world8"></script>'
+  );
+
+  document.write(
+    '<script src="https://digiylyfe.com/assets/i18n/digiy-world8.js?v=20260811-world8"></script>'
+  );
+
+  document.write(
+    '<script src="https://digiylyfe.com/assets/i18n/digiy-world8-runtime.js?v=20260811-world8"></script>'
+  );
+
+  document.write(
+    '<script src="./world8-search.js?v=20260811-world8"></script>'
   );
 })();
