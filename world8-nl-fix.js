@@ -1,0 +1,2 @@
+/* ACTION PRO WORLD8 — NL exact-key correction */
+(function(){'use strict';if(!window.DIGIY_WORLD8_PAGE||!window.DIGIY_WORLD8_PAGE.nl)return;window.DIGIY_WORLD8_PAGE.nl['Je veux publier une annonce dans le réseau']='Ik wil een advertentie in het netwerk plaatsen';delete window.DIGIY_WORLD8_PAGE.nl['Je veux publier une annonce dans le netwerk'];})();
