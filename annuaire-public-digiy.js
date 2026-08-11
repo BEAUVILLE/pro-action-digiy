@@ -5,7 +5,7 @@
   Puis la couche services + intentions transforme les services réels en mots compris par LA VOIX.
   Enfin la couche voix rapide préchauffe le moteur vocal et raccourcit l'attente après transcription.
   WORLD8 ajoute la couche d'interface 8 langues sans toucher au cœur annuaire.
-  Version chargeur : 20260811-world8-v1
+  Version chargeur : 20260811-world8-v2
 */
 (function () {
   "use strict";
@@ -32,6 +32,10 @@
 
   document.write(
     '<script src="./world8-dict.js?v=20260811-world8"></script>'
+  );
+
+  document.write(
+    '<script src="./world8-nl-fix.js?v=20260811-world8"></script>'
   );
 
   document.write(
