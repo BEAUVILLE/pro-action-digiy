@@ -36,3 +36,4 @@ jobs:
             git commit -m "Mieux marquer le retour DIGIYLYFE"
             git push
           fi
+# déclenchement volontaire
