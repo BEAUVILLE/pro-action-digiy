@@ -1,5 +1,6 @@
 name: Retrait FG NAILS LA VOIX - une fois
 
+# Déclencheur unique validé le 2026-08-26
 on:
   push:
     paths:
