@@ -5,7 +5,7 @@
   Puis la couche services + intentions transforme les services réels en mots compris par LA VOIX.
   Enfin la couche voix rapide préchauffe le moteur vocal et raccourcit l'attente après transcription.
   WORLD8 ajoute la couche d'interface 8 langues sans toucher au cœur annuaire.
-  Version chargeur : 20260811-world8-v2
+  Version chargeur : 20260826-fg-retire-v3
 */
 (function () {
   "use strict";
@@ -16,10 +16,6 @@
 
   document.write(
     '<script src="./nazir-action-pro-patch.js?v=20260801-nazir-driver"></script>'
-  );
-
-  document.write(
-    '<script src="./fg-nails-action-pro-patch.js?v=20260808-fg-nails-service-intents-v4"></script>'
   );
 
   document.write(
