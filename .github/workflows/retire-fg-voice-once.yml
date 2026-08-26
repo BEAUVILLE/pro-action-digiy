@@ -1,0 +1,41 @@
+name: Retrait FG NAILS LA VOIX - une fois
+
+on:
+  push:
+    paths:
+      - '.github/workflows/retire-fg-voice-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Mettre à jour uniquement la version du chargeur annuaire
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<script src="./annuaire-public-digiy.js?v=20260731-routing-v4-4"></script>'
+          new = '<script src="./annuaire-public-digiy.js?v=20260826-fg-retire-v3"></script>'
+          count = s.count(old)
+          if count != 1:
+              raise SystemExit(f'GARDE-FOU: attendu 1 appel ancien, trouvé {count}')
+          s = s.replace(old, new)
+          p.write_text(s, encoding='utf-8')
+
+      - name: Contrôler et pousser
+        run: |
+          grep -F './annuaire-public-digiy.js?v=20260826-fg-retire-v3' index.html
+          ! grep -F 'fg-nails-action-pro-patch.js' annuaire-public-digiy-core.js
+          rm .github/workflows/retire-fg-voice-once.yml
+          git config user.name 'DIGIYLYFE'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html .github/workflows/retire-fg-voice-once.yml
+          git commit -m 'Force LA VOIX à oublier FG NAILS'
+          git push
