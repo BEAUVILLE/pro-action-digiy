@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#fff9ea"/>
 <meta name="robots" content="index,follow"/>
 <link rel="canonical" href="https://pro-action-digiy.digiylyfe.com/">
-<meta name="digiy-build" content="action-pro-7lang-monofichier-20260731-v4-4-astou-direct"/>
+<meta name="digiy-build" content="action-pro-supabase-subscription-gate-v1-20260826"/>
 <meta name="digiy-lang" content="fr-en-es-de-it-nl-ar-20260731"/>
 <style>
 :root{
@@ -705,7 +705,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260731-routing-v4-4"></script>
+<script src="./annuaire-public-digiy.js?v=20260826-subscription-gate-v1"></script>
 <script>
 (function(){
   "use strict";
@@ -730,8 +730,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
      Remplir ces 2 lignes avec Project URL + anon public key Supabase.
      Tant que ce n'est pas rempli, l'ancien moteur local reste actif en secours.
   */
-  const DIGIY_SUPABASE_URL = "REMPLACER_SUPABASE_URL";
-  const DIGIY_SUPABASE_ANON_KEY = "REMPLACER_SUPABASE_ANON_KEY";
+  const DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+  const DIGIY_SUPABASE_ANON_KEY = "sb_publishable_2KVRayr3oWcewu0Y7xMkOQ_D6522h1E";
   const DIGIY_RPC_NAME = "digiy_route_public";
   let digiySupabaseClientCache = null;
   let digiySearchSeq = 0;
@@ -835,19 +835,85 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     };
   }
 
+  function digiyNormalizePublicUrl(value){
+    const raw = String(value || "").trim();
+    if(!raw || raw === "#") return "";
+    try{
+      const u = new URL(raw, window.location.origin);
+      const cleanPath = u.pathname.replace(/\/+$/, "") || "";
+      return (u.origin + cleanPath).toLowerCase();
+    }catch(_){
+      return raw.split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+    }
+  }
+
+  let digiyPublicGateCache = {at:0, urls:null};
+
+  async function digiyAllowedPublicUrls(){
+    const now = Date.now();
+    if(digiyPublicGateCache.urls && (now - digiyPublicGateCache.at) < 60000){
+      return digiyPublicGateCache.urls;
+    }
+
+    const sb = digiySupabaseClient();
+    if(!sb) throw new Error("Supabase public gate unavailable");
+
+    try{
+      const {data, error} = await sb
+        .from("digiy_annuaire_public")
+        .select("public_url");
+
+      if(error) throw error;
+
+      const urls = new Set(
+        (Array.isArray(data) ? data : [])
+          .map(row => digiyNormalizePublicUrl(row && row.public_url))
+          .filter(Boolean)
+      );
+
+      digiyPublicGateCache = {at:now, urls};
+      return urls;
+    }catch(err){
+      if(digiyPublicGateCache.urls) return digiyPublicGateCache.urls;
+      throw err;
+    }
+  }
+
+  function digiyAuthorizeDirectoryList(list, allowedUrls){
+    const source = Array.isArray(list) ? list : [];
+    if(!(allowedUrls instanceof Set)){
+      return source.filter(item => item && item.kind !== "directory");
+    }
+    return source.filter(item => {
+      if(!item || item.kind !== "directory") return !!item;
+      const url = digiyNormalizePublicUrl(item.url);
+      return !!url && allowedUrls.has(url);
+    });
+  }
+
+  function digiyGenericLocalCards(text){
+    const t = clean(digiyExpandQuery(text));
+    if(!t) return [];
+    return DATA.filter(item => item.keys.some(k => t.includes(clean(k)))).slice(0,4);
+  }
+
   async function matchCardsPublic(text){
     const val = String(text || "").trim();
     if(!val) return [];
 
-    /* DIGIY PATCH TERRAIN — 20260622
-       Le public ne parle pas en noms de modules.
-       Exemple réel : “trouve-moi un chauffeur à Saly”.
-       On teste donc d'abord les fiches directes locales métier + secteur.
-       Supabase peut ensuite renforcer, mais ne doit pas bloquer une fiche directe. */
-    const localDirectFirst = matchDirectFiches(val);
+    const sb = digiySupabaseClient();
+    let allowedUrls = null;
+
+    try{
+      allowedUrls = await digiyAllowedPublicUrls();
+    }catch(err){
+      console.warn("DIGIY gate public indisponible : fiches locales fermées par sécurité.", err);
+      setStatus("⚠️", digiyLang() === "en" ? "Public membership gate unavailable" : "Contrôle adhésion indisponible");
+    }
+
+    const localDirectFirst = digiyAuthorizeDirectoryList(matchDirectFiches(val), allowedUrls);
     if(localDirectFirst.length) return localDirectFirst.slice(0,4);
 
-    const sb = digiySupabaseClient();
     if(sb){
       try{
         setStatus("⏳", digiyLang() === "en" ? "DIGIY memory" : "Mémoire DIGIY");
@@ -860,25 +926,25 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
         const rows = Array.isArray(data) ? data : [];
         const mapped = rows.map(digiyRpcCardFromRow).filter(Boolean);
-
-        /* Si Supabase remonte une vraie fiche, on la garde.
-           Si Supabase remonte seulement une route/module, on vérifie le secours local.
-           Ça évite le cas : “chauffeur à Saly” compris en DRIVER, mais sans fiche affichée. */
-        const mappedDirect = mapped.filter(x => x && x.kind === "directory");
+        const mappedDirectRaw = mapped.filter(x => x && x.kind === "directory");
+        const mappedDirect = allowedUrls instanceof Set
+          ? digiyAuthorizeDirectoryList(mappedDirectRaw, allowedUrls)
+          : mappedDirectRaw;
         if(mappedDirect.length) return mappedDirect.slice(0,4);
 
         if(mapped.length){
-          const localBackup = matchCards(val);
+          const localBackup = digiyAuthorizeDirectoryList(matchCards(val), allowedUrls);
           if(localBackup.length) return localBackup.slice(0,4);
-          return mapped.slice(0,4);
+          const safeRoutes = mapped.filter(x => x && x.kind !== "directory");
+          if(safeRoutes.length) return safeRoutes.slice(0,4);
         }
       }catch(err){
-        console.warn("DIGIY RPC indisponible, moteur local en secours :", err);
-        setStatus("⚠️", digiyLang() === "en" ? "Memory unavailable · local backup" : "Mémoire indisponible · secours local");
+        console.warn("DIGIY RPC indisponible : aucune ancienne fiche locale n'est ouverte sans validation Supabase.", err);
+        setStatus("⚠️", digiyLang() === "en" ? "Memory unavailable · safe module backup" : "Mémoire indisponible · secours modules");
       }
     }
 
-    return matchCards(val);
+    return digiyGenericLocalCards(val);
   }
 
   const $ = (id) => document.getElementById(id);
@@ -2111,7 +2177,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   });
 
   function digiyBuildReply(raw) {
-    const list = matchCards(raw || "");
+    /* La parole synchrone ne cite plus une ancienne fiche locale avant validation Supabase. */
+    const list = [];
     const directMsg = responseDirecte(raw || "", list);
     if(directMsg) return directMsg;
 
