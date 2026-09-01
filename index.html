@@ -5,10 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>La Voix du Business — DIGIYLYFE</title>
 <meta name="description" content="La Voix du Business DIGIYLYFE — demande simple, fiches directes, contact direct."/>
-<meta name="theme-color" content="#fff9ea"/>
+<meta name="theme-color" content="#073f32"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="ACTION PRO"/>
+<link rel="manifest" href="./manifest.webmanifest?v=20260901-pwa-v1"/>
+<link rel="icon" href="./icon-action-pro.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="./icon-action-pro.svg"/>
 <meta name="robots" content="index,follow"/>
 <link rel="canonical" href="https://pro-action-digiy.digiylyfe.com/">
-<meta name="digiy-build" content="action-pro-supabase-subscription-gate-v1-20260826"/>
+<meta name="digiy-build" content="action-pro-voice-first-pwa-v1-20260901"/>
 <meta name="digiy-lang" content="fr-en-es-de-it-nl-ar-20260731"/>
 <style>
 :root{
@@ -705,7 +712,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260901-loop-fix-v8"></script>
+<script src="./annuaire-public-digiy.js?v=20260901-voice-first-pwa-v9"></script>
 <script>
 (function(){
   "use strict";
@@ -2819,6 +2826,15 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 </script>
 
 <script src="./action-pro-health-route-v1.js?v=20260901-health-master-v1"></script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js?v=20260901-pwa-v1',{scope:'/',updateViaCache:'none'})
+      .then(function(registration){registration.update().catch(function(){})})
+      .catch(function(error){console.warn('ACTION PRO PWA:',error)});
+  },{once:true});
+}
+</script>
 </body>
 </html>
 
