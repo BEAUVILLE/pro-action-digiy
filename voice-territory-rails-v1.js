@@ -133,8 +133,11 @@
     var meta=TERRITORIES[t],suffix=' '+meta.queryZone;
 
     if(meta.country==='fr'){
-      var city=t==='bordeaux'?'Bordeaux':'Sarlat';
-      var quick={
+      var city=t==='bordeaux'?'Bordeaux':'Sarlat',currentLang=lang();
+      var placePattern=/Petite Côte|petite cote|Saly|AIBD|Dakar|Sarlat|الساحل الصغير|سالي|داكار|سارلا/gi;
+      function localPlace(value){return String(value||'').replace(placePattern,city)}
+
+      var quickFr={
         'VOIX':'Je veux dire ma recherche à DIGIY pour '+city,
         'SARLAT':'Je veux découvrir les adresses de '+city,
         'EXPLORE':'Je veux une idée de sortie à '+city,
@@ -151,28 +154,43 @@
         'NDIMBAL LOC':'Je cherche un logement avec option solidaire à '+city
       };
       Array.prototype.forEach.call(document.querySelectorAll('.chip[data-q]'),function(el){
-        var key=el.getAttribute('aria-label')||'';if(quick[key])el.setAttribute('data-q',quick[key]);
+        var key=el.getAttribute('aria-label')||'',value=el.getAttribute('data-q')||'';
+        if(currentLang==='fr'&&quickFr[key])value=quickFr[key];else value=localPlace(value);
+        el.setAttribute('data-q',value);el.setAttribute('aria-label',localPlace(el.getAttribute('aria-label')||value));el.title=localPlace(el.title||value);
       });
 
-      var examples=[
-        ['🩺 SANTÉ','Je cherche un médecin à '+city],
-        ['🦷 DENTISTE','Je cherche un dentiste à '+city],
-        ['💉 SOINS','Je cherche un infirmier ou une infirmière à '+city],
-        ['⚖️ SERVICES PRO','Je cherche un notaire ou un avocat à '+city],
-        ['🏗️ ARTISAN','Je cherche un artisan pour une réparation à '+city],
-        ['🚗 CHAUFFEUR','Je cherche un chauffeur à '+city],
-        ['🗺️ SORTIE','Je veux une idée de sortie à '+city],
-        ['📅 RÉSERVATION','Je veux réserver une table ce soir à '+city],
-        ['🍽️ RESTAURANT','Je cherche un restaurant à '+city],
-        ['🛏️ LOGEMENT','Je cherche une chambre à '+city],
-        ['🛍️ COMMERCE','Je cherche un commerce local à '+city],
-        ['💼 EMPLOI','Je cherche un emploi ou une mission à '+city]
-      ];
+      var translated={
+        fr:[
+          ['🩺 SANTÉ','Je cherche un médecin à '+city],['🦷 DENTISTE','Je cherche un dentiste à '+city],['💉 SOINS','Je cherche un infirmier ou une infirmière à '+city],['⚖️ SERVICES PRO','Je cherche un notaire ou un avocat à '+city],['🏗️ ARTISAN','Je cherche un artisan pour une réparation à '+city],['🚗 CHAUFFEUR','Je cherche un chauffeur à '+city],['🗺️ SORTIE','Je veux une idée de sortie à '+city],['📅 RÉSERVATION','Je veux réserver une table ce soir à '+city],['🍽️ RESTAURANT','Je cherche un restaurant à '+city],['🛏️ LOGEMENT','Je cherche une chambre à '+city],['🛍️ COMMERCE','Je cherche un commerce local à '+city],['💼 EMPLOI','Je cherche un emploi ou une mission à '+city]
+        ],
+        en:[
+          ['🩺 HEALTH','I am looking for a doctor in '+city],['🦷 DENTIST','I am looking for a dentist in '+city],['💉 CARE','I am looking for a nurse in '+city],['⚖️ PRO SERVICES','I am looking for a notary or lawyer in '+city],['🏗️ CRAFTSPERSON','I need a craftsperson for a repair in '+city],['🚗 DRIVER','I am looking for a driver in '+city],['🗺️ OUTING','I want an outing idea in '+city],['📅 BOOKING','I want to book a table tonight in '+city],['🍽️ RESTAURANT','I am looking for a restaurant in '+city],['🛏️ LODGING','I am looking for a room in '+city],['🛍️ SHOP','I am looking for a local shop in '+city],['💼 JOBS','I am looking for a job or assignment in '+city]
+        ],
+        es:[
+          ['🩺 SALUD','Busco un médico en '+city],['🦷 DENTISTA','Busco un dentista en '+city],['💉 CUIDADOS','Busco personal de enfermería en '+city],['⚖️ SERVICIOS PRO','Busco un notario o abogado en '+city],['🏗️ ARTESANO','Busco un artesano para una reparación en '+city],['🚗 CONDUCTOR','Busco un conductor en '+city],['🗺️ SALIDA','Quiero una idea de salida en '+city],['📅 RESERVA','Quiero reservar una mesa esta noche en '+city],['🍽️ RESTAURANTE','Busco un restaurante en '+city],['🛏️ ALOJAMIENTO','Busco una habitación en '+city],['🛍️ COMERCIO','Busco un comercio local en '+city],['💼 EMPLEO','Busco trabajo o una misión en '+city]
+        ],
+        pt:[
+          ['🩺 SAÚDE','Procuro um médico em '+city],['🦷 DENTISTA','Procuro um dentista em '+city],['💉 CUIDADOS','Procuro um enfermeiro ou enfermeira em '+city],['⚖️ SERVIÇOS PRO','Procuro um notário ou advogado em '+city],['🏗️ ARTESÃO','Procuro um artesão para uma reparação em '+city],['🚗 MOTORISTA','Procuro um motorista em '+city],['🗺️ PASSEIO','Quero uma ideia de passeio em '+city],['📅 RESERVA','Quero reservar uma mesa esta noite em '+city],['🍽️ RESTAURANTE','Procuro um restaurante em '+city],['🛏️ ALOJAMENTO','Procuro um quarto em '+city],['🛍️ COMÉRCIO','Procuro uma loja local em '+city],['💼 EMPREGO','Procuro emprego ou uma missão em '+city]
+        ],
+        de:[
+          ['🩺 GESUNDHEIT','Ich suche einen Arzt in '+city],['🦷 ZAHNARZT','Ich suche einen Zahnarzt in '+city],['💉 PFLEGE','Ich suche eine Pflegekraft in '+city],['⚖️ PROFI-DIENSTE','Ich suche einen Notar oder Anwalt in '+city],['🏗️ HANDWERK','Ich suche einen Handwerker für eine Reparatur in '+city],['🚗 FAHRER','Ich suche einen Fahrer in '+city],['🗺️ AUSFLUG','Ich suche eine Ausflugsidee in '+city],['📅 RESERVIERUNG','Ich möchte heute Abend einen Tisch in '+city+' reservieren'],['🍽️ RESTAURANT','Ich suche ein Restaurant in '+city],['🛏️ UNTERKUNFT','Ich suche ein Zimmer in '+city],['🛍️ GESCHÄFT','Ich suche ein lokales Geschäft in '+city],['💼 ARBEIT','Ich suche Arbeit oder einen Auftrag in '+city]
+        ],
+        it:[
+          ['🩺 SALUTE','Cerco un medico a '+city],['🦷 DENTISTA','Cerco un dentista a '+city],['💉 ASSISTENZA','Cerco un infermiere o un’infermiera a '+city],['⚖️ SERVIZI PRO','Cerco un notaio o un avvocato a '+city],['🏗️ ARTIGIANO','Cerco un artigiano per una riparazione a '+city],['🚗 AUTISTA','Cerco un autista a '+city],['🗺️ USCITA','Voglio un’idea per un’uscita a '+city],['📅 PRENOTAZIONE','Voglio prenotare un tavolo stasera a '+city],['🍽️ RISTORANTE','Cerco un ristorante a '+city],['🛏️ ALLOGGIO','Cerco una camera a '+city],['🛍️ NEGOZIO','Cerco un negozio locale a '+city],['💼 LAVORO','Cerco un lavoro o un incarico a '+city]
+        ],
+        nl:[
+          ['🩺 GEZONDHEID','Ik zoek een arts in '+city],['🦷 TANDARTS','Ik zoek een tandarts in '+city],['💉 ZORG','Ik zoek een verpleegkundige in '+city],['⚖️ PRO-DIENSTEN','Ik zoek een notaris of advocaat in '+city],['🏗️ VAKMAN','Ik zoek een vakman voor een reparatie in '+city],['🚗 CHAUFFEUR','Ik zoek een chauffeur in '+city],['🗺️ UITSTAP','Ik wil een idee voor een uitstapje in '+city],['📅 RESERVERING','Ik wil vanavond een tafel reserveren in '+city],['🍽️ RESTAURANT','Ik zoek een restaurant in '+city],['🛏️ VERBLIJF','Ik zoek een kamer in '+city],['🛍️ WINKEL','Ik zoek een lokale winkel in '+city],['💼 WERK','Ik zoek werk of een opdracht in '+city]
+        ],
+        ar:[
+          ['🩺 الصحة','أبحث عن طبيب في '+city],['🦷 طبيب أسنان','أبحث عن طبيب أسنان في '+city],['💉 الرعاية','أبحث عن ممرض أو ممرضة في '+city],['⚖️ خدمات مهنية','أبحث عن كاتب عدل أو محام في '+city],['🏗️ حرفي','أبحث عن حرفي لإجراء إصلاح في '+city],['🚗 سائق','أبحث عن سائق في '+city],['🗺️ نزهة','أريد فكرة لنزهة في '+city],['📅 حجز','أريد حجز طاولة هذا المساء في '+city],['🍽️ مطعم','أبحث عن مطعم في '+city],['🛏️ سكن','أبحث عن غرفة في '+city],['🛍️ متجر','أبحث عن متجر محلي في '+city],['💼 عمل','أبحث عن عمل أو مهمة في '+city]
+        ]
+      };
+      var examples=translated[currentLang]||translated.fr;
       Array.prototype.forEach.call(document.querySelectorAll('.examplePhrase[data-q]'),function(el,i){
         var x=examples[i];if(!x){el.hidden=true;return}
         el.hidden=false;el.setAttribute('data-q',x[1]);
-        var mod=el.querySelector('.mod'),fr=el.querySelector('.fr'),wo=el.querySelector('.wo');
-        if(mod)mod.textContent=x[0];if(fr)fr.textContent=x[1];if(wo)wo.hidden=true;
+        var mod=el.querySelector('.mod'),visible=el.querySelector('.fr')||el.querySelector('span'),wo=el.querySelector('.wo');
+        if(mod)mod.textContent=x[0];if(visible)visible.textContent=x[1];if(wo)wo.hidden=true;
       });
     }else{
       Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){
