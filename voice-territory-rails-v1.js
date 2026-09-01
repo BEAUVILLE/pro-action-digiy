@@ -254,5 +254,11 @@
     setTimeout(reapplyTerritoryContext,0);
   }
   window.addEventListener('load',reapplyTerritoryContext,{once:true});
-  document.addEventListener('digiy:language-applied',reapplyTerritoryContext);
+  window.DIGIY_APPLY_TERRITORY_CONTEXT=reapplyTerritoryContext;
+  document.addEventListener('digiy:language-applied',function(){requestAnimationFrame(reapplyTerritoryContext)});
+  new MutationObserver(function(changes){
+    if(changes.some(function(change){return change.attributeName==='lang'||change.attributeName==='dir'})){
+      requestAnimationFrame(reapplyTerritoryContext);
+    }
+  }).observe(document.documentElement,{attributes:true,attributeFilter:['lang','dir']});
 })();
