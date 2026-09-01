@@ -1,0 +1,39 @@
+{
+  "name": "ACTION PRO · LA VOIX DIGIYLYFE",
+  "short_name": "ACTION PRO",
+  "description": "Orientation vocale et territoriale DIGIYLYFE vers les professionnels et services locaux.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff9ea",
+  "theme_color": "#073f32",
+  "lang": "fr",
+  "categories": [
+    "business",
+    "productivity",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "/icon-action-pro.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ouvrir LA VOIX",
+      "short_name": "LA VOIX",
+      "url": "/?source=pwa#voix",
+      "icons": [
+        {
+          "src": "/icon-action-pro.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
