@@ -198,11 +198,15 @@
       });
     }
 
-    document.addEventListener('click',function(e){
-      var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;
-      var q=document.getElementById('q');if(!q||!q.value.trim())return;
-      if(!meta.markers.some(function(m){return clean(q.value).indexOf(clean(m))>=0}))q.value=q.value.trim()+suffix;
-    },true);
+    if(!window.__DIGIY_TERRITORY_SEARCH_GUARD__){
+      window.__DIGIY_TERRITORY_SEARCH_GUARD__=true;
+      document.addEventListener('click',function(e){
+        var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;
+        var active=territory(),activeMeta=TERRITORIES[active];if(!activeMeta)return;
+        var q=document.getElementById('q');if(!q||!q.value.trim())return;
+        if(!activeMeta.markers.some(function(m){return clean(q.value).indexOf(clean(m))>=0}))q.value=q.value.trim()+' '+activeMeta.queryZone;
+      },true);
+    }
   }
 
   function blockSearchWithoutTerritory(){
@@ -254,11 +258,7 @@
     setTimeout(reapplyTerritoryContext,0);
   }
   window.addEventListener('load',reapplyTerritoryContext,{once:true});
-  window.DIGIY_APPLY_TERRITORY_CONTEXT=reapplyTerritoryContext;
-  document.addEventListener('digiy:language-applied',function(){requestAnimationFrame(reapplyTerritoryContext)});
-  new MutationObserver(function(changes){
-    if(changes.some(function(change){return change.attributeName==='lang'||change.attributeName==='dir'})){
-      requestAnimationFrame(reapplyTerritoryContext);
-    }
-  }).observe(document.documentElement,{attributes:true,attributeFilter:['lang','dir']});
+  document.addEventListener('digiy:language-applied',function(){
+    setTimeout(reapplyTerritoryContext,0);
+  });
 })();
