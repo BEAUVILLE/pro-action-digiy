@@ -190,7 +190,7 @@
         var x=examples[i];if(!x){el.hidden=true;return}
         el.hidden=false;el.setAttribute('data-q',x[1]);
         var mod=el.querySelector('.mod'),visible=el.querySelector('.fr')||el.querySelector('span'),wo=el.querySelector('.wo');
-        if(mod)mod.textContent=x[0];if(visible)visible.textContent=x[1];if(wo)wo.hidden=true;
+        if(mod)mod.textContent=x[0];if(visible)visible.textContent=x[1];if(wo){wo.hidden=true;wo.style.display='none';wo.setAttribute('aria-hidden','true')};
       });
     }else{
       Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){
@@ -254,4 +254,5 @@
     setTimeout(reapplyTerritoryContext,0);
   }
   window.addEventListener('load',reapplyTerritoryContext,{once:true});
+  document.addEventListener('digiy:language-applied',reapplyTerritoryContext);
 })();
