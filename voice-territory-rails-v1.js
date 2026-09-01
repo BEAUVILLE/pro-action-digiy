@@ -183,7 +183,7 @@
     document.addEventListener('click',function(e){
       var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;
       var q=document.getElementById('q');if(!q||!q.value.trim())return;
-      if(clean(q.value).indexOf(clean(meta.queryZone))<0)q.value=q.value.trim()+suffix;
+      if(!meta.markers.some(function(m){return clean(q.value).indexOf(clean(m))>=0}))q.value=q.value.trim()+suffix;
     },true);
   }
 
