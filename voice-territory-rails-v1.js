@@ -18,14 +18,14 @@
   var COUNTRY_ZONES={sn:['petite-cote','dakar'],fr:['vallee-dordogne','bordeaux']};
   var LANGS=['fr','en','es','pt','de','it','nl','ar'];
   var TXT={
-    fr:{country:'PAYS',zone:'ZONE',chooseCountry:'Choisir le pays',chooseZone:'Choisir la zone',needZone:'Choisis d’abord un pays puis une zone pour que LA VOIX cherche au bon endroit.',context:'RAIL ACTIF'},
-    en:{country:'COUNTRY',zone:'ZONE',chooseCountry:'Choose country',chooseZone:'Choose zone',needZone:'Choose a country and zone first so THE VOICE searches in the right place.',context:'ACTIVE RAIL'},
-    es:{country:'PAÍS',zone:'ZONA',chooseCountry:'Elegir país',chooseZone:'Elegir zona',needZone:'Elige primero un país y una zona para que LA VOZ busque en el lugar correcto.',context:'RUTA ACTIVA'},
-    pt:{country:'PAÍS',zone:'ZONA',chooseCountry:'Escolher país',chooseZone:'Escolher zona',needZone:'Escolha primeiro um país e uma zona para que A VOZ pesquise no lugar certo.',context:'ROTA ATIVA'},
-    de:{country:'LAND',zone:'GEBIET',chooseCountry:'Land wählen',chooseZone:'Gebiet wählen',needZone:'Wähle zuerst Land und Gebiet, damit DIE STIMME am richtigen Ort sucht.',context:'AKTIVE ROUTE'},
-    it:{country:'PAESE',zone:'ZONA',chooseCountry:'Scegli paese',chooseZone:'Scegli zona',needZone:'Scegli prima paese e zona affinché LA VOCE cerchi nel posto giusto.',context:'ROTAIA ATTIVA'},
-    nl:{country:'LAND',zone:'GEBIED',chooseCountry:'Kies land',chooseZone:'Kies gebied',needZone:'Kies eerst land en gebied zodat DE STEM op de juiste plek zoekt.',context:'ACTIEVE ROUTE'},
-    ar:{country:'البلد',zone:'المنطقة',chooseCountry:'اختر البلد',chooseZone:'اختر المنطقة',needZone:'اختر البلد والمنطقة أولاً حتى يبحث الصوت في المكان الصحيح.',context:'المسار النشط'}
+    fr:{country:'RÉGION',zone:'ZONE',chooseCountry:'Choisir la région',chooseZone:'Choisir la zone',needZone:'Choisis d’abord une région puis une zone pour que LA VOIX cherche au bon endroit.',context:'RAIL ACTIF'},
+    en:{country:'REGION',zone:'ZONE',chooseCountry:'Choose region',chooseZone:'Choose zone',needZone:'Choose a region and zone first so THE VOICE searches in the right place.',context:'ACTIVE RAIL'},
+    es:{country:'REGIÓN',zone:'ZONA',chooseCountry:'Elegir región',chooseZone:'Elegir zona',needZone:'Elige primero una región y una zona para que LA VOZ busque en el lugar correcto.',context:'RUTA ACTIVA'},
+    pt:{country:'REGIÃO',zone:'ZONA',chooseCountry:'Escolher região',chooseZone:'Escolher zona',needZone:'Escolha primeiro uma região e uma zona para que A VOZ pesquise no lugar certo.',context:'ROTA ATIVA'},
+    de:{country:'REGION',zone:'GEBIET',chooseCountry:'Region wählen',chooseZone:'Gebiet wählen',needZone:'Wähle zuerst Region und Gebiet, damit DIE STIMME am richtigen Ort sucht.',context:'AKTIVE ROUTE'},
+    it:{country:'REGIONE',zone:'ZONA',chooseCountry:'Scegli regione',chooseZone:'Scegli zona',needZone:'Scegli prima regione e zona affinché LA VOCE cerchi nel posto giusto.',context:'ROTAIA ATTIVA'},
+    nl:{country:'REGIO',zone:'GEBIED',chooseCountry:'Kies regio',chooseZone:'Kies gebied',needZone:'Kies eerst regio en gebied zodat DE STEM op de juiste plek zoekt.',context:'ACTIEVE ROUTE'},
+    ar:{country:'النطاق',zone:'المنطقة',chooseCountry:'اختر النطاق',chooseZone:'اختر المنطقة',needZone:'اختر النطاق والمنطقة أولاً حتى يبحث الصوت في المكان الصحيح.',context:'المسار النشط'}
   };
 
   function qs(){try{return new URLSearchParams(location.search)}catch(e){return new URLSearchParams()}}
@@ -116,7 +116,7 @@
     box.innerHTML='<style>#digiyVoiceTerritoryRail{display:grid;gap:7px;padding:9px;border:1px solid rgba(22,129,67,.22);border-radius:20px;background:rgba(243,251,236,.82)}.dvr-line{display:grid;grid-template-columns:54px 1fr;gap:7px;align-items:center}.dvr-label{font-size:9px;font-weight:1000;letter-spacing:.07em;color:#46685b}.dvr-buttons{display:flex;gap:6px;overflow:auto;scrollbar-width:none}.dvr-buttons::-webkit-scrollbar{display:none}.dvr-btn{flex:0 0 auto;min-height:36px;padding:7px 10px;border:1px solid rgba(18,60,45,.14);border-radius:999px;background:#fff;color:#102f24;font-size:10px;font-weight:1000;box-shadow:none}.dvr-btn.active{background:linear-gradient(135deg,#fff2bf,#7ee6a7);border-color:rgba(22,129,67,.35)}.dvr-context{font-size:10px;font-weight:900;color:#32614d;text-align:center;padding-top:2px}</style>'+ '<div class="dvr-line"><div class="dvr-label">'+L.country+'</div><div class="dvr-buttons" data-country-buttons></div></div>'+ '<div class="dvr-line"><div class="dvr-label">'+L.zone+'</div><div class="dvr-buttons" data-zone-buttons></div></div>'+ '<div class="dvr-context" data-context></div>';
     ask.insertBefore(box,q);
     var cb=box.querySelector('[data-country-buttons]'),zb=box.querySelector('[data-zone-buttons]'),ctx=box.querySelector('[data-context]');
-    [['sn','🇸🇳 SÉNÉGAL'],['fr','🇫🇷 FRANCE']].forEach(function(row){
+    [['sn','🇸🇳 SÉNÉGAL'],['fr','🇪🇺 EUROPE']].forEach(function(row){
       var b=document.createElement('button');b.type='button';b.className='dvr-btn'+(selectedCountry===row[0]?' active':'');b.textContent=row[1];
       b.addEventListener('click',function(){renderZones(row[0]);Array.prototype.forEach.call(cb.querySelectorAll('.dvr-btn'),function(x){x.classList.toggle('active',x===b)})});cb.appendChild(b);
     });
