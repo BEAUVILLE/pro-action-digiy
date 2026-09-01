@@ -129,9 +129,62 @@
   }
 
   function applyContextToQueries(){
-    var t=territory();if(!t)return;var suffix=' '+TERRITORIES[t].queryZone;
-    Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){var v=el.getAttribute('data-q')||'';if(v&&clean(v).indexOf(clean(TERRITORIES[t].queryZone))<0)el.setAttribute('data-q',v+suffix)});
-    document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;var q=document.getElementById('q');if(!q||!q.value.trim())return;if(clean(q.value).indexOf(clean(TERRITORIES[t].queryZone))<0)q.value=q.value.trim()+suffix},true);
+    var t=territory();if(!t)return;
+    var meta=TERRITORIES[t],suffix=' '+meta.queryZone;
+
+    if(meta.country==='fr'){
+      var city=t==='bordeaux'?'Bordeaux':'Sarlat';
+      var quick={
+        'VOIX':'Je veux dire ma recherche à DIGIY pour '+city,
+        'SARLAT':'Je veux découvrir les adresses de '+city,
+        'EXPLORE':'Je veux une idée de sortie à '+city,
+        'DRIVER':'Je cherche un chauffeur à '+city,
+        'GALERIE CHAUFFEURS':'Je veux voir les chauffeurs disponibles à '+city,
+        'LOC':'Je cherche un logement ce week-end à '+city,
+        'RÉSERVATION':'Je veux réserver une table ce soir à '+city,
+        'BÂTIMENT':'J’ai besoin d’un artisan pour une réparation à '+city,
+        'COMMERCE':'Je veux voir les commerces locaux à '+city,
+        'BOUTIQUE':'Je cherche un produit dans une boutique à '+city,
+        'TRAVAIL':'Je cherche un emploi ou une mission à '+city,
+        'RÉSEAU':'Je veux publier une annonce à '+city,
+        'VENIR CHEZ DIGIY':'Je veux trouver une adresse à '+city,
+        'NDIMBAL LOC':'Je cherche un logement avec option solidaire à '+city
+      };
+      Array.prototype.forEach.call(document.querySelectorAll('.chip[data-q]'),function(el){
+        var key=el.getAttribute('aria-label')||'';if(quick[key])el.setAttribute('data-q',quick[key]);
+      });
+
+      var examples=[
+        ['🩺 SANTÉ','Je cherche un médecin à '+city],
+        ['🦷 DENTISTE','Je cherche un dentiste à '+city],
+        ['💉 SOINS','Je cherche un infirmier ou une infirmière à '+city],
+        ['⚖️ SERVICES PRO','Je cherche un notaire ou un avocat à '+city],
+        ['🏗️ ARTISAN','Je cherche un artisan pour une réparation à '+city],
+        ['🚗 CHAUFFEUR','Je cherche un chauffeur à '+city],
+        ['🗺️ SORTIE','Je veux une idée de sortie à '+city],
+        ['📅 RÉSERVATION','Je veux réserver une table ce soir à '+city],
+        ['🍽️ RESTAURANT','Je cherche un restaurant à '+city],
+        ['🛏️ LOGEMENT','Je cherche une chambre à '+city],
+        ['🛍️ COMMERCE','Je cherche un commerce local à '+city],
+        ['💼 EMPLOI','Je cherche un emploi ou une mission à '+city]
+      ];
+      Array.prototype.forEach.call(document.querySelectorAll('.examplePhrase[data-q]'),function(el,i){
+        var x=examples[i];if(!x){el.hidden=true;return}
+        el.hidden=false;el.setAttribute('data-q',x[1]);
+        var mod=el.querySelector('.mod'),fr=el.querySelector('.fr'),wo=el.querySelector('.wo');
+        if(mod)mod.textContent=x[0];if(fr)fr.textContent=x[1];if(wo)wo.hidden=true;
+      });
+    }else{
+      Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){
+        var v=el.getAttribute('data-q')||'';if(v&&clean(v).indexOf(clean(meta.queryZone))<0)el.setAttribute('data-q',v+suffix);
+      });
+    }
+
+    document.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;
+      var q=document.getElementById('q');if(!q||!q.value.trim())return;
+      if(clean(q.value).indexOf(clean(meta.queryZone))<0)q.value=q.value.trim()+suffix;
+    },true);
   }
 
   function blockSearchWithoutTerritory(){
