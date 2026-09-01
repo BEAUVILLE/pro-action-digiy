@@ -218,9 +218,22 @@
     apply();new MutationObserver(function(){setTimeout(apply,0)}).observe(cards,{childList:true,subtree:true});
   }
 
+  function reapplyTerritoryContext(){
+    buildRailUI();
+    applyContextToQueries();
+  }
+
   installDirectoryRail();
-  buildRailUI();
-  applyContextToQueries();
+  reapplyTerritoryContext();
   blockSearchWithoutTerritory();
   centralizeGenericLinks();
+
+  /* Les scripts de langue situés plus bas dans la page réécrivent les exemples.
+     Le rail territorial repasse donc après leur initialisation. */
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',reapplyTerritoryContext,{once:true});
+  }else{
+    setTimeout(reapplyTerritoryContext,0);
+  }
+  window.addEventListener('load',reapplyTerritoryContext,{once:true});
 })();
