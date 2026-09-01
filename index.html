@@ -705,7 +705,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./annuaire-public-digiy.js?v=20260901-multilang-france-v5"></script>
+<script src="./annuaire-public-digiy.js?v=20260901-language-sync-v6"></script>
 <script>
 (function(){
   "use strict";
@@ -2657,6 +2657,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     (EXAMPLES[lang]||EXAMPLES.fr).forEach(function(text,index){const el=document.querySelectorAll(".examplePhrase[data-q]")[index];if(el){el.dataset.q=text;const visible=el.querySelector(".fr")||el.querySelector("span")||el;if(visible.textContent!==text)visible.textContent=text}});
     propagateLanguage(document);
     applying=false;
+    document.dispatchEvent(new CustomEvent('digiy:language-applied',{detail:{lang:lang}}));
   }
 
   function applyDynamic(){
