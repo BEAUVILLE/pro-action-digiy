@@ -1832,12 +1832,18 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function responseDirecte(text, list){
+    const rawT = clean(text);
     const t = clean(digiyExpandQuery(text));
-    const secteur = detectSecteurFromCleanText(t);
-    const direct = (list || []).find(x => x.kind === "directory");
+    const secteur = detectSecteurFromCleanText(rawT) || detectSecteurFromCleanText(t);
+    const directCandidate = (list || []).find(x => x.kind === "directory");
+    const directMatchesRequestedZone = !directCandidate || !secteur || (
+      clean(directCandidate.secteur || "").includes(clean(secteur.label)) ||
+      (Array.isArray(directCandidate.zones) && directCandidate.zones.some(z => clean(z) === clean(secteur.label)))
+    );
+    const direct = directMatchesRequestedZone ? directCandidate : null;
     const en = digiyLang() === "en";
     if(direct){
-      const zone = direct.secteur ? (en ? " in " : " à ") + direct.secteur : (secteur ? (en ? " in " : " à ") + secteur.label : "");
+      const zone = secteur ? (en ? " in " : " à ") + secteur.label : (direct.secteur ? (en ? " in " : " à ") + direct.secteur : "");
       const titleClean = clean(direct.title || "");
       const plumberSearch = t.includes("plombier") || t.includes("plomberie");
       const plumberCount = (list || []).filter(item => {
@@ -1846,13 +1852,13 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       }).length;
       if(plumberSearch && plumberCount >= 2){
         return en
-          ? "I understood: you are looking for a plumber in Saly. Two plumbers are available: Babacar Plombier Pro, with his official DIGIY BUILD card, and Helage, a qualified partner. I bring up both cards with direct contact."
-          : "J’ai compris : tu cherches un plombier à Saly. J’ai deux plombiers disponibles : Babacar Plombier Pro, avec sa fiche officielle DIGIY BUILD, et Helage, partenaire qualifié. Je te remonte leurs deux fiches avec contact direct.";
+          ? "I understood: you are looking for a plumber" + zone + ". Two plumbers are available: Babacar Plombier Pro, with his official DIGIY BUILD card, and Helage, a qualified partner. I bring up both cards with direct contact."
+          : "J’ai compris : tu cherches un plombier" + zone + ". J’ai deux plombiers disponibles : Babacar Plombier Pro, avec sa fiche officielle DIGIY BUILD, et Helage, partenaire qualifié. Je te remonte leurs deux fiches avec contact direct.";
       }
       if(titleClean.includes("babacar")){
         return en
-          ? "I understood: you are looking for a plumber in Saly. I bring up Babacar Plombier Pro with his official DIGIY BUILD card and direct contact."
-          : "J’ai compris : tu cherches un plombier à Saly. Je te remonte Babacar Plombier Pro avec sa fiche officielle DIGIY BUILD et son contact direct.";
+          ? "I understood: you are looking for a plumber" + zone + ". I bring up Babacar Plombier Pro with his official DIGIY BUILD card and direct contact."
+          : "J’ai compris : tu cherches un plombier" + zone + ". Je te remonte Babacar Plombier Pro avec sa fiche officielle DIGIY BUILD et son contact direct.";
       }
       if(titleClean.includes("helage")){
         return en
