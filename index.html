@@ -16,7 +16,7 @@
 <meta name="robots" content="index,follow"/>
 <link rel="canonical" href="https://pro-action-digiy.digiylyfe.com/">
 <meta name="digiy-build" content="action-pro-voice-first-pwa-v1-20260901"/>
-<meta name="digiy-lang" content="fr-en-es-de-it-nl-ar-20260731"/>
+<meta name="digiy-lang" content="fr-en-es-pt-de-it-nl-ar-20260906"/>
 <style>
 :root{
   --bg:#fff9ea;
@@ -2564,7 +2564,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 })();
 </script>
 
-<!-- DIGIY ACTION PRO 7 LANGUES MONOFICHIER -->
+<!-- DIGIY ACTION PRO 8 LANGUES MONOFICHIER -->
 <style id="digiy-action-7lang-style">
   .langSwitch{display:none!important}
   #digiyLang7{
@@ -2601,10 +2601,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   if(window.__DIGIY_ACTION_7LANG_MONO__) return;
   window.__DIGIY_ACTION_7LANG_MONO__ = true;
 
-  const LANGS=["fr","en","es","de","it","nl","ar"];
+  const LANGS=["fr","en","es","pt","de","it","nl","ar"];
   const KEY="digiy_action_lang_7";
   const LEGACY="digiy_voice_lang_v1";
-  const LOCALE={fr:"fr-FR",en:"en-US",es:"es-ES",de:"de-DE",it:"it-IT",nl:"nl-NL",ar:"ar-SA"};
+  const LOCALE={fr:"fr-FR",en:"en-US",es:"es-ES",pt:"pt-PT",de:"de-DE",it:"it-IT",nl:"nl-NL",ar:"ar-SA"};
   const NativeUtterance=window.SpeechSynthesisUtterance;
   let lastNativeQuery="";
   let applying=false;
@@ -2619,6 +2619,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     ar:{title:"صوت الأعمال — DIGIYLYFE",desc:"صوت الأعمال DIGIYLYFE — طلب بسيط وبطاقات مباشرة وتواصل مباشر.",logo:"أستمع",label:"تحدث هنا أو اكتب ما تحتاج إليه",ask:"طلب صوتي أو مكتوب",placeholder:"GO",examples:"🟥 أمثلة للتحدث",see:"اعرض",clear:"امسح",correction:"✏️ تصحيح طلبي",consigne:"🎧 الإرشادات",consigneLine:"📱 هل تحتاج إلى مساعدة؟ اضغط <b>GO</b> وتحدث، ثم اضغط <b>اعرض</b> — يفهم DIGIY وتظهر البطاقات.",resultTitle:"البطاقات المتاحة",resultIntro:"تظهر النتائج مباشرة بعد الطلب.",empty:"لا توجد بطاقة مطابقة حتى الآن.",footer:"صوت الأعمال — DIGIYLYFE",audio:"مرحباً بك في صوت الأعمال DIGIY. اضغط GO وتحدث بشكل طبيعي أو اختر رمزاً سريعاً. ثم اضغط اعرض. يفهم DIGIY حاجتك ويعرض البطاقات المفيدة.",guide:"إرشادات الهاتف. اضغط GO وتحدث، ثم اضغط اعرض. يفهم DIGIY وتظهر البطاقات.",reply:"فهمت طلبك. البطاقات المفيدة جاهزة. DIGIY يجهز والميدان يحتفظ بالقرار."}
   };
 
+  UI.pt={title:"A Voz do Negócio — DIGIYLYFE",desc:"A Voz do Negócio DIGIYLYFE — pedido simples, fichas diretas e contacto direto.",logo:"EU OUÇO",label:"Fala aqui ou escreve o que precisas",ask:"Pedido por voz ou escrito",placeholder:"GO",examples:"🟥 EXEMPLOS PARA FALAR",see:"VER",clear:"APAGAR",correction:"✏️ Corrigir o meu pedido",consigne:"🎧 Guia",consigneLine:"📱 Precisas de ajuda? Carrega em <b>GO</b> e fala. Depois toca em <b>VER</b> — a DIGIY entende e as fichas aparecem.",resultTitle:"Fichas disponíveis",resultIntro:"Os resultados aparecem diretamente após o pedido.",empty:"Ainda não existe uma ficha exata.",footer:"A Voz do Negócio — DIGIYLYFE",audio:"Bem-vindo à Voz do Negócio DIGIY. Carrega em GO para falar naturalmente ou escolhe um ícone rápido. Depois toca em VER. A DIGIY entende a necessidade e mostra as fichas úteis.",guide:"Guia do telefone. Carrega em GO e fala. Depois toca em VER. A DIGIY entende e as fichas aparecem.",reply:"Entendi o teu pedido. As fichas úteis estão prontas. A DIGIY prepara e o terreno mantém o controlo."};
+
   const QUICK={
     fr:["Je veux dire ma recherche à DIGIY","Je veux découvrir les adresses de Sarlat","Je veux une idée de sortie sur la Petite Côte","Je cherche un chauffeur pour AIBD demain matin","Je veux voir les chauffeurs disponibles","Je cherche une chambre ce week-end à Saly","Je veux réserver une table ce soir","J’ai besoin d’un artisan pour une réparation","Je veux voir les commerces locaux","Je cherche un produit dans une boutique","Je cherche un emploi ou une mission","Je veux publier une annonce dans le réseau","Je veux envoyer une preuve Wave","Je veux venir chez DIGIY ou trouver la route","Je cherche un logement avec option solidaire","Je veux écouter la vision DIGIYLYFE","Je veux être guidé par l’assistant DIGIY"],
     en:["I want to tell DIGIY what I am looking for","I want to discover places in Sarlat","I want an outing idea on the Petite Côte","I need a driver for AIBD tomorrow morning","I want to see available drivers","I need a room this weekend in Saly","I want to book a table tonight","I need an artisan for a repair","I want to see local shops","I am looking for a product in a shop","I am looking for a job or a mission","I want to publish an announcement in the network","I want to send a Wave payment proof","I want to come to DIGIY or find the route","I need lodging with a solidarity option","I want to listen to the DIGIYLYFE vision","I want guidance from the DIGIY assistant"],
@@ -2628,6 +2630,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     nl:["Ik wil DIGIY vertellen wat ik zoek","Ik wil adressen in Sarlat ontdekken","Ik wil een uitstapje aan de Petite Côte","Ik zoek morgenochtend een chauffeur naar AIBD","Ik wil beschikbare chauffeurs zien","Ik zoek dit weekend een kamer in Saly","Ik wil vanavond een tafel reserveren","Ik heb een vakman nodig voor een reparatie","Ik wil lokale winkels zien","Ik zoek een product in een winkel","Ik zoek werk of een opdracht","Ik wil een advertentie in het netwerk plaatsen","Ik wil een Wave-betalingsbewijs sturen","Ik wil naar DIGIY komen of de route vinden","Ik zoek accommodatie met een solidariteitsoptie","Ik wil de visie van DIGIYLYFE beluisteren","Ik wil begeleiding van de DIGIY-assistent"],
     ar:["أريد أن أخبر DIGIY بما أبحث عنه","أريد اكتشاف عناوين في سارلا","أريد فكرة لنزهة على الساحل الصغير","أبحث عن سائق إلى مطار AIBD صباح الغد","أريد رؤية السائقين المتاحين","أبحث عن غرفة في سالي لعطلة نهاية الأسبوع","أريد حجز طاولة هذا المساء","أحتاج إلى حرفي لإجراء إصلاح","أريد رؤية المتاجر المحلية","أبحث عن منتج في متجر","أبحث عن عمل أو مهمة","أريد نشر إعلان في الشبكة","أريد إرسال إثبات دفع Wave","أريد الوصول إلى DIGIY أو معرفة الطريق","أبحث عن سكن بخيار تضامني","أريد الاستماع إلى رؤية DIGIYLYFE","أريد إرشاد مساعد DIGIY"]
   };
+
+  QUICK.pt=["Quero dizer à DIGIY o que procuro","Quero descobrir endereços em Sarlat","Quero uma ideia de passeio na Petite Côte","Procuro um motorista para o AIBD amanhã de manhã","Quero ver os motoristas disponíveis","Procuro um quarto este fim de semana em Saly","Quero reservar uma mesa esta noite","Preciso de um artesão para uma reparação","Quero ver os comércios locais","Procuro um produto numa loja","Procuro um emprego ou uma missão","Quero publicar um anúncio na rede","Quero enviar um comprovativo de pagamento Wave","Quero ir até à DIGIY ou encontrar o caminho","Procuro alojamento com opção solidária","Quero ouvir a visão DIGIYLYFE","Quero ser orientado pelo assistente DIGIY"];
 
   const EXAMPLES={
     fr:["Je cherche un plombier à Saly","Je cherche un entrepreneur maçon à Saly","Je cherche un électricien à Saly","Je cherche du solaire à Dakar","Je cherche des serviettes à Saly","Je cherche un appartement à Saly pour 4 personnes","Je cherche un chauffeur pour AIBD","Je veux une idée de sortie sur la Petite Côte","Je veux réserver une table ce soir","Je cherche un restaurant à Sarlat","Je cherche une chambre à Sarlat","Je veux envoyer une preuve Wave"],
@@ -2639,6 +2643,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     ar:["أبحث عن سباك في سالي","أبحث عن بنّاء في سالي","أبحث عن كهربائي في سالي","أبحث عن خدمة طاقة شمسية في داكار","أبحث عن مناشف في سالي","أبحث عن شقة في سالي لأربعة أشخاص","أبحث عن سائق إلى AIBD","أريد فكرة لنزهة على الساحل الصغير","أريد حجز طاولة هذا المساء","أبحث عن مطعم في سارلا","أبحث عن غرفة في سارلا","أريد إرسال إثبات دفع Wave"]
   };
 
+  EXAMPLES.pt=["Procuro um canalizador em Saly","Procuro um pedreiro em Saly","Procuro um eletricista em Saly","Procuro um serviço de energia solar em Dakar","Procuro toalhas em Saly","Procuro um apartamento em Saly para 4 pessoas","Procuro um motorista para o AIBD","Quero uma ideia de passeio na Petite Côte","Quero reservar uma mesa esta noite","Procuro um restaurante em Sarlat","Procuro um quarto em Sarlat","Quero enviar um comprovativo de pagamento Wave"];
+
   const META={
     en:{"Fiche officielle":"Official card","Fiche publique":"Public card","Partenaire qualifié":"Qualified partner","Référencé public":"Public listing","Secteur à préciser":"Area to confirm","Catégorie":"Category","Secteur":"Area","FICHE":"CARD","APPELER":"CALL","OUVRIR":"OPEN"},
     es:{"Fiche officielle":"Ficha oficial","Fiche publique":"Ficha pública","Partenaire qualifié":"Socio cualificado","Référencé public":"Ficha pública","Secteur à préciser":"Zona por confirmar","Catégorie":"Categoría","Secteur":"Zona","FICHE":"FICHA","APPELER":"LLAMAR","OUVRIR":"ABRIR"},
@@ -2647,6 +2653,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     nl:{"Fiche officielle":"Officiële kaart","Fiche publique":"Openbare kaart","Partenaire qualifié":"Gekwalificeerde partner","Référencé public":"Openbare vermelding","Secteur à préciser":"Gebied bevestigen","Catégorie":"Categorie","Secteur":"Gebied","FICHE":"KAART","APPELER":"BELLEN","OUVRIR":"OPEN"},
     ar:{"Fiche officielle":"بطاقة رسمية","Fiche publique":"بطاقة عامة","Partenaire qualifié":"شريك مؤهل","Référencé public":"بطاقة عامة","Secteur à préciser":"المنطقة تحتاج إلى تأكيد","Catégorie":"الفئة","Secteur":"المنطقة","FICHE":"البطاقة","APPELER":"اتصل","OUVRIR":"افتح"}
   };
+
+  META.pt={"Fiche officielle":"Ficha oficial","Fiche publique":"Ficha pública","Partenaire qualifié":"Parceiro qualificado","Référencé public":"Ficha pública","Secteur à préciser":"Zona a confirmar","Catégorie":"Categoria","Secteur":"Zona","FICHE":"FICHA","APPELER":"LIGAR","OUVRIR":"ABRIR"};
 
   const RULES=[
     [/(?:chez|che|sche)?\s*baptist|batist|باتيست/," chez baptiste logement chambre hébergement dormir"],
@@ -2668,6 +2676,25 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     [/assistant|guide|help|ayuda|hilfe|aiuto|hulp|مساعدة|إرشاد/,"assistant aide guide"]
   ];
 
+  RULES.push(
+    [/canalizador|encanador|canalizacao|canalização/," plombier plomberie fuite robinet wc sanitaire"],
+    [/pedreiro|alvenaria/," macon maçon maçonnerie batisseur bâtisseur construction"],
+    [/eletricista|electricista|eletricidade/," electricien électricien electricite électricité courant"],
+    [/energia solar|painel solar|paineis solares|painéis solares/," solaire panneau panneaux batterie energie régulateur"],
+    [/motorista|condutor|aeroporto/," chauffeur driver taxi aibd trajet transfert voiture"],
+    [/quarto|alojamento|apartamento|hospedagem/," chambre appartement logement location villa dormir nuit hébergement hôtel"],
+    [/restaurante|jantar|almoco|almoço|mesa/," réserver reservation table restaurant manger diner"],
+    [/reservar|reserva/," réserver reservation"],
+    [/loja|produto|comprar|toalha|toalhas|lencol|lençol|roupao|roupão/," boutique market produit acheter serviette serviettes drap draps peignoir linge commerce"],
+    [/emprego|trabalho|missao|missão/," emploi travail job mission recrute postuler"],
+    [/passeio|descobrir|atividade/," sortie visite découvrir idée activité explore petite cote"],
+    [/dinheiro|comprovativo/," paiement pay argent wave preuve reçu"],
+    [/endereco|endereço|caminho|mapa/," adresse route venir carte localisation"],
+    [/anuncio|anúncio|rede|publicar/," annonce réseau publier visibilité"],
+    [/ouvir|escutar/," audio écouter vision"],
+    [/ajuda|guia/," assistant aide guide"]
+  );
+
   function safe(value){const x=String(value||"").toLowerCase().split("-")[0];return LANGS.includes(x)?x:"fr"}
   function actual(){try{return safe(new URLSearchParams(location.search).get("lang")||localStorage.getItem(KEY)||navigator.language)}catch(_){return"fr"}}
   function base(lang){return lang==="en"?"en":"fr"}
@@ -2688,7 +2715,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     };
   }
 
-  /* DIGIY LANGUAGE PASSPORT 7L v1 */
+  /* DIGIY LANGUAGE PASSPORT 8L v1 */
   function isDigiyHost(hostname){
     const host=String(hostname||"").toLowerCase();
     return host==="digiylyfe.com"||host.endsWith(".digiylyfe.com");
@@ -2716,7 +2743,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function buildBar(){
     if(document.getElementById("digiyLang7"))return;
     const bar=document.createElement("nav");bar.id="digiyLang7";bar.setAttribute("aria-label","Choisir la langue");
-    const labels={fr:"🇫🇷 FR",en:"🇬🇧 EN",es:"🇪🇸 ES",de:"🇩🇪 DE",it:"🇮🇹 IT",nl:"🇳🇱 NL",ar:"🌙 AR"};
+    const labels={fr:"🇫🇷 FR",en:"🇬🇧 EN",es:"🇪🇸 ES",pt:"🇵🇹 PT",de:"🇩🇪 DE",it:"🇮🇹 IT",nl:"🇳🇱 NL",ar:"🌙 AR"};
     LANGS.forEach(function(lang){const b=document.createElement("button");b.type="button";b.dataset.lang7=lang;b.textContent=labels[lang];bar.appendChild(b)});
     (document.querySelector(".app")||document.body).prepend(bar);
   }
