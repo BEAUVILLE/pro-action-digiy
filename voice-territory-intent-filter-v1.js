@@ -25,11 +25,8 @@
 
   function territoryFromQuery(){
     var t=queryText();if(!t)return'';
-    var keys=Object.keys(TERRITORIES);
-    for(var i=0;i<keys.length;i++){
-      var slug=keys[i],meta=TERRITORIES[slug];
-      if(has(t,meta.markers))return slug;
-    }
+    if(has(t,TERRITORIES.dakar.markers))return'dakar';
+    if(has(t,TERRITORIES['petite-cote'].markers))return'petite-cote';
     return'';
   }
 
@@ -171,13 +168,14 @@
 
   function apply(){
     var cards=document.getElementById('cards');if(!cards)return;
-    var need=detectNeed(),slug=territory();
-    if(!need&&!slug)return;
+    var slug=territory();
+    if(!slug)return;
+    var need=detectNeed();
 
     Array.prototype.forEach.call(cards.querySelectorAll('.card'),function(card){
       var module=moduleFromCard(card);
       if(need&&(!module||!compatibleNeed(need,module,card))){card.remove();return}
-      if(slug&&!cardMatchesTerritory(card,slug)){card.remove()}
+      if(!cardMatchesTerritory(card,slug)){card.remove()}
     });
 
     var remaining=cards.querySelectorAll('.card').length;
@@ -191,7 +189,7 @@
         if(strong){
           var parts=[remaining+' résultat'+(remaining>1?'s':'')+' utile'+(remaining>1?'s':'')];
           var needLabel=labelForNeed(need);if(needLabel)parts.push(needLabel);
-          if(slug&&TERRITORIES[slug])parts.push(TERRITORIES[slug].label);
+          parts.push(TERRITORIES[slug].label);
           strong.textContent=parts.join(' · ');
         }
         summary.hidden=false;
