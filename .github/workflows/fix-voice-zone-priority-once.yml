@@ -1,0 +1,40 @@
+name: Fix ACTION PRO voice zone once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-voice-zone-priority-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply voice zone patch
+        run: python .github/scripts/fix-voice-zone-priority.py
+
+      - name: Check JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          blocks=re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>',s)
+          Path('/tmp/action-pro-inline.js').write_text('\n'.join(blocks),encoding='utf-8')
+          PY
+          node --check /tmp/action-pro-inline.js
+
+      - name: Commit and clean temporary files
+        run: |
+          git config user.name "DIGIYLYFE Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git rm .github/workflows/fix-voice-zone-priority-once.yml .github/scripts/fix-voice-zone-priority.py
+          git add index.html
+          git commit -m "fix: make ACTION PRO voice honor requested territory [skip ci]"
+          git push
