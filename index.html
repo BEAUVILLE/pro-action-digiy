@@ -131,6 +131,19 @@ textarea{
 }
 textarea::placeholder{color:rgba(16,47,36,.42);font-weight:1000;letter-spacing:.08em;text-align:center}
 textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,196,83,.18)}
+#q.voiceQueryCollapsed{display:none}
+#voiceCorrectionBtn{
+  justify-self:start;
+  min-height:34px;
+  padding:0 12px;
+  border-radius:999px;
+  border:1px solid rgba(18,60,45,.16);
+  background:rgba(255,255,255,.72);
+  color:var(--text);
+  font-size:12px;
+  font-weight:900;
+}
+#voiceCorrectionBtn[hidden]{display:none!important}
 .quickGrid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -634,6 +647,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
     <section class="panel ask" id="voix" aria-label="Demande vocale ou écrite">
       <label class="sr-only" for="q">Parler ici ou dicter ton besoin</label>
       <textarea id="q" autocomplete="off" rows="2" placeholder="GO" aria-label="Parler ici ou dicter ton besoin"></textarea>
+      <button id="voiceCorrectionBtn" type="button" hidden>✏️ Corriger ma demande</button>
 
       <div class="quickGrid" aria-label="Choix rapides — portes publiques">
         <button class="chip" type="button" data-q="Je veux dire ma recherche à DIGIY" aria-label="VOIX">🎙️</button>
@@ -956,6 +970,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   const $ = (id) => document.getElementById(id);
   const q = $("q");
+  const voiceCorrectionBtn = $("voiceCorrectionBtn");
   const cards = $("cards");
   const resultsSummary = $("resultsSummary");
   const status = $("status");
@@ -971,6 +986,32 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const consigneTextEn = "Phone guide. Tap GO to start the discussion or speak. Then tap SEE. DIGIY speaks, the cards appear, and you can tap the card, WhatsApp or call directly.";
   function getAudioText(){ return digiyLang() === "en" ? audioTextEn : audioTextFr; }
   function getConsigneText(){ return digiyLang() === "en" ? consigneTextEn : consigneTextFr; }
+
+  let voiceQueryPending = false;
+
+  function revealVoiceQuery(focusField){
+    voiceQueryPending = false;
+    q?.classList.remove("voiceQueryCollapsed");
+    q?.removeAttribute("aria-hidden");
+    if(voiceCorrectionBtn) voiceCorrectionBtn.hidden = true;
+    if(focusField) q?.focus();
+  }
+
+  function markVoiceQueryForCollapse(){
+    voiceQueryPending = true;
+  }
+
+  function collapseVoiceQueryAfterResult(){
+    if(!voiceQueryPending || !q || !q.value.trim()) return;
+    q.classList.add("voiceQueryCollapsed");
+    q.setAttribute("aria-hidden", "true");
+    if(voiceCorrectionBtn) voiceCorrectionBtn.hidden = false;
+    voiceQueryPending = false;
+  }
+
+  voiceCorrectionBtn?.addEventListener("click", () => revealVoiceQuery(true));
+  window.__DIGIY_VOICE_QUERY_START__ = () => revealVoiceQuery(false);
+  window.__DIGIY_VOICE_QUERY_RECOGNIZED__ = markVoiceQueryForCollapse;
 
   const DIGIY_QUICK_FR = [
     "Je veux dire ma recherche à DIGIY",
@@ -2147,6 +2188,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(seq !== digiySearchSeq) return;
 
     render(list, val);
+    collapseVoiceQueryAfterResult();
     if(move) bringResultsIntoView();
   }
 
@@ -2301,6 +2343,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   $("clearBtn")?.addEventListener("click", () => {
     if(q) q.value = "";
+    revealVoiceQuery(false);
     render([]);
     q?.focus();
   });
@@ -2334,6 +2377,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     /* Toujours focus le champ : sur iPhone/Safari, le micro web peut être bloqué,
        mais le micro du clavier peut alors dicter dans ce champ. */
+    revealVoiceQuery(false);
     q?.focus();
 
     if(activeRecognition){
@@ -2350,6 +2394,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     try{
       const rec = new SR();
+      let recognizedTranscript = false;
       activeRecognition = rec;
       rec.lang = digiyLang() === "en" ? "en-US" : "fr-FR";
       rec.continuous = false;
@@ -2367,6 +2412,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         transcript = transcript.trim();
         if(transcript && q){
           q.value = transcript;
+          recognizedTranscript = true;
           scheduleSearch();
         }
       };
@@ -2382,6 +2428,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         listenButton?.classList.remove("listening");
         activeRecognition = null;
         if(q && q.value.trim()){
+          if(recognizedTranscript) markVoiceQueryForCollapse();
           const reponse = digiyBuildReply(q.value.trim());
           digiyShowBox(reponse);
           speakIntro(null, reponse);
@@ -2740,6 +2787,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function startSevenLangRecognition(){
     const field=document.getElementById("q");
     const button=document.getElementById("listenBtn");
+    window.__DIGIY_VOICE_QUERY_START__?.();
     field?.focus();
 
     if(sevenLangRecognition){
@@ -2754,6 +2802,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     try{
       const recognition=new NativeRecognition();
+      let recognizedTranscript=false;
       sevenLangRecognition=recognition;
       recognition.lang=locale();
       recognition.continuous=false;
@@ -2767,7 +2816,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         for(let i=event.resultIndex;i<event.results.length;i++){
           transcript+=event.results[i][0].transcript||"";
         }
-        if(field&&transcript.trim())field.value=transcript.trim();
+        if(field&&transcript.trim()){
+          field.value=transcript.trim();
+          recognizedTranscript=true;
+        }
       };
 
       recognition.onerror=function(event){
@@ -2780,6 +2832,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         button?.classList.remove("listening");
         sevenLangRecognition=null;
         if(field&&field.value.trim()){
+          if(recognizedTranscript)window.__DIGIY_VOICE_QUERY_RECOGNIZED__?.();
           document.getElementById("searchBtn")?.click();
         }else{
           setVoiceStatus("•",actual()==="en"?"Ready":"Prêt");
