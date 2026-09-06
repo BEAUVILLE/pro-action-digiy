@@ -1,4 +1,4 @@
-const CACHE_NAME='action-pro-pwa-20260901-v1';
+const CACHE_NAME='action-pro-pwa-20260906-restore-v1';
 const APP_SHELL=['/','/index.html','/manifest.webmanifest','/offline.html','/icon-action-pro.svg'];
 
 self.addEventListener('install',event=>{
