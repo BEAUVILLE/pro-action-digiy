@@ -1920,6 +1920,26 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     /* DIGIY CORE MULTILINGUE ÉCRIT 7L
        La saisie clavier, les exemples et la voix utilisent désormais
        exactement le même moteur central, sans temporisation ni détour. */
+    /* DIGIY INTENT RAILS — 7L + WOLOF TERRAIN
+       Une formulation de langue devient un repère d'intention commun.
+       Aucun routage métier/territoire n'est remplacé : on enrichit seulement
+       la requête avant le moteur existant. */
+    const writtenIntentRules = [
+      [/(?:je\s+cherche|je\s+recherche|cherche|recherche|trouver|i['’]?m\s+looking\s+for|i\s+am\s+looking\s+for|i\s+look\s+for|looking\s+for|find|busco|buscar|estoy\s+buscando|ich\s+suche|suche|cerco|cercare|sto\s+cercando|ik\s+zoek|ik\s+ben\s+op\s+zoek\s+naar|zoek|ا[ٔ]?بحث|dama(?:a)?\s+(?:wut|seet|set)|maa\s+ngi\s+wut|mangi\s+wut)/,
+        " digiy_intent_search chercher recherche trouver"],
+      [/(?:je\s+veux|j['’]?\s*aimerais|i\s+want|i\s+would\s+like|i['’]?d\s+like|quiero|me\s+gustaria|ich\s+mochte|voglio|vorrei|ik\s+wil|ا[ٔ]?ريد|dama(?:a)?\s+begg|maa\s+ngi\s+begg|mangi\s+begg)/,
+        " digiy_intent_want vouloir veux demande"],
+      [/(?:j['’]?\s*ai\s+besoin|besoin|i\s+need|necesito|ich\s+brauche|ho\s+bisogno|mi\s+serve|ik\s+heb\s+nodig|nodig|ا[ٔ]?حتاج|maa\s+ngi\s+soxla|mangi\s+soxla|soxla)/,
+        " digiy_intent_need besoin chercher service"],
+      [/(?:ou\s+est|ou\s+trouver|where\s+is|where\s+can\s+i\s+find|donde\s+esta|donde\s+encuentro|wo\s+ist|wo\s+finde|dov['’]?e|dove\s+trovo|waar\s+is|waar\s+vind|ا[ٔ]?ين|وين|(?:^|\s)ana(?:\s|$))/,
+        " digiy_intent_locate localiser adresse trouver"],
+      [/(?:est[-\s]+ce\s+qu['’]?\s*il\s+y\s+a|disponible|is\s+there|available|hay(?:\s|$)|gibt\s+es|verfugbar|(?:^|\s)c['’]?e(?:\s|$)|disponibile|is\s+er|beschikbaar|هل\s+يوجد|متاح|ndax\s+am\s+na|am\s+na)/,
+        " digiy_intent_availability disponibilite disponible"]
+    ];
+    writtenIntentRules.forEach(function(rule){
+      if(rule[0].test(t)) extra += rule[1];
+    });
+
     const writtenMultilingualRules = [
       [/(?:chez|che|sche)?\s*baptist|batist|باتيست/, " chez baptiste logement chambre hebergement dormir"],
       [/plomb|plumb|fontaner|klempner|idraulic|loodgieter|سباك|تسرب/, " plombier plomberie fuite robinet wc sanitaire"],
@@ -2896,6 +2916,23 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
