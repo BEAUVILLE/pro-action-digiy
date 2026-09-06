@@ -39,7 +39,7 @@
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('button,a,[role="button"]');if(!b)return;
     var label=norm(b.textContent||b.getAttribute('aria-label')||'');
-    if(!/(go|voir|cherch|search|action|ecout|listen|guid)/.test(label))return;
+    if(!/(go|voir|parl|trouv|cherch|search|action|ecout|listen|guid)/.test(label))return;
     var v=input();if(!v||!isHealth(v))return;
     e.preventDefault();e.stopImmediatePropagation();route(v);
   },true);
@@ -48,6 +48,71 @@
     if(e.key!=='Enter')return;var v=input();if(!v||!isHealth(v))return;
     e.preventDefault();e.stopImmediatePropagation();route(v);
   },true);
+
+  /* Couche publique ACTION PRO — vocabulaire aligné terrain.
+   * Aucune logique de l'oreille privée n'est exposée ici.
+   */
+  var WOLOF_EXAMPLES={
+    'Je cherche un plombier à Saly':'Damay set plombier Saly.',
+    'Je cherche un entrepreneur maçon à Saly':'Damay set maçon Saly.',
+    'Je cherche un électricien à Saly':'Damay set électricien Saly.',
+    'Je cherche du solaire à Dakar':'Damay set solaire Dakar.',
+    'Je cherche des serviettes à Saly':'Damay set serviettes Saly.',
+    'Je cherche un appartement à Saly pour 4 personnes':'Damay set appartement Saly ngir ñeenti nit.',
+    'Je cherche un chauffeur pour AIBD':'Damay set chauffeur AIBD.',
+    'Je veux une idée de sortie sur la Petite Côte':'Damay set activité Petite Côte.',
+    'Je veux réserver une table ce soir':'Damay set table resto.',
+    'Je cherche un restaurant à Sarlat':'Damay set restaurant Sarlat.',
+    'Je cherche une chambre à Sarlat':'Damay set chambre Sarlat.',
+    'Je veux envoyer une preuve Wave':'Damay bëgg yónnee preuve Wave.'
+  };
+
+  function currentLang(){return String(document.documentElement.lang||'fr').slice(0,2).toLowerCase()}
+  function text(el,value){if(el)el.textContent=value}
+
+  function refreshActionProVoiceUI(){
+    if(currentLang()!=='fr')return;
+
+    var listen=document.getElementById('listenBtn');
+    var search=document.getElementById('searchBtn');
+    var field=document.getElementById('q')||document.querySelector('textarea');
+    var float=document.getElementById('audioFloat');
+    var audioText=document.getElementById('audioText');
+    var resultTitle=document.querySelector('.resultTitle');
+    var resultIntro=document.querySelector('.resultIntro');
+    var consigne=document.querySelector('.consignesLine span');
+
+    if(listen){
+      listen.setAttribute('aria-label','Parler maintenant');
+      text(listen.querySelector('span'),'PARLER');
+    }
+    if(search){
+      search.setAttribute('aria-label','Trouver les fiches utiles');
+      text(search.querySelector('span'),'TROUVER');
+    }
+    if(field)field.setAttribute('placeholder','PARLE OU ÉCRIS TON BESOIN');
+    if(float)text(float.querySelector('span'),'PARLER');
+    if(consigne)consigne.innerHTML='📱 Besoin d’aide ? Appuie sur <b>PARLER</b>, dis ton besoin, puis touche <b>TROUVER</b> — DIGIY comprend, la bonne fiche remonte.';
+    if(audioText)audioText.textContent='Bienvenue dans La Voix du Business DIGIY. Appuie sur PARLER pour dire ton besoin naturellement, ou choisis une icône rapide. Puis touche TROUVER. DIGIY comprend le besoin, la bonne fiche remonte et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.';
+    text(resultTitle,'Fiches utiles');
+    text(resultIntro,'Les fiches utiles remontent directement après la demande.');
+
+    document.querySelectorAll('.examplePhrase').forEach(function(btn){
+      var q=String(btn.getAttribute('data-q')||'').trim();
+      var wo=btn.querySelector('.wo');
+      if(wo&&WOLOF_EXAMPLES[q])wo.textContent=WOLOF_EXAMPLES[q];
+    });
+  }
+
+  refreshActionProVoiceUI();
+
+  try{
+    new MutationObserver(function(){refreshActionProVoiceUI()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang','data-digiy-lang']});
+  }catch(_e){}
+
+  document.addEventListener('click',function(){
+    setTimeout(refreshActionProVoiceUI,0);
+  },false);
 
   window.DIGIY_ACTION_HEALTH_ROUTE={isHealth:isHealth,target:target,route:route};
 })();
