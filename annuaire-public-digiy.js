@@ -2,31 +2,35 @@
 (function(){
   'use strict';
   document.write('<script src="./annuaire-public-digiy-core.js?v=20260826-fg-retire-v3"><\/script>');
-  document.write('<script src="./voice-territory-rails-v1.js?v=20260912-mobile-desktop-scroll-v3"><\/script>');
+  document.write('<script src="./voice-territory-rails-v1.js?v=20260912-horizontal-arrows-v4"><\/script>');
   document.write('<script src="./voice-territory-intent-filter-v1.js?v=20260906-intent-territory-v2"><\/script>');
   document.write('<script src="./subscription-public-gate.js?v=20260826-subscription-gate-v1"><\/script>');
   document.write('<script>(function(){var a=document.querySelector("a[href^=\\"https://digiy-hub.digiylyfe.com/\\"]");if(a)a.remove();})();<\/script>');
 
-  /* PATCH BUREAU 2026-09-12 — conserve le swipe mobile et ajoute molette + clic-glissé souris. */
+  /* PATCH BUREAU 2026-09-12 — flèches horizontales visibles. Mobile conserve le swipe natif. */
   document.write('<script>(function(){'+
     'function install(){'+
-      'if(!document.getElementById("digiyDesktopRailScrollStyle")){'+
-        'var s=document.createElement("style");s.id="digiyDesktopRailScrollStyle";'+
-        's.textContent=".dvr-strip{cursor:grab;user-select:none;scrollbar-width:thin}.dvr-strip.dragging{cursor:grabbing}.dvr-strip::-webkit-scrollbar{height:6px}.dvr-strip::-webkit-scrollbar-thumb{background:rgba(50,97,77,.28);border-radius:999px}@media(max-width:520px){.dvr-strip{scrollbar-width:none}.dvr-strip::-webkit-scrollbar{display:none}}";'+
+      'if(!document.getElementById("digiyDesktopRailArrowStyle")){'+
+        'var s=document.createElement("style");s.id="digiyDesktopRailArrowStyle";'+
+        's.textContent=".dvr-arrow-shell{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;gap:6px;align-items:center;min-width:0}.dvr-arrow{width:34px;height:34px;border:1px solid rgba(18,60,45,.18);border-radius:999px;background:#fff;color:#0b5d48;font-size:18px;font-weight:1000;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 7px rgba(16,47,36,.08)}.dvr-arrow:active{transform:scale(.95)}.dvr-arrow:disabled{opacity:.28;cursor:default}.dvr-arrow-shell .dvr-strip{min-width:0;scrollbar-width:none}.dvr-arrow-shell .dvr-strip::-webkit-scrollbar{display:none}@media(max-width:520px){.dvr-arrow-shell{display:block}.dvr-arrow{display:none!important}}";'+
         '(document.head||document.documentElement).appendChild(s);'+
       '}'+
       'document.querySelectorAll(".dvr-strip").forEach(function(strip){'+
-        'if(strip.__digiyDesktopScroll)return;strip.__digiyDesktopScroll=true;'+
-        'strip.addEventListener("wheel",function(e){if(strip.scrollWidth<=strip.clientWidth)return;var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!d)return;strip.scrollLeft+=d;e.preventDefault()},{passive:false});'+
-        'var down=false,startX=0,startScroll=0,moved=false;'+
-        'strip.addEventListener("mousedown",function(e){if(e.button!==0)return;down=true;moved=false;startX=e.clientX;startScroll=strip.scrollLeft;strip.classList.add("dragging")});'+
-        'document.addEventListener("mousemove",function(e){if(!down)return;var dx=e.clientX-startX;if(Math.abs(dx)>4)moved=true;if(moved){strip.scrollLeft=startScroll-dx;e.preventDefault()}});'+
-        'document.addEventListener("mouseup",function(){if(!down)return;down=false;strip.classList.remove("dragging");if(moved){strip.__digiyJustDragged=true;setTimeout(function(){strip.__digiyJustDragged=false},0)}});'+
-        'strip.addEventListener("click",function(e){if(!strip.__digiyJustDragged)return;e.preventDefault();e.stopImmediatePropagation()},true);'+
+        'if(strip.__digiyArrowRail)return;strip.__digiyArrowRail=true;'+
+        'var shell=document.createElement("div");shell.className="dvr-arrow-shell";'+
+        'var prev=document.createElement("button");prev.type="button";prev.className="dvr-arrow";prev.setAttribute("aria-label","Défiler vers la gauche");prev.textContent="◀";'+
+        'var next=document.createElement("button");next.type="button";next.className="dvr-arrow";next.setAttribute("aria-label","Défiler vers la droite");next.textContent="▶";'+
+        'strip.parentNode.insertBefore(shell,strip);shell.appendChild(prev);shell.appendChild(strip);shell.appendChild(next);'+
+        'function step(dir){var n=Math.max(140,Math.round(strip.clientWidth*.72));strip.scrollBy({left:dir*n,behavior:"smooth"})}'+
+        'function state(){var max=Math.max(0,strip.scrollWidth-strip.clientWidth);prev.disabled=strip.scrollLeft<=2;next.disabled=strip.scrollLeft>=max-2}'+
+        'prev.addEventListener("click",function(){step(-1)});next.addEventListener("click",function(){step(1)});'+
+        'strip.addEventListener("scroll",state,{passive:true});window.addEventListener("resize",state,{passive:true});'+
+        'setTimeout(state,0);'+
       '})'+
     '}'+
-    'install();setTimeout(install,0);'+
+    'install();setTimeout(install,0);setTimeout(install,250);'+
     'if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});'+
     'window.addEventListener("load",install,{once:true});'+
+    'document.addEventListener("digiy:language-applied",function(){setTimeout(install,0)});'+
   '})();<\/script>');
 })();
