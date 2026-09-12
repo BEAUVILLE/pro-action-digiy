@@ -2,6 +2,7 @@
  * LA VOIX reste un moteur de recherche transversal.
  * PAYS -> ZONE borne l'annuaire et les routes métier.
  * Aucun module métier n'est recréé ici.
+ * PATCH 2026-09-12 : Sénégal / France / USA + Paris / Miami.
  */
 (function(){
   'use strict';
@@ -13,19 +14,21 @@
     'petite-cote':{country:'sn',flag:'🇸🇳',countryLabel:'SÉNÉGAL',zoneLabel:'PETITE CÔTE',queryZone:'Petite Côte',markers:['saly','mbour','thies','thiès','aibd','ngaparou','somone','petite cote','petite côte']},
     'dakar':{country:'sn',flag:'🇸🇳',countryLabel:'SÉNÉGAL',zoneLabel:'DAKAR',queryZone:'Dakar',markers:['dakar']},
     'vallee-dordogne':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'VALLÉE DE LA DORDOGNE',queryZone:'Sarlat Dordogne',markers:['sarlat','dordogne','perigord','périgord']},
-    'bordeaux':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'BORDEAUX',queryZone:'Bordeaux',markers:['bordeaux']}
+    'bordeaux':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'BORDEAUX',queryZone:'Bordeaux',markers:['bordeaux']},
+    'paris':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'PARIS',queryZone:'Paris France',markers:['paris','ile de france','île de france','ile-de-france','île-de-france']},
+    'miami':{country:'us',flag:'🇺🇸',countryLabel:'USA',zoneLabel:'MIAMI',queryZone:'Miami Florida USA',markers:['miami','florida','floride','usa','united states','etats unis','états unis','etats-unis','états-unis']}
   };
-  var COUNTRY_ZONES={sn:['petite-cote','dakar'],fr:['vallee-dordogne','bordeaux']};
+  var COUNTRY_ZONES={sn:['petite-cote','dakar'],fr:['paris','vallee-dordogne','bordeaux'],us:['miami']};
   var LANGS=['fr','en','es','pt','de','it','nl','ar'];
   var TXT={
-    fr:{country:'RÉGION',zone:'ZONE',chooseCountry:'Choisir la région',chooseZone:'Choisir la zone',needZone:'Choisis d’abord une région puis une zone pour que LA VOIX cherche au bon endroit.',context:'RAIL ACTIF'},
-    en:{country:'REGION',zone:'ZONE',chooseCountry:'Choose region',chooseZone:'Choose zone',needZone:'Choose a region and zone first so THE VOICE searches in the right place.',context:'ACTIVE RAIL'},
-    es:{country:'REGIÓN',zone:'ZONA',chooseCountry:'Elegir región',chooseZone:'Elegir zona',needZone:'Elige primero una región y una zona para que LA VOZ busque en el lugar correcto.',context:'RUTA ACTIVA'},
-    pt:{country:'REGIÃO',zone:'ZONA',chooseCountry:'Escolher região',chooseZone:'Escolher zona',needZone:'Escolha primeiro uma região e uma zona para que A VOZ pesquise no lugar certo.',context:'ROTA ATIVA'},
-    de:{country:'REGION',zone:'GEBIET',chooseCountry:'Region wählen',chooseZone:'Gebiet wählen',needZone:'Wähle zuerst Region und Gebiet, damit DIE STIMME am richtigen Ort sucht.',context:'AKTIVE ROUTE'},
-    it:{country:'REGIONE',zone:'ZONA',chooseCountry:'Scegli regione',chooseZone:'Scegli zona',needZone:'Scegli prima regione e zona affinché LA VOCE cerchi nel posto giusto.',context:'ROTAIA ATTIVA'},
-    nl:{country:'REGIO',zone:'GEBIED',chooseCountry:'Kies regio',chooseZone:'Kies gebied',needZone:'Kies eerst regio en gebied zodat DE STEM op de juiste plek zoekt.',context:'ACTIEVE ROUTE'},
-    ar:{country:'النطاق',zone:'المنطقة',chooseCountry:'اختر النطاق',chooseZone:'اختر المنطقة',needZone:'اختر النطاق والمنطقة أولاً حتى يبحث الصوت في المكان الصحيح.',context:'المسار النشط'}
+    fr:{country:'PAYS',zone:'ZONE',chooseCountry:'Choisir le pays',chooseZone:'Choisir la zone',needZone:'Choisis d’abord un pays puis une zone pour que LA VOIX cherche au bon endroit.',context:'RAIL ACTIF'},
+    en:{country:'COUNTRY',zone:'ZONE',chooseCountry:'Choose country',chooseZone:'Choose zone',needZone:'Choose a country and zone first so THE VOICE searches in the right place.',context:'ACTIVE RAIL'},
+    es:{country:'PAÍS',zone:'ZONA',chooseCountry:'Elegir país',chooseZone:'Elegir zona',needZone:'Elige primero un país y una zona para que LA VOZ busque en el lugar correcto.',context:'RUTA ACTIVA'},
+    pt:{country:'PAÍS',zone:'ZONA',chooseCountry:'Escolher país',chooseZone:'Escolher zona',needZone:'Escolha primeiro um país e uma zona para que A VOZ pesquise no lugar certo.',context:'ROTA ATIVA'},
+    de:{country:'LAND',zone:'GEBIET',chooseCountry:'Land wählen',chooseZone:'Gebiet wählen',needZone:'Wähle zuerst Land und Gebiet, damit DIE STIMME am richtigen Ort sucht.',context:'AKTIVE ROUTE'},
+    it:{country:'PAESE',zone:'ZONA',chooseCountry:'Scegli Paese',chooseZone:'Scegli zona',needZone:'Scegli prima Paese e zona affinché LA VOCE cerchi nel posto giusto.',context:'ROTAIA ATTIVA'},
+    nl:{country:'LAND',zone:'GEBIED',chooseCountry:'Kies land',chooseZone:'Kies gebied',needZone:'Kies eerst land en gebied zodat DE STEM op de juiste plek zoekt.',context:'ACTIEVE ROUTE'},
+    ar:{country:'البلد',zone:'المنطقة',chooseCountry:'اختر البلد',chooseZone:'اختر المنطقة',needZone:'اختر البلد والمنطقة أولاً حتى يبحث الصوت في المكان الصحيح.',context:'المسار النشط'}
   };
 
   function qs(){try{return new URLSearchParams(location.search)}catch(e){return new URLSearchParams()}}
@@ -128,7 +131,7 @@
       var listen=document.getElementById('listenBtn');if(listen){listen.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){listen.click()},220)}
     });
     var cb=box.querySelector('[data-country-buttons]'),zb=box.querySelector('[data-zone-buttons]'),ctx=box.querySelector('[data-context]');
-    [['sn','🇸🇳 SÉNÉGAL'],['fr','🇪🇺 EUROPE']].forEach(function(row){
+    [['sn','🇸🇳 SÉNÉGAL'],['fr','🇫🇷 FRANCE'],['us','🇺🇸 USA']].forEach(function(row){
       var b=document.createElement('button');b.type='button';b.className='dvr-btn'+(selectedCountry===row[0]?' active':'');b.textContent=row[1];
       b.addEventListener('click',function(){renderZones(row[0]);Array.prototype.forEach.call(cb.querySelectorAll('.dvr-btn'),function(x){x.classList.toggle('active',x===b)})});cb.appendChild(b);
     });
@@ -145,8 +148,8 @@
     var meta=TERRITORIES[t],suffix=' '+meta.queryZone;
 
     if(meta.country==='fr'){
-      var city=t==='bordeaux'?'Bordeaux':'Sarlat',currentLang=lang();
-      var placePattern=/Petite Côte|petite cote|Saly|AIBD|Dakar|Sarlat|الساحل الصغير|سالي|داكار|سارلا/gi;
+      var city=t==='bordeaux'?'Bordeaux':(t==='paris'?'Paris':'Sarlat'),currentLang=lang();
+      var placePattern=/Petite Côte|petite cote|Saly|AIBD|Dakar|Sarlat|Bordeaux|Paris|Miami|الساحل الصغير|سالي|داكار|سارلا|باريس|ميامي/gi;
       function localPlace(value){return String(value||'').replace(placePattern,city)}
 
       var quickFr={
@@ -216,7 +219,7 @@
         var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;
         var active=territory(),activeMeta=TERRITORIES[active];if(!activeMeta)return;
         var q=document.getElementById('q');if(!q||!q.value.trim())return;
-        if(!activeMeta.markers.some(function(m){return clean(q.value).indexOf(clean(m))>=0}))q.value=q.value.trim()+' '+activeMeta.queryZone;
+        if(!activeMeta.markers.some(function(m){return clean(q.value).indexOf(clean(m))>=0;}))q.value=q.value.trim()+' '+activeMeta.queryZone;
       },true);
     }
   }
@@ -274,3 +277,4 @@
     setTimeout(reapplyTerritoryContext,0);
   });
 })();
+
