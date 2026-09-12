@@ -2,7 +2,7 @@
  * LA VOIX reste un moteur de recherche transversal.
  * PAYS -> ZONE borne l'annuaire et les routes métier.
  * Aucun module métier n'est recréé ici.
- * PATCH 2026-09-12 : Sénégal / France / USA + Paris / Miami.
+ * PATCH 2026-09-12 : Sénégal / France / USA + Paris / Bordeaux / Miami + bandes horizontales mobiles.
  */
 (function(){
   'use strict';
@@ -122,7 +122,24 @@
     var ask=document.querySelector('.panel.ask');var q=document.getElementById('q');if(!ask||!q)return;
     var L=TXT[lang()]||TXT.fr,t=territory(),selectedCountry=t?TERRITORIES[t].country:(qs().get('country')||'');
     var box=document.createElement('div');box.id='digiyVoiceTerritoryRail';
-    box.innerHTML='<style>#digiyVoiceTerritoryRail{display:grid;gap:7px;padding:9px;border:1px solid rgba(22,129,67,.22);border-radius:20px;background:rgba(243,251,236,.82)}.dvr-line{display:grid;grid-template-columns:54px 1fr;gap:7px;align-items:center}.dvr-label{font-size:9px;font-weight:1000;letter-spacing:.07em;color:#46685b}.dvr-buttons{display:flex;gap:6px;overflow:auto;scrollbar-width:none}.dvr-buttons::-webkit-scrollbar{display:none}.dvr-btn{flex:0 0 auto;min-height:36px;padding:7px 10px;border:1px solid rgba(18,60,45,.14);border-radius:999px;background:#fff;color:#102f24;font-size:10px;font-weight:1000;box-shadow:none}.dvr-btn.active{background:linear-gradient(135deg,#fff2bf,#7ee6a7);border-color:rgba(22,129,67,.35)}.dvr-context{font-size:10px;font-weight:900;color:#32614d;text-align:center;padding-top:2px}#digiyVoicePrimary{position:sticky;bottom:10px;z-index:20;width:100%;min-height:58px;border:3px solid #f6c453;border-radius:20px;background:linear-gradient(135deg,#073f32,#0b5d48);color:#fff;font-size:16px;font-weight:1000;letter-spacing:.035em;box-shadow:0 12px 28px rgba(7,63,50,.28)}#digiyVoicePrimary:active{transform:scale(.985)}</style>'+ '<div class="dvr-line"><div class="dvr-label">'+L.country+'</div><div class="dvr-buttons" data-country-buttons></div></div>'+ '<div class="dvr-line"><div class="dvr-label">'+L.zone+'</div><div class="dvr-buttons" data-zone-buttons></div></div>'+ '<div class="dvr-context" data-context></div>';
+    box.innerHTML='<style>'+ 
+      '#digiyVoiceTerritoryRail{display:grid;gap:9px;padding:10px;border:1px solid rgba(22,129,67,.22);border-radius:20px;background:rgba(243,251,236,.88);overflow:hidden}'+
+      '.dvr-row{display:grid;gap:5px;min-width:0}'+
+      '.dvr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px}'+
+      '.dvr-label{font-size:9px;font-weight:1000;letter-spacing:.08em;color:#46685b}'+
+      '.dvr-swipe{font-size:9px;font-weight:900;color:#6b8178;white-space:nowrap}'+
+      '.dvr-strip{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 7px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}'+
+      '.dvr-strip::-webkit-scrollbar{display:none}'+
+      '.dvr-btn{flex:0 0 auto;scroll-snap-align:start;min-height:40px;padding:8px 13px;border:1px solid rgba(18,60,45,.14);border-radius:999px;background:#fff;color:#102f24;font-size:10px;font-weight:1000;white-space:nowrap;box-shadow:0 2px 7px rgba(16,47,36,.05)}'+
+      '.dvr-btn.active{background:linear-gradient(135deg,#fff2bf,#7ee6a7);border-color:rgba(22,129,67,.35);box-shadow:0 4px 12px rgba(22,129,67,.12)}'+
+      '.dvr-context{font-size:10px;font-weight:900;color:#32614d;text-align:center;padding-top:1px}'+
+      '#digiyVoicePrimary{position:sticky;bottom:10px;z-index:20;width:100%;min-height:58px;border:3px solid #f6c453;border-radius:20px;background:linear-gradient(135deg,#073f32,#0b5d48);color:#fff;font-size:16px;font-weight:1000;letter-spacing:.035em;box-shadow:0 12px 28px rgba(7,63,50,.28)}'+
+      '#digiyVoicePrimary:active{transform:scale(.985)}'+
+      '@media(max-width:520px){#digiyVoiceTerritoryRail{padding:9px}.dvr-btn{min-height:42px;padding:9px 14px;font-size:10.5px}.dvr-strip{margin-right:-9px;padding-right:18px}}'+
+      '</style>'+ 
+      '<div class="dvr-row"><div class="dvr-head"><div class="dvr-label">'+L.country+'</div><div class="dvr-swipe">↔ GLISSER</div></div><div class="dvr-strip" data-country-buttons></div></div>'+ 
+      '<div class="dvr-row"><div class="dvr-head"><div class="dvr-label">'+L.zone+'</div><div class="dvr-swipe">↔ GLISSER</div></div><div class="dvr-strip" data-zone-buttons></div></div>'+ 
+      '<div class="dvr-context" data-context></div>';
     ask.insertBefore(box,q);
     primary=document.createElement('button');primary.id='digiyVoicePrimary';primary.type='button';primary.textContent=voiceCtaLabel();primary.setAttribute('aria-label',voiceCtaLabel());
     box.insertAdjacentElement('afterend',primary);
@@ -133,10 +150,14 @@
     var cb=box.querySelector('[data-country-buttons]'),zb=box.querySelector('[data-zone-buttons]'),ctx=box.querySelector('[data-context]');
     [['sn','🇸🇳 SÉNÉGAL'],['fr','🇫🇷 FRANCE'],['us','🇺🇸 USA']].forEach(function(row){
       var b=document.createElement('button');b.type='button';b.className='dvr-btn'+(selectedCountry===row[0]?' active':'');b.textContent=row[1];
-      b.addEventListener('click',function(){renderZones(row[0]);Array.prototype.forEach.call(cb.querySelectorAll('.dvr-btn'),function(x){x.classList.toggle('active',x===b)})});cb.appendChild(b);
+      b.addEventListener('click',function(){renderZones(row[0]);Array.prototype.forEach.call(cb.querySelectorAll('.dvr-btn'),function(x){x.classList.toggle('active',x===b)});b.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})});cb.appendChild(b);
     });
     function renderZones(country){
-      selectedCountry=country;zb.innerHTML='';(COUNTRY_ZONES[country]||[]).forEach(function(slug){var m=TERRITORIES[slug],b=document.createElement('button');b.type='button';b.className='dvr-btn'+(t===slug?' active':'');b.textContent=m.flag+' '+m.zoneLabel;b.addEventListener('click',function(){goTerritory(slug)});zb.appendChild(b)});
+      selectedCountry=country;zb.innerHTML='';(COUNTRY_ZONES[country]||[]).forEach(function(slug){
+        var m=TERRITORIES[slug],b=document.createElement('button');b.type='button';b.className='dvr-btn'+(t===slug?' active':'');b.textContent=m.flag+' '+m.zoneLabel;b.addEventListener('click',function(){goTerritory(slug)});zb.appendChild(b)
+      });
+      if(!zb.children.length){var empty=document.createElement('span');empty.className='dvr-btn';empty.textContent=L.chooseZone;zb.appendChild(empty)}
+      zb.scrollLeft=0;
     }
     if(selectedCountry)renderZones(selectedCountry);
     if(t){var m=TERRITORIES[t];ctx.textContent=L.context+' · '+m.flag+' '+m.countryLabel+' → '+m.zoneLabel+(local()?' → '+local():'')}
@@ -277,4 +298,5 @@
     setTimeout(reapplyTerritoryContext,0);
   });
 })();
+
 
