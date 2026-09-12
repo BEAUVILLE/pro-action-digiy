@@ -627,6 +627,63 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   }
 }
 
+
+/* ══ DIGIY PATCH — PAYS → ZONE (SÉNÉGAL · FRANCE · USA) ══ */
+.territoryPicker{
+  display:grid;
+  gap:8px;
+  padding:10px;
+  border:1px solid rgba(22,129,67,.18);
+  border-radius:22px;
+  background:rgba(255,255,255,.66);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.62);
+}
+.territoryLabel{
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.09em;
+  color:rgba(16,47,36,.58);
+  text-transform:uppercase;
+}
+.countryGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+.countryBtn,.zoneBtn{
+  min-height:43px;
+  border-radius:16px;
+  border:1px solid rgba(18,60,45,.14);
+  background:rgba(255,255,255,.82);
+  color:#102f24;
+  font-size:12px;
+  font-weight:1000;
+  padding:6px 8px;
+}
+.countryBtn[aria-pressed="true"],.zoneBtn[aria-pressed="true"]{
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  border-color:rgba(246,196,83,.76);
+  box-shadow:0 8px 18px rgba(18,60,45,.08);
+}
+.zoneGrid{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding-bottom:2px;
+  -webkit-overflow-scrolling:touch;
+}
+.zoneBtn{flex:0 0 auto;min-width:86px}
+.territoryHint{
+  margin:0;
+  font-size:11px;
+  line-height:1.3;
+  color:rgba(16,47,36,.62);
+  font-weight:850;
+}
+@media(max-width:380px){
+  .countryBtn,.zoneBtn{font-size:11px;min-height:40px}
+}
+
 </style>
 </head>
 <body>
@@ -648,6 +705,19 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
       <label class="sr-only" for="q">Parler ici ou dicter ton besoin</label>
       <textarea id="q" autocomplete="off" rows="2" placeholder="GO" aria-label="Parler ici ou dicter ton besoin"></textarea>
       <button id="voiceCorrectionBtn" type="button" hidden>✏️ Corriger ma demande</button>
+
+
+      <div class="territoryPicker" id="digiyTerritoryPicker" aria-label="Choisir le pays et la zone">
+        <div class="territoryLabel" id="digiyCountryLabel">PAYS</div>
+        <div class="countryGrid" id="digiyCountryGrid" role="group" aria-label="Pays">
+          <button class="countryBtn" type="button" data-digiy-country="sn" aria-pressed="false">🇸🇳 SÉNÉGAL</button>
+          <button class="countryBtn" type="button" data-digiy-country="fr" aria-pressed="false">🇫🇷 FRANCE</button>
+          <button class="countryBtn" type="button" data-digiy-country="us" aria-pressed="false">🇺🇸 USA</button>
+        </div>
+        <div class="territoryLabel" id="digiyZoneLabel">ZONE</div>
+        <div class="zoneGrid" id="digiyZoneGrid" role="group" aria-label="Zone"></div>
+        <p class="territoryHint" id="digiyTerritoryHint">Choisis ton pays puis ta zone pour que LA VOIX cherche au bon endroit.</p>
+      </div>
 
       <div class="quickGrid" aria-label="Choix rapides — portes publiques">
         <button class="chip" type="button" data-q="Je veux dire ma recherche à DIGIY" aria-label="VOIX">🎙️</button>
@@ -980,6 +1050,138 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const audioFloat = $("audioFloat");
   const resultsPanel = document.querySelector(".results");
   const askPanel = document.querySelector(".ask");
+
+
+  /* ══ DIGIY PAYS → ZONE : contexte explicite pour la voix et la recherche ══ */
+  const DIGIY_TERRITORIES = {
+    sn:{label:"Sénégal", zones:[
+      {label:"Petite Côte", query:"Petite Côte Sénégal"},
+      {label:"Saly", query:"Saly Sénégal"},
+      {label:"Mbour", query:"Mbour Sénégal"},
+      {label:"Dakar", query:"Dakar Sénégal"},
+      {label:"Thiès", query:"Thiès Sénégal"},
+      {label:"AIBD", query:"AIBD Sénégal"},
+      {label:"Ngaparou", query:"Ngaparou Sénégal"},
+      {label:"Somone", query:"Somone Sénégal"}
+    ]},
+    fr:{label:"France", zones:[
+      {label:"Paris", query:"Paris France"},
+      {label:"Sarlat", query:"Sarlat France Dordogne Périgord"}
+    ]},
+    us:{label:"USA", zones:[
+      {label:"Miami", query:"Miami Florida USA États-Unis"}
+    ]}
+  };
+  let digiySelectedCountry = "";
+  let digiySelectedZone = "";
+
+  function digiyTerritoryUiText(){
+    const lang=(document.documentElement.getAttribute("lang")||"fr").toLowerCase().split("-")[0];
+    const T={
+      fr:{country:"PAYS",zone:"ZONE",hint:"Choisis ton pays puis ta zone pour que LA VOIX cherche au bon endroit."},
+      en:{country:"COUNTRY",zone:"AREA",hint:"Choose your country, then your area so THE VOICE searches in the right place."},
+      es:{country:"PAÍS",zone:"ZONA",hint:"Elige tu país y luego tu zona para que LA VOZ busque en el lugar correcto."},
+      pt:{country:"PAÍS",zone:"ZONA",hint:"Escolhe o país e depois a zona para que A VOZ procure no lugar certo."},
+      de:{country:"LAND",zone:"GEBIET",hint:"Wähle zuerst dein Land und dann dein Gebiet, damit DIE STIMME am richtigen Ort sucht."},
+      it:{country:"PAESE",zone:"ZONA",hint:"Scegli il Paese e poi la zona affinché LA VOCE cerchi nel posto giusto."},
+      nl:{country:"LAND",zone:"ZONE",hint:"Kies je land en daarna je zone zodat DE STEM op de juiste plaats zoekt."},
+      ar:{country:"البلد",zone:"المنطقة",hint:"اختر البلد ثم المنطقة لكي يبحث الصوت في المكان الصحيح."}
+    };
+    return T[lang]||T.fr;
+  }
+
+  function digiyRefreshTerritoryLabels(){
+    const t=digiyTerritoryUiText();
+    const c=document.getElementById("digiyCountryLabel");
+    const z=document.getElementById("digiyZoneLabel");
+    const h=document.getElementById("digiyTerritoryHint");
+    if(c)c.textContent=t.country;
+    if(z)z.textContent=t.zone;
+    if(h)h.textContent=t.hint;
+  }
+
+  function digiyRenderZones(){
+    const grid=document.getElementById("digiyZoneGrid");
+    if(!grid)return;
+    grid.innerHTML="";
+    const cfg=DIGIY_TERRITORIES[digiySelectedCountry];
+    if(!cfg)return;
+    cfg.zones.forEach(zone=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.className="zoneBtn";
+      b.textContent=zone.label;
+      b.dataset.digiyZone=zone.query;
+      b.setAttribute("aria-pressed",digiySelectedZone===zone.query?"true":"false");
+      b.addEventListener("click",()=>{
+        digiySelectedZone=zone.query;
+        document.querySelectorAll(".zoneBtn").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+        try{localStorage.setItem("digiy_voice_country",digiySelectedCountry);localStorage.setItem("digiy_voice_zone",digiySelectedZone)}catch(_){}
+      });
+      grid.appendChild(b);
+    });
+  }
+
+  document.querySelectorAll("[data-digiy-country]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      digiySelectedCountry=btn.dataset.digiyCountry||"";
+      digiySelectedZone="";
+      document.querySelectorAll("[data-digiy-country]").forEach(x=>x.setAttribute("aria-pressed",x===btn?"true":"false"));
+      digiyRenderZones();
+      try{localStorage.setItem("digiy_voice_country",digiySelectedCountry);localStorage.removeItem("digiy_voice_zone")}catch(_){}
+    });
+  });
+
+  try{
+    const savedCountry=localStorage.getItem("digiy_voice_country")||"";
+    const savedZone=localStorage.getItem("digiy_voice_zone")||"";
+    if(DIGIY_TERRITORIES[savedCountry]){
+      digiySelectedCountry=savedCountry;
+      digiySelectedZone=savedZone;
+      const b=document.querySelector('[data-digiy-country="'+savedCountry+'"]');
+      if(b)b.setAttribute("aria-pressed","true");
+      digiyRenderZones();
+    }
+  }catch(_){}
+  digiyRefreshTerritoryLabels();
+  document.addEventListener("digiy:language-applied",digiyRefreshTerritoryLabels);
+
+  function digiyQueryWithTerritory(value){
+    const raw=String(value||"").trim();
+    if(!raw||!digiySelectedZone)return raw;
+    const n=clean(raw);
+    const z=clean(digiySelectedZone);
+    if(z.split(/\s+/).some(part=>part.length>3&&n.includes(part)))return raw;
+    return raw+" "+digiySelectedZone;
+  }
+
+  /* Ancien sélecteur injecté par health-route (Sénégal / Europe).
+     Sécurité : on masque UNIQUEMENT le plus petit conteneur qui possède
+     les deux boutons legacy. On ne remonte jamais jusqu'à .ask/.stage/.app. */
+  function digiyHideLegacyRegionPicker(){
+    const phrase="choisis d’abord une région puis une zone";
+    const candidates=Array.from(document.querySelectorAll("body *")).filter(el=>{
+      if(el.id==="digiyTerritoryPicker"||el.closest?.("#digiyTerritoryPicker"))return false;
+      return (el.textContent||"").trim().toLowerCase().includes(phrase);
+    });
+    candidates.forEach(el=>{
+      let node=el;
+      while(node&&node!==document.body){
+        const buttons=Array.from(node.querySelectorAll("button")).map(b=>(b.textContent||"").trim().toUpperCase());
+        const hasSenegal=buttons.some(t=>t.includes("SÉNÉGAL")||t.includes("SENEGAL"));
+        const hasEurope=buttons.some(t=>t.includes("EUROPE"));
+        if(hasSenegal&&hasEurope){
+          node.style.display="none";
+          node.setAttribute("aria-hidden","true");
+          break;
+        }
+        node=node.parentElement;
+      }
+    });
+  }
+  new MutationObserver(()=>requestAnimationFrame(digiyHideLegacyRegionPicker)).observe(document.body,{childList:true,subtree:true});
+  setTimeout(digiyHideLegacyRegionPicker,0);
+  setTimeout(digiyHideLegacyRegionPicker,500);
   const audioTextFr = ($("audioText")?.textContent || "").trim();
   const audioTextEn = "Welcome to La Voix du Business by DIGIY. Here, you have three simple paths. Tap GO to start the discussion or speak naturally. You can also tap a quick icon: driver, outing, lodging, booking, building, shop, market, jobs, network, carnet, audio or assistant. On mobile, the rule is simple: tap GO to speak or start, then tap SEE. DIGIY speaks and the right cards appear. If you do not know how to ask yet, open the red Examples box. Choose a model sentence in English or Wolof. DIGIY fills the request, then the useful cards appear directly. No long scroll. No complication. Voice or click catches the need, the right door answers, and contact stays direct. DIGIY prepares. The professional validates. The field keeps control.";
   const consigneTextFr = "Consigne téléphone. Appuie sur GO pour lancer la discussion ou parler. Ensuite appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
@@ -1244,6 +1446,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const DATA = [
     {keys:["voix","parler","dictée","dictee","micro","j’écoute","jecoute","écoute","ecoute","waxal","soxla"], icon:"🎙️", title:"VOIX", url:"#voix", wa:"Bonjour, je veux utiliser La Voix du Business DIGIY."},
     {keys:["sarlat","sarlat la caneda","sarlat-la-caneda","périgord noir","perigord noir","dordogne","territoire sarlat","adresses sarlat"], icon:"🏰", title:"SARLAT", url:"https://digiylyfe.com/sarlat.html", wa:"Bonjour, je souhaite découvrir les adresses DIGIYLYFE de Sarlat."},
+    {keys:["paris","paris france","île de france","ile de france","île-de-france","ile-de-france","parisien","parisienne"], icon:"🗼", title:"PARIS · FRANCE", url:"https://digiylyfe.com/paris.html", wa:"Bonjour, je souhaite découvrir le territoire DIGIYLYFE de Paris."},
+    {keys:["miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","états unis","etats unis","états-unis","etats-unis","estados unidos","vereinigte staaten","stati uniti","verenigde staten","الولايات المتحدة"], icon:"🌴", title:"MIAMI · USA", url:"https://digiylyfe.com/miami.html", wa:"Bonjour, je souhaite découvrir le territoire DIGIYLYFE de Miami aux États-Unis."},
     {keys:["manger à sarlat","manger a sarlat","restaurant à sarlat","restaurant a sarlat","restaurants sarlat","table sarlat","dîner sarlat","diner sarlat"], icon:"🍽️", title:"MANGER À SARLAT", url:"https://digiylyfe.com/sarlat.html#manger", wa:"Bonjour, je cherche où manger à Sarlat via DIGIYLYFE."},
     {keys:["dormir à sarlat","dormir a sarlat","chambre à sarlat","chambre a sarlat","hébergement sarlat","hebergement sarlat","logement sarlat","nuit sarlat"], icon:"🛏️", title:"DORMIR À SARLAT", url:"https://digiylyfe.com/sarlat.html#dormir", wa:"Bonjour, je cherche où dormir à Sarlat via DIGIYLYFE."},
     {keys:["sortie","pêche","peche","explore","visite","activité","activite","découvrir","decouvrir","idée","idee","territoire","petite cote","petite côte","genn","génn"], icon:"🗺️", title:"EXPLORE", url:"https://explore.digiylyfe.com/", wa:"Bonjour, je cherche une sortie ou une idée de découverte via DIGIY."},
@@ -1277,6 +1481,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {label:"Ngaparou", keys:["ngaparou"]},
     {label:"Somone", keys:["somone"]},
     {label:"Sarlat", keys:["sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne"]},
+    {label:"Paris · France", keys:["paris","paris france","ile de france","île de france","ile-de-france","île-de-france"]},
+    {label:"Miami · USA", keys:["miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","etats unis","états unis","etats-unis","états-unis","estados unidos","vereinigte staaten","stati uniti","verenigde staten","الولايات المتحدة"]},
     {label:"Petite Côte", keys:["petite cote","petite côte"]}
   ];
 
@@ -1689,7 +1895,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   function isOnlyZoneWord(k){
     const z = clean(k);
-    return ["saly","mbour","dakar","thies","thiès","ngaparou","somone","sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne","petite cote","petite côte"].includes(z);
+    return ["saly","mbour","dakar","thies","thiès","ngaparou","somone","sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne","paris","paris france","ile de france","île de france","ile-de-france","île-de-france","miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","etats unis","états unis","etats-unis","états-unis","petite cote","petite côte"].includes(z);
   }
 
   function isRestaurantReservationText(t){
@@ -1992,6 +2198,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(/\b(job|work|mission|employment|hire|hiring)\b/.test(t)) extra += " emploi travail job mission recrute postuler";
     if(/\b(outing|visit|discover|tour|activity|idea|place|petite cote|petite coast)\b/.test(t)) extra += " sortie visite découvrir idée activité explore petite cote";
     if(/\b(sarlat|perigord|dordogne)\b/.test(t)) extra += " sarlat périgord noir dordogne territoire";
+    if(/\b(paris|ile de france|ile-de-france)\b/.test(t)) extra += " paris france ile de france territoire";
+    if(/\b(miami|florida|floride|usa|u\.?s\.?a\.?|united states|united states of america|etats unis|etats-unis)\b/.test(t)) extra += " miami florida usa etats unis united states territoire";
     if(/\b(payment|pay|money|wave|proof|receipt)\b/.test(t)) extra += " paiement pay argent wave preuve reçu";
     if(/\b(address|route|directions|come|map|location)\b/.test(t)) extra += " adresse route venir carte localisation";
     if(/\b(announcement|ad|network|publish|visibility)\b/.test(t)) extra += " annonce réseau publier visibilité";
@@ -2216,7 +2424,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       return;
     }
 
-    const list = await matchCardsPublic(val);
+    const routedVal = digiyQueryWithTerritory(val);
+    const list = await matchCardsPublic(routedVal);
     if(seq !== digiySearchSeq) return;
 
     render(list, val);
@@ -2438,7 +2647,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
       rec.onresult = (e) => {
         let transcript = "";
-        for(let i = e.resultIndex; i < e.results.length; i++){
+        for(let i = 0; i < e.results.length; i++){
           transcript += e.results[i][0].transcript || "";
         }
         transcript = transcript.trim();
@@ -2679,7 +2888,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     [/adresse|route|venir|address|direction|map|dirección|ruta|kommen|weg|strada|indirizzo|adres|طريق|عنوان|خريطة/,"adresse route venir carte localisation"],
     [/annonce|réseau|reseau|publier|announcement|network|publish|anuncio|red|anzeige|netzwerk|annuncio|rete|advertentie|netwerk|إعلان|شبكة|نشر/,"annonce réseau publier visibilité"],
     [/audio|écouter|ecouter|vision|listen|escuchar|hören|ascoltare|luisteren|استماع|صوت/,"audio écouter vision"],
-    [/assistant|guide|help|ayuda|hilfe|aiuto|hulp|مساعدة|إرشاد/,"assistant aide guide"]
+    [/assistant|guide|help|ayuda|hilfe|aiuto|hulp|مساعدة|إرشاد/,"assistant aide guide"],
+    [/paris|ile[ -]de[ -]france|parigi|parijs|باريس/," paris france ile de france territoire"],
+    [/miami|florida|floride|usa|u\.?s\.?a\.?|united states|etats[ -]unis|estados unidos|vereinigte staaten|stati uniti|verenigde staten|الولايات المتحدة/," miami florida usa etats unis united states territoire"]
   ];
 
   RULES.push(
@@ -2872,7 +3083,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
       recognition.onresult=function(event){
         let transcript="";
-        for(let i=event.resultIndex;i<event.results.length;i++){
+        for(let i=0;i<event.results.length;i++){
           transcript+=event.results[i][0].transcript||"";
         }
         if(field&&transcript.trim()){
@@ -2949,6 +3160,56 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
