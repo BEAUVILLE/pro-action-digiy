@@ -275,6 +275,18 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 }
 .resultsSummary strong{display:block;font-size:15px;font-weight:1000}
 .resultsSummary[hidden]{display:none!important}
+.resultsSwipeHint{
+  margin:0 0 8px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(246,196,83,.16);
+  color:#6b4b08;
+  font-size:11px;
+  line-height:1.25;
+  font-weight:1000;
+  text-align:center;
+}
+.resultsSwipeHint[hidden]{display:none!important}
 .cards{
   display:flex;
   gap:10px;
@@ -710,6 +722,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
         aria-live="polite"
         hidden
       ></div>
+      <div class="resultsSwipeHint" id="resultsSwipeHint" hidden>↔ Faites glisser horizontalement pour voir les autres suggestions.</div>
       <div class="empty" id="empty">Aucune fiche exacte.</div>
       <div class="cards" id="cards" aria-live="polite">
         <div class="emptyIcon" aria-hidden="true">👆</div>
@@ -973,6 +986,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const voiceCorrectionBtn = $("voiceCorrectionBtn");
   const cards = $("cards");
   const resultsSummary = $("resultsSummary");
+  const resultsSwipeHint = $("resultsSwipeHint");
   const status = $("status");
   const empty = $("empty");
   const introBtn = $("introBtn");
@@ -2075,6 +2089,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   function updateResultsSummary(list, queryText){
     if(!resultsSummary) return;
+    if(resultsSwipeHint){
+      resultsSwipeHint.textContent = digiyLang() === "en"
+        ? "↔ Swipe horizontally to see the other suggestions."
+        : "↔ Faites glisser horizontalement pour voir les autres suggestions.";
+      resultsSwipeHint.hidden = !list || list.length < 2;
+    }
     if(!list.length){
       resultsSummary.hidden = true;
       resultsSummary.innerHTML = "";
