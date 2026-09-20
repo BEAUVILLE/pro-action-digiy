@@ -1,7 +1,7 @@
 /* DIGIYLYFE — LA VOIX · FILTRE INTENTION + TERRITOIRE V2
  * Une seule règle publique : besoin -> métier -> territoire -> fiches.
  * Le lieu écrit dans la demande peut activer le territoire sans clic préalable.
- * Sénégal uniquement ici ; France reste gérée par son rail existant.
+ * Sénégal + Maroc + USA ici ; France reste gérée par son rail existant.
  */
 (function(){
   'use strict';
@@ -10,7 +10,10 @@
 
   var TERRITORIES={
     'petite-cote':{label:'PETITE CÔTE',markers:['saly','mbour','thies','thiès','aibd','ngaparou','somone','petite cote','petite côte']},
-    'dakar':{label:'DAKAR',markers:['dakar']}
+    'dakar':{label:'DAKAR',markers:['dakar']},
+    'casablanca':{label:'CASABLANCA',markers:['casablanca','casa']},
+    'marrakech':{label:'MARRAKECH',markers:['marrakech','marrakesh']},
+    'miami':{label:'MIAMI',markers:['miami','florida','floride','usa','united states','etats unis','états unis','etats-unis','états-unis']}
   };
 
   function qs(){try{return new URLSearchParams(location.search)}catch(e){return new URLSearchParams()}}
@@ -27,6 +30,9 @@
     var t=queryText();if(!t)return'';
     if(has(t,TERRITORIES.dakar.markers))return'dakar';
     if(has(t,TERRITORIES['petite-cote'].markers))return'petite-cote';
+    if(has(t,TERRITORIES.casablanca.markers))return'casablanca';
+    if(has(t,TERRITORIES.marrakech.markers))return'marrakech';
+    if(has(t,TERRITORIES.miami.markers))return'miami';
     return'';
   }
 
@@ -41,15 +47,15 @@
       }
     }
 
-    if(has(t,['appartement','chambre','logement','studio','villa','maison','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel']))
+    if(has(t,['appartement','chambre','logement','studio','villa','maison','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel','room','lodging','stay','apartment','flat','house','rental','rent','night']))
       push('accommodation');
 
-    if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','trajet','course','transfert','transport']))
+    if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','airport','trajet','course','ride','trip','transfert','transfer','transport']))
       push('transport');
 
-    if(has(t,['plombier','plomberie','fuite','robinet','sanitaire']))
+    if(has(t,['plombier','plomberie','fuite','robinet','sanitaire','plumber','plumbing']))
       push('artisan','plumber');
-    if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique']))
+    if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique','electrician','electrical']))
       push('artisan','electrician');
     if(has(t,['macon','maçon','maconnerie','maçonnerie','construction','batisseur','bâtisseur','chantier']))
       push('artisan','mason');
@@ -58,17 +64,17 @@
     if(has(t,['artisan','travaux','reparation','réparation','depannage','dépannage'])&&!needs.some(function(n){return n.family==='artisan'}))
       push('artisan');
 
-    if(has(t,['restaurant','resto','manger','table','diner','dîner','repas','snack','traiteur','boulangerie','patisserie','pâtisserie']))
+    if(has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie']))
       push('food');
-    if(has(t,['beaute','beauté','onglerie','ongles','massage','bien etre','bien-être','coiffure','spa','hammam','sauna','soin','soins']))
+    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','massage','bien etre','bien-être','wellness','coiffure','hair','salon','spa','hammam','sauna','soin','soins']))
       push('beauty');
     if(has(t,['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']))
       push('jobs');
     if(has(t,['annonce','annonces','bonne affaire','publier','occasion','materiel','matériel']))
       push('announcements');
-    if(has(t,['commerce','commerces','boutique','magasin','acheter','produit','article','commande','shopping','linge','vetement','vêtement']))
+    if(has(t,['commerce','commerces','boutique','magasin','shop','store','acheter','buy','produit','product','article','commande','shopping','linge','vetement','vêtement']))
       push('shopping');
-    if(has(t,['rendez vous','rendez-vous','creneau','créneau','reservation','réservation','reserver','réserver']))
+    if(has(t,['rendez vous','rendez-vous','appointment','creneau','créneau','reservation','réservation','booking','book','reserver','réserver']))
       push('resa');
     return needs;
   }
