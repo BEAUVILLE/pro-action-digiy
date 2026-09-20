@@ -21,14 +21,14 @@
   var COUNTRY_ZONES={sn:['petite-cote','dakar'],fr:['paris','vallee-dordogne','bordeaux'],us:['miami']};
   var LANGS=['fr','en','es','pt','de','it','nl','ar'];
   var TXT={
-    fr:{country:'PAYS',zone:'ZONE',chooseCountry:'Choisir le pays',chooseZone:'Choisir la zone',needZone:'Choisis d’abord un pays puis une zone pour que LA VOIX cherche au bon endroit.',context:'RAIL ACTIF'},
-    en:{country:'COUNTRY',zone:'ZONE',chooseCountry:'Choose country',chooseZone:'Choose zone',needZone:'Choose a country and zone first so THE VOICE searches in the right place.',context:'ACTIVE RAIL'},
-    es:{country:'PAÍS',zone:'ZONA',chooseCountry:'Elegir país',chooseZone:'Elegir zona',needZone:'Elige primero un país y una zona para que LA VOZ busque en el lugar correcto.',context:'RUTA ACTIVA'},
-    pt:{country:'PAÍS',zone:'ZONA',chooseCountry:'Escolher país',chooseZone:'Escolher zona',needZone:'Escolha primeiro um país e uma zona para que A VOZ pesquise no lugar certo.',context:'ROTA ATIVA'},
-    de:{country:'LAND',zone:'GEBIET',chooseCountry:'Land wählen',chooseZone:'Gebiet wählen',needZone:'Wähle zuerst Land und Gebiet, damit DIE STIMME am richtigen Ort sucht.',context:'AKTIVE ROUTE'},
-    it:{country:'PAESE',zone:'ZONA',chooseCountry:'Scegli Paese',chooseZone:'Scegli zona',needZone:'Scegli prima Paese e zona affinché LA VOCE cerchi nel posto giusto.',context:'ROTAIA ATTIVA'},
-    nl:{country:'LAND',zone:'GEBIED',chooseCountry:'Kies land',chooseZone:'Kies gebied',needZone:'Kies eerst land en gebied zodat DE STEM op de juiste plek zoekt.',context:'ACTIEVE ROUTE'},
-    ar:{country:'البلد',zone:'المنطقة',chooseCountry:'اختر البلد',chooseZone:'اختر المنطقة',needZone:'اختر البلد والمنطقة أولاً حتى يبحث الصوت في المكان الصحيح.',context:'المسار النشط'}
+    fr:{country:'PAYS',zone:'ZONE',chooseCountry:'Choisir le pays',chooseZone:'Choisir la zone',needZone:'1. Choisis d’abord ton pays et ton territoire. 2. Formule ensuite ton besoin dans ce territoire.',context:'RAIL ACTIF',ask:'FORMULE TON BESOIN ICI'},
+    en:{country:'COUNTRY',zone:'ZONE',chooseCountry:'Choose country',chooseZone:'Choose zone',needZone:'1. Choose your country and territory first. 2. Then state your need in that territory.',context:'ACTIVE RAIL',ask:'STATE YOUR NEED HERE'},
+    es:{country:'PAÍS',zone:'ZONA',chooseCountry:'Elegir país',chooseZone:'Elegir zona',needZone:'1. Elige primero tu país y territorio. 2. Luego expresa tu necesidad en ese territorio.',context:'RUTA ACTIVA',ask:'INDICA AQUÍ TU NECESIDAD'},
+    pt:{country:'PAÍS',zone:'ZONA',chooseCountry:'Escolher país',chooseZone:'Escolher zona',needZone:'1. Escolha primeiro o país e o território. 2. Depois diga a sua necessidade nesse território.',context:'ROTA ATIVA',ask:'DIGA AQUI A SUA NECESSIDADE'},
+    de:{country:'LAND',zone:'GEBIET',chooseCountry:'Land wählen',chooseZone:'Gebiet wählen',needZone:'1. Wähle zuerst Land und Gebiet. 2. Formuliere dann deinen Bedarf für dieses Gebiet.',context:'AKTIVE ROUTE',ask:'BEDARF HIER FORMULIEREN'},
+    it:{country:'PAESE',zone:'ZONA',chooseCountry:'Scegli Paese',chooseZone:'Scegli zona',needZone:'1. Scegli prima Paese e territorio. 2. Poi formula il bisogno in quel territorio.',context:'ROTAIA ATTIVA',ask:'SCRIVI QUI IL TUO BISOGNO'},
+    nl:{country:'LAND',zone:'GEBIED',chooseCountry:'Kies land',chooseZone:'Kies gebied',needZone:'1. Kies eerst land en gebied. 2. Formuleer daarna je behoefte voor dat gebied.',context:'ACTIEVE ROUTE',ask:'FORMULEER HIER JE BEHOEFTE'},
+    ar:{country:'البلد',zone:'المنطقة',chooseCountry:'اختر البلد',chooseZone:'اختر المنطقة',needZone:'1. اختر البلد والمنطقة أولاً. 2. ثم عبّر عن حاجتك داخل هذه المنطقة.',context:'المسار النشط',ask:'اذكر حاجتك هنا'}
   };
 
   function qs(){try{return new URLSearchParams(location.search)}catch(e){return new URLSearchParams()}}
@@ -160,7 +160,7 @@
       zb.scrollLeft=0;
     }
     if(selectedCountry)renderZones(selectedCountry);
-    if(t){var m=TERRITORIES[t];ctx.textContent=L.context+' · '+m.flag+' '+m.countryLabel+' → '+m.zoneLabel+(local()?' → '+local():'')}
+    if(t){var m=TERRITORIES[t];ctx.textContent=L.context+' · '+m.flag+' '+m.countryLabel+' → '+m.zoneLabel+(local()?' → '+local():'')+' · '+L.ask}
     else ctx.textContent=L.needZone;
   }
 
