@@ -1741,14 +1741,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       t.includes("باتيست")
     ) && clean(item.title || "").includes("baptiste");
 
-    /* Verrou terrain :
-       - "réserver une table / restaurant / manger" doit aller vers RÉSERVATION.
-       - Une fiche LOC peut contenir "réserver" ou "ce soir", mais elle ne doit pas voler une table resto.
-       - LOC ne remonte que si le besoin parle vraiment logement/chambre/nuit/appartement. */
-    if(isRestaurantReservationText(t) && !namedBaptisteHit && !family.includes("restaurant") && !family.includes("reservation") && !family.includes("réservation")){
-      return null;
-    }
-
+    /* Verrou terrain multi-besoin :
+       - une demande peut contenir plusieurs familles à la fois (ex. logement + restaurant) ;
+       - on ne coupe donc plus toutes les autres fiches dès qu'un mot restaurant est présent ;
+       - LOC reste protégé : il ne remonte que si le besoin parle réellement logement/chambre/nuit/appartement. */
     if((family.includes("loc") || family.includes("logement") || family.includes("appartement")) && !isHousingText(t) && !namedBaptisteHit){
       return null;
     }
