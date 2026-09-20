@@ -32,39 +32,50 @@
 
   function territory(){return territoryFromUrl()||territoryFromQuery()}
 
-  function detectNeed(){
-    var t=queryText();if(!t)return null;
+  function detectNeeds(){
+    var t=queryText(),needs=[];if(!t)return needs;
+    function push(family,specialty){
+      specialty=specialty||'';
+      if(!needs.some(function(n){return n.family===family&&n.specialty===specialty})){
+        needs.push({family:family,specialty:specialty});
+      }
+    }
 
     if(has(t,['appartement','chambre','logement','studio','villa','maison','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel']))
-      return{family:'accommodation',specialty:''};
+      push('accommodation');
 
     if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','trajet','course','transfert','transport']))
-      return{family:'transport',specialty:''};
+      push('transport');
 
     if(has(t,['plombier','plomberie','fuite','robinet','sanitaire']))
-      return{family:'artisan',specialty:'plumber'};
+      push('artisan','plumber');
     if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique']))
-      return{family:'artisan',specialty:'electrician'};
+      push('artisan','electrician');
     if(has(t,['macon','maçon','maconnerie','maçonnerie','construction','batisseur','bâtisseur','chantier']))
-      return{family:'artisan',specialty:'mason'};
+      push('artisan','mason');
     if(has(t,['solaire','panneau solaire','batterie solaire','energie solaire','énergie solaire']))
-      return{family:'artisan',specialty:'solar'};
-    if(has(t,['artisan','travaux','reparation','réparation','depannage','dépannage']))
-      return{family:'artisan',specialty:''};
+      push('artisan','solar');
+    if(has(t,['artisan','travaux','reparation','réparation','depannage','dépannage'])&&!needs.some(function(n){return n.family==='artisan'}))
+      push('artisan');
 
     if(has(t,['restaurant','resto','manger','table','diner','dîner','repas','snack','traiteur','boulangerie','patisserie','pâtisserie']))
-      return{family:'food',specialty:''};
+      push('food');
     if(has(t,['beaute','beauté','onglerie','ongles','massage','bien etre','bien-être','coiffure','spa','hammam','sauna','soin','soins']))
-      return{family:'beauty',specialty:''};
+      push('beauty');
     if(has(t,['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']))
-      return{family:'jobs',specialty:''};
+      push('jobs');
     if(has(t,['annonce','annonces','bonne affaire','publier','occasion','materiel','matériel']))
-      return{family:'announcements',specialty:''};
+      push('announcements');
     if(has(t,['commerce','commerces','boutique','magasin','acheter','produit','article','commande','shopping','linge','vetement','vêtement']))
-      return{family:'shopping',specialty:''};
+      push('shopping');
     if(has(t,['rendez vous','rendez-vous','creneau','créneau','reservation','réservation','reserver','réserver']))
-      return{family:'resa',specialty:''};
-    return null;
+      push('resa');
+    return needs;
+  }
+
+  function detectNeed(){
+    var needs=detectNeeds();
+    return needs.length?needs[0]:null;
   }
 
   var HOST_MODULE={
@@ -170,11 +181,11 @@
     var cards=document.getElementById('cards');if(!cards)return;
     var slug=territory();
     if(!slug)return;
-    var need=detectNeed();
+    var needs=detectNeeds();
 
     Array.prototype.forEach.call(cards.querySelectorAll('.card'),function(card){
       var module=moduleFromCard(card);
-      if(need&&(!module||!compatibleNeed(need,module,card))){card.remove();return}
+      if(needs.length&&(!module||!needs.some(function(need){return compatibleNeed(need,module,card)}))){card.remove();return}
       if(!cardMatchesTerritory(card,slug)){card.remove()}
     });
 
@@ -188,7 +199,8 @@
         var strong=summary.querySelector('strong');
         if(strong){
           var parts=[remaining+' résultat'+(remaining>1?'s':'')+' utile'+(remaining>1?'s':'')];
-          var needLabel=labelForNeed(need);if(needLabel)parts.push(needLabel);
+          var needLabels=Array.from(new Set(needs.map(labelForNeed).filter(Boolean)));
+          if(needLabels.length)parts.push(needLabels.join(' + '));
           parts.push(TERRITORIES[slug].label);
           strong.textContent=parts.join(' · ');
         }
