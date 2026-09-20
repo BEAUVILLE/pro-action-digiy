@@ -2,7 +2,7 @@
  * LA VOIX reste un moteur de recherche transversal.
  * PAYS -> ZONE borne l'annuaire et les routes métier.
  * Aucun module métier n'est recréé ici.
- * PATCH 2026-09-12 : Sénégal / France / USA + Paris / Bordeaux / Miami + bandes horizontales mobiles.
+ * PATCH 2026-09-20 : Sénégal / France / Maroc / USA + rails territoriaux et bandes horizontales mobiles.
  */
 (function(){
   'use strict';
@@ -16,9 +16,11 @@
     'vallee-dordogne':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'VALLÉE DE LA DORDOGNE',queryZone:'Sarlat Dordogne',markers:['sarlat','dordogne','perigord','périgord']},
     'bordeaux':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'BORDEAUX',queryZone:'Bordeaux',markers:['bordeaux']},
     'paris':{country:'fr',flag:'🇫🇷',countryLabel:'FRANCE',zoneLabel:'PARIS',queryZone:'Paris France',markers:['paris','ile de france','île de france','ile-de-france','île-de-france']},
+    'casablanca':{country:'ma',flag:'🇲🇦',countryLabel:'MAROC',zoneLabel:'CASABLANCA',queryZone:'Casablanca Maroc',markers:['casablanca','casa']},
+    'marrakech':{country:'ma',flag:'🇲🇦',countryLabel:'MAROC',zoneLabel:'MARRAKECH',queryZone:'Marrakech Maroc',markers:['marrakech','marrakesh']},
     'miami':{country:'us',flag:'🇺🇸',countryLabel:'USA',zoneLabel:'MIAMI',queryZone:'Miami Florida USA',markers:['miami','florida','floride','usa','united states','etats unis','états unis','etats-unis','états-unis']}
   };
-  var COUNTRY_ZONES={sn:['petite-cote','dakar'],fr:['paris','vallee-dordogne','bordeaux'],us:['miami']};
+  var COUNTRY_ZONES={sn:['petite-cote','dakar'],fr:['paris','vallee-dordogne','bordeaux'],ma:['casablanca','marrakech'],us:['miami']};
   var LANGS=['fr','en','es','pt','de','it','nl','ar'];
   var TXT={
     fr:{country:'PAYS',zone:'ZONE',chooseCountry:'Choisir le pays',chooseZone:'Choisir la zone',needZone:'1. Choisis d’abord ton pays et ton territoire. 2. Formule ensuite ton besoin dans ce territoire.',context:'RAIL ACTIF',ask:'FORMULE TON BESOIN ICI'},
@@ -148,7 +150,7 @@
       var listen=document.getElementById('listenBtn');if(listen){listen.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){listen.click()},220)}
     });
     var cb=box.querySelector('[data-country-buttons]'),zb=box.querySelector('[data-zone-buttons]'),ctx=box.querySelector('[data-context]');
-    [['sn','🇸🇳 SÉNÉGAL'],['fr','🇫🇷 FRANCE'],['us','🇺🇸 USA']].forEach(function(row){
+    [['sn','🇸🇳 SÉNÉGAL'],['fr','🇫🇷 FRANCE'],['ma','🇲🇦 MAROC'],['us','🇺🇸 USA']].forEach(function(row){
       var b=document.createElement('button');b.type='button';b.className='dvr-btn'+(selectedCountry===row[0]?' active':'');b.textContent=row[1];
       b.addEventListener('click',function(){renderZones(row[0]);Array.prototype.forEach.call(cb.querySelectorAll('.dvr-btn'),function(x){x.classList.toggle('active',x===b)});b.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})});cb.appendChild(b);
     });
