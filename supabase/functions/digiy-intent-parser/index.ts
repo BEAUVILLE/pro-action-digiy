@@ -20,7 +20,7 @@ function fallback(text:string){
 function buildSearchText(original:string,requests:any[]){
   const bits=[original];
   for(const r of Array.isArray(requests)?requests:[]){
-    if(r?.intent) bits.push(String(r.intent));
+    if(r?.intent) bits.push(String(r.intent));\n    if(r?.specialty) bits.push(String(r.specialty));\n    if(r?.query_clean) bits.push(String(r.query_clean));
     if(r?.zone) bits.push(String(r.zone));
     if(r?.origin) bits.push(String(r.origin));
     if(r?.destination) bits.push(String(r.destination));
@@ -48,9 +48,9 @@ Deno.serve(async(req:Request)=>{
       "Tu n'es pas un chatbot. Tu ne réponds jamais au client.",
       "Tu n'inventes aucune information. Si une donnée manque, mets null.",
       "Tu comprends le français naturel, le français imparfait, l'anglais courant et le wolof courant mélangé au français.",
-      "Intentions autorisées: DRIVER, LOC, RESTO, COMMERCE, BUILD, JOB, EXPLORE, RESA, UNKNOWN.",
+      "Intentions autorisées: DRIVER, LOC, RESTO, COMMERCE, BUILD, BEAUTY, JOB, EXPLORE, RESA, UNKNOWN.",
       "Plusieurs besoins dans une phrase = plusieurs objets requests.",
-      "Champs: intent, zone, origin, destination, date, time, people, query_clean, confidence.",
+      "Champs: intent, specialty, zone, origin, destination, date, time, people, query_clean, confidence.",\n      "Pour BUILD, specialty peut être plumber, electrician, mason, solar ou null. Pour BEAUTY, specialty peut être nails, hair, massage, spa ou null.",\n      "Si la phrase signifie réparer une fuite, réparer l’eau, problème de robinet, tuyau ou canalisation, utilise BUILD + specialty plumber et query_clean contenant plombier.",
       "confidence est un nombre entre 0 et 1.",
       "Normalise seulement ce qui est explicitement compris.",
       "Date du jour: "+today+". Fuseau métier: Africa/Dakar.",
