@@ -2228,6 +2228,37 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     }, 90);
   }
 
+  async function digiyIntentEnhance(text){
+    const original = String(text || "").trim();
+    if(!original) return {query:"", mode:"empty", requests:[]};
+
+    const sb = digiySupabaseClient();
+    if(!sb) return {query:original, mode:"local", requests:[]};
+
+    try{
+      const {data, error} = await sb.functions.invoke("digiy-intent-parser", {
+        body:{text:original}
+      });
+      if(error || !data || data.ok !== true){
+        return {query:original, mode:"local", requests:[]};
+      }
+
+      const enriched = String(data.search_text || original).trim() || original;
+      const requests = Array.isArray(data.requests) ? data.requests : [];
+      window.__DIGIY_LAST_INTENT_PARSE__ = {
+        at:new Date().toISOString(),
+        input:original,
+        mode:data.mode || "unknown",
+        requests:requests,
+        search_text:enriched
+      };
+      return {query:enriched, mode:data.mode || "ai", requests:requests};
+    }catch(err){
+      console.warn("DIGIY intent parser indisponible : moteur local conservé.", err);
+      return {query:original, mode:"local", requests:[]};
+    }
+  }
+
   async function searchNow(move){
     const val = q ? q.value.trim() : "";
     const seq = ++digiySearchSeq;
@@ -2238,7 +2269,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       return;
     }
 
-    const list = await matchCardsPublic(val);
+    const intent = await digiyIntentEnhance(val);
+    if(seq !== digiySearchSeq) return;
+
+    const list = await matchCardsPublic(intent.query || val);
     if(seq !== digiySearchSeq) return;
 
     render(list, val);
