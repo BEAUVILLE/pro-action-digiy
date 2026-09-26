@@ -5,6 +5,7 @@ const APP_SHELL=[
   '/manifest.webmanifest',
   '/offline.html',
   '/icon-action-pro.svg',
+  '/digiy-taxonomy-v1.js',
   '/annuaire-public-digiy.js',
   '/annuaire-public-digiy-core.js',
   '/voice-territory-rails-v1.js',
