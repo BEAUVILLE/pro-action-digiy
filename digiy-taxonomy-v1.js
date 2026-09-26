@@ -21,14 +21,18 @@
   };
 
   const TERRITORIES={
-    "petite-cote":{slug:"petite-cote",country:"SN",label:"Petite Côte",markers:["saly","mbour","ngaparou","somone","petite cote","petite côte"]},
+    "saly":{slug:"saly",country:"SN",label:"Saly",markers:["saly"]},
+    "mbour":{slug:"mbour",country:"SN",label:"Mbour",markers:["mbour"]},
+    "ngaparou":{slug:"ngaparou",country:"SN",label:"Ngaparou",markers:["ngaparou"]},
+    "somone":{slug:"somone",country:"SN",label:"Somone",markers:["somone"]},
+    "petite-cote":{slug:"petite-cote",country:"SN",label:"Petite Côte",markers:["petite cote","petite côte"]},
     "dakar":{slug:"dakar",country:"SN",label:"Dakar",markers:["dakar"]},
     "aibd":{slug:"aibd",country:"SN",label:"AIBD",markers:["aibd","diass","aeroport blaise diagne","aéroport blaise diagne"]},
     "thies":{slug:"thies",country:"SN",label:"Thiès",markers:["thies","thiès"]},
     "sarlat":{slug:"sarlat",country:"FR",label:"Sarlat",markers:["sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne"]},
     "bordeaux":{slug:"bordeaux",country:"FR",label:"Bordeaux",markers:["bordeaux"]},
-    "paris":{slug:"paris",country:"FR",label:"Paris",markers:["paris","ile de france","île de france","ile-de-france","île-de-france"]},
-    "miami":{slug:"miami",country:"US",label:"Miami",markers:["miami","florida","floride","usa","etats unis","états unis","etats-unis","états-unis"]}
+    "paris":{slug:"paris",country:"FR",label:"Paris · France",markers:["paris","paris france","ile de france","île de france","ile-de-france","île-de-france"]},
+    "miami":{slug:"miami",country:"US",label:"Miami · USA",markers:["miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","etats unis","états unis","etats-unis","états-unis"]}
   };
 
   function clean(v){
