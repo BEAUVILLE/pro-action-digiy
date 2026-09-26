@@ -70,17 +70,17 @@
       push('artisan','plumber');
     if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique','electrician','electrical']))
       push('artisan','electrician');
-    if(has(t,['architecte','architecture','plan de maison','plans de maison','faire les plans','concevoir une maison','conception maison']))
+    if(has(t,['architecte','architecture','plan de maison','plans de maison','faire les plans','dessiner les plans','concevoir une maison','concevoir une villa','conception maison','permis de construire']))
       push('services','architect');
-    if(has(t,['geometre','géomètre','bornage','bornage terrain','limites terrain','mesure terrain']))
+    if(has(t,['geometre','géomètre','bornage','borner mon terrain','borner un terrain','bornage terrain','limites terrain','mesure terrain','mesurer une parcelle','superficie terrain','division de parcelle']))
       push('services','surveyor');
-    if(has(t,['avocat','avocate','conseil juridique','juriste']))
+    if(has(t,['avocat','avocate','conseil juridique','juriste','probleme de contrat','problème de contrat','litige','affaire commerciale']))
       push('services','lawyer');
-    if(has(t,['huissier','commissaire de justice','signification','constat huissier']))
+    if(has(t,['huissier','commissaire de justice','signification','signifier un document','constat huissier','faire un constat','constater des degats','constater des dégâts']))
       push('services','bailiff');
-    if(has(t,['mecanicien','mécanicien','garage','reparation voiture','réparation voiture','panne voiture','moteur voiture']))
+    if(has(t,['mecanicien','mécanicien','garage','reparation voiture','réparation voiture','panne voiture','moteur voiture','voiture ne demarre plus','voiture ne démarre plus','bruit moteur','voiture chauffe','probleme de frein','problème de frein']))
       push('services','mechanic');
-    if(has(t,['comptable','expert comptable','expert-comptable','comptabilite','comptabilité','bilan comptable','declaration fiscale','déclaration fiscale']))
+    if(has(t,['comptable','expert comptable','expert-comptable','comptabilite','comptabilité','tenir ma comptabilite','tenir ma comptabilité','faire mon bilan','bilan comptable','declaration fiscale','déclaration fiscale']))
       push('services','accountant');
     if(has(t,['menuisier','menuiserie','porte','porte en bois','fenetre en bois','fenêtre en bois']))
       push('artisan','carpenter');
@@ -93,7 +93,7 @@
 
     if(has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie']))
       push('food');
-    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','massage','bien etre','bien-être','wellness','coiffure','coiffeur','coiffeuse','tresses','cheveux','brushing','hair','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna','soin','soins']))
+    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','faire mes ongles','faire les ongles','manucure','pedicure','pédicure','soin des pieds','pieds','vernis','pose gel','faux ongles','massage','bien etre','bien-être','wellness','coiffure','coiffeur','coiffeuse','me faire coiffer','faire coiffer','tresses','tresser','nattes','cheveux','couper mes cheveux','coupe cheveux','brushing','hair','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna','soin','soins']))
       push('beauty');
     if(has(t,['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']))
       push('jobs');
