@@ -940,19 +940,27 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     try{
       allowedUrls = await digiyAllowedPublicUrls();
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("gate:public",{ok:true,allowed_count:allowedUrls instanceof Set?allowedUrls.size:null});
     }catch(err){
       console.warn("DIGIY gate public indisponible : fiches locales fermées par sécurité.", err);
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("gate:public",{ok:false,error:String(err&&err.message||err)});
       setStatus("⚠️", digiyLang() === "en" ? "Public membership gate unavailable" : "Contrôle adhésion indisponible");
     }
 
-    const localDirectFirst = digiyAuthorizeDirectoryList(matchDirectFiches(val), allowedUrls);
-    if(localDirectFirst.length) return localDirectFirst.slice(0,4);
+    const localRaw = matchDirectFiches(val);
+    const localDirectFirst = digiyAuthorizeDirectoryList(localRaw, allowedUrls);
+    if(window.DIGIY_OBS)window.DIGIY_OBS.log("match:local-direct",{raw:localRaw.length,authorized:localDirectFirst.length});
+    if(localDirectFirst.length){
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("source:selected",{source:"local-direct",count:Math.min(localDirectFirst.length,4)});
+      return localDirectFirst.slice(0,4);
+    }
 
     if(sb){
       try{
         setStatus("⏳", digiyLang() === "en" ? "DIGIY memory" : "Mémoire DIGIY");
+        const expanded=digiyExpandQuery(val);
         const {data, error} = await sb.rpc(DIGIY_RPC_NAME, {
-          p_query: digiyExpandQuery(val),
+          p_query: expanded,
           p_limit: 8
         });
 
@@ -964,21 +972,40 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         const mappedDirect = allowedUrls instanceof Set
           ? digiyAuthorizeDirectoryList(mappedDirectRaw, allowedUrls)
           : mappedDirectRaw;
-        if(mappedDirect.length) return mappedDirect.slice(0,4);
+
+        if(window.DIGIY_OBS)window.DIGIY_OBS.log("rpc:route-public",{
+          ok:true,query:expanded,rows:rows.length,mapped:mapped.length,directory_raw:mappedDirectRaw.length,directory_authorized:mappedDirect.length
+        });
+
+        if(mappedDirect.length){
+          if(window.DIGIY_OBS)window.DIGIY_OBS.log("source:selected",{source:"rpc-directory",count:Math.min(mappedDirect.length,4)});
+          return mappedDirect.slice(0,4);
+        }
 
         if(mapped.length){
           const localBackup = digiyAuthorizeDirectoryList(matchCards(val), allowedUrls);
-          if(localBackup.length) return localBackup.slice(0,4);
+          if(localBackup.length){
+            if(window.DIGIY_OBS)window.DIGIY_OBS.log("source:selected",{source:"local-backup",count:Math.min(localBackup.length,4)});
+            return localBackup.slice(0,4);
+          }
           const safeRoutes = mapped.filter(x => x && x.kind !== "directory");
-          if(safeRoutes.length) return safeRoutes.slice(0,4);
+          if(safeRoutes.length){
+            if(window.DIGIY_OBS)window.DIGIY_OBS.log("source:selected",{source:"rpc-safe-route",count:Math.min(safeRoutes.length,4)});
+            return safeRoutes.slice(0,4);
+          }
         }
       }catch(err){
         console.warn("DIGIY RPC indisponible : aucune ancienne fiche locale n'est ouverte sans validation Supabase.", err);
+        if(window.DIGIY_OBS)window.DIGIY_OBS.log("rpc:route-public",{ok:false,error:String(err&&err.message||err)});
         setStatus("⚠️", digiyLang() === "en" ? "Memory unavailable · safe module backup" : "Mémoire indisponible · secours modules");
       }
+    }else if(window.DIGIY_OBS){
+      window.DIGIY_OBS.log("rpc:route-public",{ok:false,reason:"no-supabase-client"});
     }
 
-    return digiyGenericLocalCards(val);
+    const generic=digiyGenericLocalCards(val);
+    if(window.DIGIY_OBS)window.DIGIY_OBS.log("source:selected",{source:"generic-local",count:generic.length});
+    return generic;
   }
 
   const $ = (id) => document.getElementById(id);
