@@ -76,15 +76,17 @@
     }
     return [
       one('driver','🚗','DRIVER','transport','chauffeur',['chauffeur','driver','taxi','vtc','transport','trajet','course','transfert','aibd']),
-      one('plumber','🔧','PLOMBIER · BUILD','artisan','plombier',['plombier','plomberie','fuite','robinet','sanitaire']),
+      one('plumber','🔧','PLOMBIER · BUILD','artisan','plombier',['plombier','plomberie','fuite','canalisation','evier','évier','lavabo','robinet','douche','wc','toilettes','tuyau','sanitaire']),
       one('electrician','⚡','ÉLECTRICIEN · BUILD','artisan','électricien',['electricien','électricien','electricite','électricité','courant','panne electrique']),
+      one('architect','📐','ARCHITECTE · BUILD','artisan','architecte',['architecte','architecture','plans','plan de maison','faire les plans','concevoir','conception maison']),
+      one('carpenter','🚪','MENUISERIE · BUILD','artisan','menuisier',['menuisier','menuiserie','porte','porte en bois','fenetre en bois','fenêtre en bois']),
       one('mason','🏗️','CONSTRUCTION · BUILD','artisan','maçon',['macon','maçon','construction','batisseur','bâtisseur','chantier','renovation','rénovation']),
       one('solar','☀️','SOLAIRE · BUILD','artisan','solaire',['solaire','panneau solaire','batterie solaire','energie solaire','énergie solaire']),
       one('artisan','🛠️','ARTISANS · BUILD','artisan','artisan',['artisan','travaux','reparation','réparation','dépannage','depannage']),
       one('loc','🏠','DORMIR & LOUER · LOC','accommodation','logement',['chambre','logement','maison','studio','appartement','villa','louer','location','dormir','hebergement','hébergement']),
       one('resto','🍽️','MANGER · RESTO','food','restaurant',['restaurant','resto','manger','table','diner','dîner','repas','snack','traiteur','boulangerie']),
       one('commerce','🛍️','ACHETER LOCAL · COMMERCE','shopping','commerce',['commerce','commerces','boutique','magasin','acheter','produit','article','commande','shopping','linge','vetement','vêtement']),
-      one('beauty','💅','BEAUTÉ & BIEN-ÊTRE','beauty','beauté',['beaute','beauté','onglerie','ongles','massage','bien etre','bien-être','coiffure','spa','hammam','sauna','soins']),
+      one('beauty','💅','BEAUTÉ & BIEN-ÊTRE','beauty','beauté',['beaute','beauté','onglerie','ongles','manucure','pedicure','pédicure','massage','bien etre','bien-être','coiffure','coiffeur','coiffeuse','tresses','cheveux','brushing','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna','soins']),
       one('jobs','💼','EMPLOI & MISSIONS','jobs','emploi',['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']),
       one('announcements','⚡','ANNONCES · BONNE AFFAIRE','announcements','annonce',['annonce','annonces','bonne affaire','publier','vente','occasion','materiel','matériel']),
       one('resa','📅','RÉSA MULTI','resa','réservation',['resa','réservation','reservation','réserver','reserver','rendez vous','rendez-vous','creneau','créneau'])
