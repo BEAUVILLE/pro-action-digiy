@@ -22,7 +22,13 @@
     var el=document.getElementById('q')||document.querySelector('textarea,input[type="search"],input[type="text"]');
     return String(el&&(el.value||el.textContent)||'').trim();
   }
-  function isHealth(v){var t=norm(v);return WORDS.some(function(w){return t.indexOf(norm(w))!==-1})}
+  function isHealth(v){
+    var t=' '+norm(v).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ')+' ';
+    return WORDS.some(function(w){
+      var x=' '+norm(w).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ')+' ';
+      return x.trim() && t.indexOf(x)!==-1;
+    });
+  }
   function territory(v){
     var t=norm(v),q=new URLSearchParams(location.search),known=q.get('territory')||q.get('zone')||'';
     if(known)return known;
