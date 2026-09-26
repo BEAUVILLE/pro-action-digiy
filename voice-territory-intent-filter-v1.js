@@ -71,7 +71,17 @@
     if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique','electrician','electrical']))
       push('artisan','electrician');
     if(has(t,['architecte','architecture','plan de maison','plans de maison','faire les plans','concevoir une maison','conception maison']))
-      push('artisan','architect');
+      push('services','architect');
+    if(has(t,['geometre','géomètre','bornage','bornage terrain','limites terrain','mesure terrain']))
+      push('services','surveyor');
+    if(has(t,['avocat','avocate','conseil juridique','juriste']))
+      push('services','lawyer');
+    if(has(t,['huissier','commissaire de justice','signification','constat huissier']))
+      push('services','bailiff');
+    if(has(t,['mecanicien','mécanicien','garage','reparation voiture','réparation voiture','panne voiture','moteur voiture']))
+      push('services','mechanic');
+    if(has(t,['comptable','expert comptable','expert-comptable','comptabilite','comptabilité','bilan comptable','declaration fiscale','déclaration fiscale']))
+      push('services','accountant');
     if(has(t,['menuisier','menuiserie','porte','porte en bois','fenetre en bois','fenêtre en bois']))
       push('artisan','carpenter');
     if(has(t,['macon','maçon','maconnerie','maçonnerie','construction','batisseur','bâtisseur','chantier']))
@@ -141,6 +151,7 @@
     if(has(t,['restaurant','resto','manger']))return'food';
     if(has(t,['commerce','boutique','shopping']))return'shopping';
     if(has(t,['beaute','beauté','onglerie','massage','coiffure']))return'beauty';
+    if(has(t,['services','service pro','architecte','géomètre','geometre','avocat','huissier','commissaire de justice','mécanicien','mecanicien','comptable','expert-comptable','expert comptable']))return'services';
     if(has(t,['emploi','jobs','mission']))return'jobs';
     if(has(t,['annonce','bonne affaire']))return'announcements';
     if(has(t,['resa','réservation','reservation']))return'resa';
@@ -175,11 +186,25 @@
     return module===family;
   }
 
+  function serviceSpecialty(card){
+    var t=clean(card.textContent||'');
+    if(has(t,['architecte','architecture']))return'architect';
+    if(has(t,['geometre','géomètre','bornage']))return'surveyor';
+    if(has(t,['avocat','avocate','juriste']))return'lawyer';
+    if(has(t,['huissier','commissaire de justice']))return'bailiff';
+    if(has(t,['mecanicien','mécanicien','garage']))return'mechanic';
+    if(has(t,['comptable','expert comptable','expert-comptable','comptabilite','comptabilité']))return'accountant';
+    return'';
+  }
+
   function compatibleNeed(need,module,card){
     if(!need)return true;
     if(!compatibleFamily(need.family,module))return false;
     if(need.family==='artisan'&&need.specialty){
       return artisanSpecialty(card)===need.specialty;
+    }
+    if(need.family==='services'&&need.specialty){
+      return serviceSpecialty(card)===need.specialty;
     }
     return true;
   }
@@ -195,10 +220,14 @@
   function labelForNeed(need){
     if(!need)return'';
     if(need.family==='artisan'&&need.specialty){
-      var s={plumber:'PLOMBIER',electrician:'ÉLECTRICIEN',architect:'ARCHITECTE',carpenter:'MENUISERIE',mason:'MAÇON',solar:'SOLAIRE'};
+      var s={plumber:'PLOMBIER',electrician:'ÉLECTRICIEN',carpenter:'MENUISERIE',mason:'MAÇON',solar:'SOLAIRE'};
       return s[need.specialty]||'BUILD';
     }
-    var names={accommodation:'LOC',transport:'DRIVER',artisan:'BUILD',food:'MANGER / RÉSA',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
+    if(need.family==='services'&&need.specialty){
+      var p={architect:'ARCHITECTE',surveyor:'GÉOMÈTRE',lawyer:'AVOCAT',bailiff:'HUISSIER',mechanic:'MÉCANICIEN',accountant:'COMPTABLE'};
+      return p[need.specialty]||'SERVICES';
+    }
+    var names={accommodation:'LOC',transport:'DRIVER',artisan:'BUILD',services:'SERVICES',food:'MANGER / RÉSA',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
     return names[need.family]||String(need.family||'').toUpperCase();
   }
 
