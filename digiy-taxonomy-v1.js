@@ -12,6 +12,7 @@
     LOC:{code:"LOC",label:"LOC",icon:"🏠",aliases:["loc","location","logement","hebergement","hébergement"]},
     RESA:{code:"RESA",label:"RÉSERVATION",icon:"📅",aliases:["resa","réservation","reservation","resto"]},
     BUILD:{code:"BUILD",label:"BÂTIMENT",icon:"🏗️",aliases:["build","bâtiment","batiment","artisan"]},
+    SERVICES:{code:"SERVICES",label:"SERVICES",icon:"⚖️",aliases:["services","service","services pro","profession libérale","profession liberale"]},
     COMMERCE:{code:"COMMERCE",label:"MON COMMERCE",icon:"🛍️",aliases:["commerce","mon commerce","market","pos","boutique","shopping","shop"]},
     JOBS:{code:"JOBS",label:"TRAVAIL",icon:"💼",aliases:["jobs","job","emploi","travail"]},
     EXPLORE:{code:"EXPLORE",label:"EXPLORE",icon:"🗺️",aliases:["explore","sortie","visite","activité","activite"]},
@@ -62,7 +63,7 @@
   }
 
   global.DIGIY_TAXONOMY={
-    version:"20260926-taxonomy-v1",
+    version:"20260926-taxonomy-services-v2",
     modules:MODULES,
     territories:TERRITORIES,
     clean,
