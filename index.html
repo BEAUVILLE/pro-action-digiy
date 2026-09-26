@@ -809,7 +809,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function digiyRpcCardFromRow(row){
     if(!row) return null;
 
-    const moduleCode = String(row.detected_module_code || "").toUpperCase();
+    const rawModuleCode = String(row.detected_module_code || "").toUpperCase();
+    const moduleCode = (rawModuleCode === "MARKET" || rawModuleCode === "POS") ? "COMMERCE" : (window.DIGIY_TAXONOMY?.moduleCode?.(rawModuleCode) || rawModuleCode);
     const cardName = row.card_name || "";
     const cardUrl = row.card_public_url || "";
     const metier = row.detected_metier_label || row.detected_intention_label || moduleCode || "Route DIGIY";
@@ -1491,12 +1492,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       nom:"BCHEIKH",
       metier:"boutique de vêtements",
       activite:"Tee-shirts · Polos · Caleçons · Packs de 3 pièces",
-      categorie:"MARKET",
+      categorie:"COMMERCE",
       sousCategorie:"vetements-homme",
       secteur:"Saly",
       zones:["Saly","Mbour","Petite Côte"],
       statut:"fiche_market_publique",
-      labelStatut:"Fiche boutique DIGIY MARKET",
+      labelStatut:"Fiche boutique DIGIY COMMERCE",
       phone:"",
       whatsapp:"",
       keys:["bcheikh","b cheikh","vêtement","vetement","vêtements","vetements","habit","habits","mode","boutique vêtements","boutique vetements","tee-shirt","tee shirt","t-shirt","tshirt","polo","polos","caleçon","calecon","caleçons","calecons","sous-vêtement","sous vetement","sous-vêtements","sous vetements","pack 3 pièces","pack 3 pieces","trois pièces","trois pieces","poche de 3 caleçons","poche de 3 calecons","7000 fcfa","20000 fcfa"],
