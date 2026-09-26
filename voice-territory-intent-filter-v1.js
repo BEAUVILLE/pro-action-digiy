@@ -59,8 +59,9 @@
     }
 
     var explicitBuilding=has(t,['architecte','architecture','plans','plan de maison','concevoir','construction','construire','chantier','menuisier','menuiserie','porte','fenetre','fenêtre']);
-    if(has(t,['appartement','chambre','logement','studio','villa','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel','room','lodging','stay','apartment','flat','rental','rent','night']) ||
-       (has(t,['maison','house']) && !explicitBuilding))
+    var explicitRealEstate=has(t,['immobilier','immobiliere','immobilière','agence immobiliere','agence immobilière','bien immobilier','acheter maison','acheter une maison','maison a vendre','maison à vendre','vendre maison','acheter appartement','appartement a vendre','appartement à vendre','vendre appartement','acheter terrain','terrain a vendre','terrain à vendre','vendre terrain','vente terrain','parcelle a vendre','parcelle à vendre']);
+    if(has(t,['chambre','logement','studio','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel','room','lodging','stay','rental','rent','night']) ||
+       (has(t,['appartement','villa','maison','house','apartment','flat']) && !explicitBuilding && !explicitRealEstate))
       push('accommodation');
 
     if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','airport','trajet','course','ride','trip','transfert','transfer','transport']))
@@ -91,15 +92,19 @@
     if(has(t,['artisan','travaux','reparation','réparation','depannage','dépannage'])&&!needs.some(function(n){return n.family==='artisan'}))
       push('artisan');
 
-    if(has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie']))
+    if(has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie','j ai faim','j’ai faim','on a faim','dejeuner','déjeuner','petit dejeuner','petit déjeuner','manger du poisson','poisson grille','poisson grillé','prendre un verre','boire un verre','a emporter','à emporter','livraison repas','table pour deux','table pour 2']))
       push('food');
+    if(has(t,['excursion','excursions','sortie','sorties','visite','visiter','decouvrir','découvrir','balade','promenade','guide touristique','guide local','tour guide','activite','activité','activites','activités','peche','pêche','sortie en mer','ile de goree','île de gorée','reserve de bandia','réserve de bandia','lac rose','safari']))
+      push('explore');
+    if(explicitRealEstate || has(t,['agence immobiliere','agence immobilière','agent immobilier','maison a vendre','maison à vendre','appartement a vendre','appartement à vendre','terrain a vendre','terrain à vendre','parcelle a vendre','parcelle à vendre','acheter un bien','vendre un bien','vente immobiliere','vente immobilière']))
+      push('realestate');
     if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','faire mes ongles','faire les ongles','manucure','pedicure','pédicure','soin des pieds','pieds','vernis','pose gel','faux ongles','massage','bien etre','bien-être','wellness','coiffure','coiffeur','coiffeuse','me faire coiffer','faire coiffer','tresses','tresser','nattes','cheveux','couper mes cheveux','coupe cheveux','brushing','hair','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna','soin','soins']))
       push('beauty');
     if(has(t,['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']))
       push('jobs');
     if(has(t,['annonce','annonces','bonne affaire','publier','occasion','materiel','matériel']))
       push('announcements');
-    if(has(t,['commerce','commerces','boutique','magasin','shop','store','acheter','buy','produit','product','article','commande','shopping','linge','vetement','vêtement']))
+    if(has(t,['commerce','commerces','boutique','magasin','shop','store','acheter','buy','produit','product','article','commande','shopping','linge','linge de maison','serviette','serviettes','drap','draps','peignoir','peignoirs','vetement','vêtement','vetements','vêtements','tee shirt','tee-shirt','t shirt','t-shirt','polo','polos','robe','robes','chaussure','chaussures','sandale','sandales','sac','sacs','tissu','tissus','telephone','téléphone','accessoire','accessoires']))
       push('shopping');
     if(has(t,['rendez vous','rendez-vous','appointment','creneau','créneau','reservation','réservation','booking','book','reserver','réserver']))
       push('resa');
@@ -129,6 +134,7 @@
     'resto.digiylyfe.com':'food',
     'resa-table-resto.digiylyfe.com':'resa',
     'mon-commerce.digiylyfe.com':'shopping',
+    'explore.digiylyfe.com':'explore',
     'jobs.digiylyfe.com':'jobs',
     'bonne-affaire.digiylyfe.com':'announcements'
   };
@@ -150,6 +156,8 @@
     if(has(t,['driver','chauffeur','transport']))return'transport';
     if(has(t,['restaurant','resto','manger']))return'food';
     if(has(t,['commerce','boutique','shopping']))return'shopping';
+    if(has(t,['explore','excursion','sortie','visite','guide touristique','activité','activite']))return'explore';
+    if(has(t,['immobilier','immobiliere','immobilière','agence immobilière','agence immobiliere','agent immobilier','bien immobilier','terrain à vendre','terrain a vendre','maison à vendre','maison a vendre','appartement à vendre','appartement a vendre']))return'realestate';
     if(has(t,['beaute','beauté','onglerie','massage','coiffure']))return'beauty';
     if(has(t,['services','service pro','architecte','géomètre','geometre','avocat','huissier','commissaire de justice','mécanicien','mecanicien','comptable','expert-comptable','expert comptable']))return'services';
     if(has(t,['emploi','jobs','mission']))return'jobs';
@@ -227,7 +235,7 @@
       var p={architect:'ARCHITECTE',surveyor:'GÉOMÈTRE',lawyer:'AVOCAT',bailiff:'HUISSIER',mechanic:'MÉCANICIEN',accountant:'COMPTABLE'};
       return p[need.specialty]||'SERVICES';
     }
-    var names={accommodation:'LOC',transport:'DRIVER',artisan:'BUILD',services:'SERVICES',food:'MANGER / RÉSA',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
+    var names={accommodation:'LOC',transport:'DRIVER',artisan:'BUILD',services:'SERVICES',food:'MANGER / RÉSA',explore:'EXCURSION / EXPLORE',realestate:'IMMOBILIER',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
     return names[need.family]||String(need.family||'').toUpperCase();
   }
 
