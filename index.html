@@ -2290,7 +2290,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   async function searchNow(move){
     const val = q ? q.value.trim() : "";
     const seq = ++digiySearchSeq;
-    if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:start",{seq:seq,input:val,move:!!move});
+    if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:start",{seq:seq,input:val,move:!!move,engine:"deterministic"});
 
     if(!val){
       render([], val);
@@ -2299,13 +2299,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       return;
     }
 
-    const intent = await digiyIntentEnhance(val);
-    if(seq !== digiySearchSeq){
-      if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:cancelled",{seq:seq,reason:"newer-search"});
-      return;
-    }
-
-    const list = await matchCardsPublic(intent.query || val);
+    /* P4 résilience :
+       Le moteur métier/territoire DIGIY est le chemin primaire.
+       Aucun parser IA externe n'est requis pour trouver les fiches. */
+    const list = await matchCardsPublic(val);
     if(seq !== digiySearchSeq){
       if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:cancelled",{seq:seq,reason:"newer-search-after-match"});
       return;
@@ -2314,9 +2311,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:results",{
       seq:seq,
       input:val,
-      effective_query:intent.query||val,
-      mode:intent.mode||"local",
-      requests:intent.requests||[],
+      effective_query:val,
+      mode:"deterministic",
       total:list.length,
       results:list.map(function(x){return {title:x.title||"",kind:x.kind||"",metier:x.metier||"",categorie:x.categorie||"",secteur:x.secteur||""}})
     });
