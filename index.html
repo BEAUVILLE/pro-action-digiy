@@ -2252,6 +2252,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         requests:requests,
         search_text:enriched
       };
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("intent:parser",{input:original,mode:data.mode||"unknown",requests:requests,search_text:enriched});
       return {query:enriched, mode:data.mode || "ai", requests:requests};
     }catch(err){
       console.warn("DIGIY intent parser indisponible : moteur local conservé.", err);
@@ -2262,19 +2263,36 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   async function searchNow(move){
     const val = q ? q.value.trim() : "";
     const seq = ++digiySearchSeq;
+    if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:start",{seq:seq,input:val,move:!!move});
 
     if(!val){
       render([], val);
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:empty",{seq:seq});
       if(move) bringResultsIntoView();
       return;
     }
 
     const intent = await digiyIntentEnhance(val);
-    if(seq !== digiySearchSeq) return;
+    if(seq !== digiySearchSeq){
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:cancelled",{seq:seq,reason:"newer-search"});
+      return;
+    }
 
     const list = await matchCardsPublic(intent.query || val);
-    if(seq !== digiySearchSeq) return;
+    if(seq !== digiySearchSeq){
+      if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:cancelled",{seq:seq,reason:"newer-search-after-match"});
+      return;
+    }
 
+    if(window.DIGIY_OBS)window.DIGIY_OBS.log("search:results",{
+      seq:seq,
+      input:val,
+      effective_query:intent.query||val,
+      mode:intent.mode||"local",
+      requests:intent.requests||[],
+      total:list.length,
+      results:list.map(function(x){return {title:x.title||"",kind:x.kind||"",metier:x.metier||"",categorie:x.categorie||"",secteur:x.secteur||""}})
+    });
     render(list, val);
     collapseVoiceQueryAfterResult();
     if(move) bringResultsIntoView();
