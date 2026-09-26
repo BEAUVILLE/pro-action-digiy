@@ -1756,17 +1756,22 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function isHousingText(t){
-    return [
-      "logement","location","loc","chambre","appartement","studio","villa","maison",
+    const explicitHousing = [
+      "logement","location","loc","chambre","appartement","studio","villa",
       "dormir","nuit","nuits","week-end","weekend","sejour","séjour","hebergement","hébergement",
       "hotel","hôtel","4 personnes","famille","vacances"
     ].some(k => t.includes(clean(k)));
+    const buildingMaison = [
+      "architecte","architecture","plan de maison","plans de maison","faire les plans",
+      "concevoir","construction","construire","chantier","menuisier","menuiserie","porte"
+    ].some(k => t.includes(clean(k)));
+    return explicitHousing || (t.includes("maison") && !buildingMaison);
   }
 
   function isBuildingText(t){
     return [
-      "artisan","plombier","electricien","électricien","macon","maçon","travaux","reparer","réparer",
-      "reparation","réparation","chantier","construction","batiment","bâtiment","fuite","canalisation","canalisation bouchée","canalisation bouchee","débouchage","debouchage","désengorgement","desengorgement","évacuation","evacuation","tuyau","tuyauterie","sanitaire","maçonnerie","maconnerie",
+      "artisan","plombier","electricien","électricien","architecte","architecture","menuisier","menuiserie","macon","maçon","travaux","reparer","réparer",
+      "reparation","réparation","chantier","construction","batiment","bâtiment","porte","fenetre","fenêtre","fuite","canalisation","canalisation bouchée","canalisation bouchee","évier","evier","lavabo","robinet","douche","wc","toilettes","débouchage","debouchage","désengorgement","desengorgement","évacuation","evacuation","tuyau","tuyauterie","sanitaire","maçonnerie","maconnerie",
       "solaire","panneau","panneaux","batterie","energie","énergie","regulateur","régulateur"
     ].some(k => t.includes(clean(k)));
   }
@@ -1999,7 +2004,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     const writtenMultilingualRules = [
       [/(?:chez|che|sche)?\s*baptist|batist|باتيست/, " chez baptiste logement chambre hebergement dormir"],
-      [/plomb|canalisation|debouch|débouch|plumb|fontaner|klempner|idraulic|loodgieter|سباك|تسرب/, " plombier plomberie fuite canalisation debouchage robinet wc sanitaire"],
+      [/plomb|canalisation|debouch|débouch|evier|évier|lavabo|robinet|douche|wc|toilette|tuyau|plumb|fontaner|klempner|idraulic|loodgieter|سباك|تسرب/, " plombier plomberie fuite canalisation debouchage evier lavabo robinet douche wc tuyau sanitaire"],
+      [/architect|architecture|plan de maison|plans de maison|faire les plans|concevoir une maison/, " architecte architecture plans conception build"],
+      [/menuis|porte|fenetre en bois|fenêtre en bois|carpenter|joiner/, " menuisier menuiserie porte fenetre bois build"],
+      [/coiff|coiffeur|coiffeuse|tresse|cheveux|brushing|hairdresser|hairstyl/, " coiffure coiffeur coiffeuse tresses cheveux brushing beauté"],
+      [/onglerie|ongles|manucure|pedicure|pédicure|nails/, " onglerie ongles manucure pédicure beauté resa"],
       [/macon|mason|builder|alban|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/, " macon maçon maçonnerie batisseur bâtisseur construction"],
       [/electric|elektrik|elettric|elektricien|كهرب/, " electricien électricien electricite électricité courant"],
       [/solair|solar|fotovolta|zonne|شمس/, " solaire panneau panneaux batterie energie régulateur"],
@@ -2026,7 +2035,19 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     });
     if(hasControlledPlumberVariant) extra += " plombier plomberie";
     if(/\b(plumber|plumbing|leak|pipe|tap|faucet|toilet|bathroom)\b/.test(t)) extra += " plombier plomberie fuite robinet wc sanitaire";
-    if(/\b(mason|masonry|builder|building|construction|renovation|wall|concrete|repair|contractor)\b/.test(t)){
+    if(/\b(architect|architecture|architectural|blueprint|blueprints)\b/.test(t)){
+      extra += " architecte architecture plans conception build";
+    }
+    if(/\b(carpenter|joiner|carpentry|door|wooden door|wooden window)\b/.test(t)){
+      extra += " menuisier menuiserie porte fenetre bois build";
+    }
+    if(/\b(hairdresser|hairstylist|haircut|braids|braiding|brushing)\b/.test(t)){
+      extra += " coiffure coiffeur coiffeuse tresses cheveux brushing beauté";
+    }
+    if(/\b(nails|manicure|pedicure)\b/.test(t)){
+      extra += " onglerie ongles manucure pédicure beauté resa";
+    }
+    if(/\b(mason|masonry|builder|building|construction|renovation|wall|concrete|contractor)\b/.test(t)){
       extra += " macon maçon maçonnerie batisseur bâtisseur construction";
     }
     if(/\b(electrician|electricity|electrical|power|socket|switch|wire|wiring)\b/.test(t)){
