@@ -971,7 +971,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         const mappedDirectRaw = mapped.filter(x => x && x.kind === "directory");
         const mappedDirect = allowedUrls instanceof Set
           ? digiyAuthorizeDirectoryList(mappedDirectRaw, allowedUrls)
-          : mappedDirectRaw;
+          : [];
 
         if(window.DIGIY_OBS)window.DIGIY_OBS.log("rpc:route-public",{
           ok:true,query:expanded,rows:rows.length,mapped:mapped.length,directory_raw:mappedDirectRaw.length,directory_authorized:mappedDirect.length
