@@ -534,7 +534,7 @@
       id: "acheter_produit",
       active: false,
       futureReady: true,
-      module: "MARKET",
+      module: "COMMERCE",
       icon: "🛍️",
       label:
         "Acheter ou trouver un produit",
@@ -556,7 +556,7 @@
       situations: [],
 
       noResult:
-        "La direction MARKET est comprise, mais aucune boutique officielle n’est encore branchée."
+        "La direction COMMERCE est comprise, mais aucune boutique officielle n’est encore branchée."
     },
 
     {
