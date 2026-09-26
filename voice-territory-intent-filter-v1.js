@@ -16,6 +16,17 @@
     'miami':{label:'MIAMI',markers:['miami','florida','floride','usa','united states','etats unis','états unis','etats-unis','états-unis']}
   };
 
+  /* P5 cohérence : le registre commun enrichit les territoires déjà connus,
+     sans retirer les marqueurs locaux historiques (AIBD, Thiès, Maroc...). */
+  var COMMON_TERRITORIES=(window.DIGIY_TAXONOMY&&window.DIGIY_TAXONOMY.territories)||{};
+  ['petite-cote','dakar','miami'].forEach(function(slug){
+    var common=COMMON_TERRITORIES[slug],local=TERRITORIES[slug];
+    if(!common||!local)return;
+    var merged=(local.markers||[]).concat(common.markers||[]);
+    local.markers=merged.filter(function(v,i,a){return a.indexOf(v)===i});
+    if(common.label)local.label=String(common.label).toUpperCase();
+  });
+
   function qs(){try{return new URLSearchParams(location.search)}catch(e){return new URLSearchParams()}}
   function clean(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
   function has(t,words){return words.some(function(w){return t.indexOf(clean(w))>=0})}
@@ -53,7 +64,7 @@
     if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','airport','trajet','course','ride','trip','transfert','transfer','transport']))
       push('transport');
 
-    if(has(t,['plombier','plomberie','fuite','robinet','sanitaire','plumber','plumbing']))
+    if(has(t,['plombier','plomberie','fuite','canalisation','canalisation bouchée','canalisation bouchee','débouchage','debouchage','désengorgement','desengorgement','évacuation','evacuation','tuyau','tuyauterie','robinet','sanitaire','plumber','plumbing']))
       push('artisan','plumber');
     if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique','electrician','electrical']))
       push('artisan','electrician');
