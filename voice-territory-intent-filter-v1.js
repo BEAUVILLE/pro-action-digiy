@@ -214,6 +214,14 @@
     if(need.family==='services'&&need.specialty){
       return serviceSpecialty(card)===need.specialty;
     }
+    if(need.family==='explore'){
+      var links=card.querySelectorAll('a[href]');
+      for(var i=0;i<links.length;i++){
+        try{
+          if(new URL(links[i].href,location.href).hostname==='explore.digiylyfe.com')return false;
+        }catch(e){}
+      }
+    }
     return true;
   }
 
