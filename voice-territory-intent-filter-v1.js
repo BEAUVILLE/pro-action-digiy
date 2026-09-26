@@ -58,7 +58,9 @@
       }
     }
 
-    if(has(t,['appartement','chambre','logement','studio','villa','maison','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel','room','lodging','stay','apartment','flat','house','rental','rent','night']))
+    var explicitBuilding=has(t,['architecte','architecture','plans','plan de maison','concevoir','construction','construire','chantier','menuisier','menuiserie','porte','fenetre','fenêtre']);
+    if(has(t,['appartement','chambre','logement','studio','villa','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel','room','lodging','stay','apartment','flat','rental','rent','night']) ||
+       (has(t,['maison','house']) && !explicitBuilding))
       push('accommodation');
 
     if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','airport','trajet','course','ride','trip','transfert','transfer','transport']))
@@ -68,6 +70,10 @@
       push('artisan','plumber');
     if(has(t,['electricien','électricien','electricite','électricité','courant','panne electrique','panne électrique','electrician','electrical']))
       push('artisan','electrician');
+    if(has(t,['architecte','architecture','plan de maison','plans de maison','faire les plans','concevoir une maison','conception maison']))
+      push('artisan','architect');
+    if(has(t,['menuisier','menuiserie','porte','porte en bois','fenetre en bois','fenêtre en bois']))
+      push('artisan','carpenter');
     if(has(t,['macon','maçon','maconnerie','maçonnerie','construction','batisseur','bâtisseur','chantier']))
       push('artisan','mason');
     if(has(t,['solaire','panneau solaire','batterie solaire','energie solaire','énergie solaire']))
@@ -77,7 +83,7 @@
 
     if(has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie']))
       push('food');
-    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','massage','bien etre','bien-être','wellness','coiffure','hair','salon','spa','hammam','sauna','soin','soins']))
+    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','massage','bien etre','bien-être','wellness','coiffure','coiffeur','coiffeuse','tresses','cheveux','brushing','hair','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna','soin','soins']))
       push('beauty');
     if(has(t,['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']))
       push('jobs');
@@ -155,6 +161,8 @@
     var t=clean(card.textContent||'');
     if(has(t,['plombier','plomberie']))return'plumber';
     if(has(t,['electricien','électricien','electricite','électricité']))return'electrician';
+    if(has(t,['architecte','architecture','faire les plans','plan de maison']))return'architect';
+    if(has(t,['menuisier','menuiserie','porte','fenetre en bois','fenêtre en bois']))return'carpenter';
     if(has(t,['macon','maçon','batisseur','bâtisseur','construction']))return'mason';
     if(has(t,['solaire','panneau solaire']))return'solar';
     return'';
@@ -187,7 +195,7 @@
   function labelForNeed(need){
     if(!need)return'';
     if(need.family==='artisan'&&need.specialty){
-      var s={plumber:'PLOMBIER',electrician:'ÉLECTRICIEN',mason:'MAÇON',solar:'SOLAIRE'};
+      var s={plumber:'PLOMBIER',electrician:'ÉLECTRICIEN',architect:'ARCHITECTE',carpenter:'MENUISERIE',mason:'MAÇON',solar:'SOLAIRE'};
       return s[need.specialty]||'BUILD';
     }
     var names={accommodation:'LOC',transport:'DRIVER',artisan:'BUILD',food:'MANGER / RÉSA',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
