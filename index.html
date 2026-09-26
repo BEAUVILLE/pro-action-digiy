@@ -1756,16 +1756,23 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function isHousingText(t){
+    const realEstateIntent = [
+      "immobilier","immobiliere","immobilière","agence immobiliere","agence immobilière","agent immobilier",
+      "acheter maison","acheter une maison","maison a vendre","maison à vendre","vendre maison",
+      "acheter appartement","appartement a vendre","appartement à vendre","vendre appartement",
+      "acheter terrain","terrain a vendre","terrain à vendre","vendre terrain","parcelle a vendre","parcelle à vendre"
+    ].some(k => t.includes(clean(k)));
     const explicitHousing = [
-      "logement","location","loc","chambre","appartement","studio","villa",
+      "logement","location","loc","chambre","studio","louer",
       "dormir","nuit","nuits","week-end","weekend","sejour","séjour","hebergement","hébergement",
       "hotel","hôtel","4 personnes","famille","vacances"
     ].some(k => t.includes(clean(k)));
+    const housingProperty = ["appartement","villa"].some(k => t.includes(clean(k)));
     const buildingMaison = [
       "architecte","architecture","plan de maison","plans de maison","faire les plans",
       "concevoir","construction","construire","chantier","menuisier","menuiserie","porte"
     ].some(k => t.includes(clean(k)));
-    return explicitHousing || (t.includes("maison") && !buildingMaison);
+    return !realEstateIntent && (explicitHousing || housingProperty || (t.includes("maison") && !buildingMaison));
   }
 
   function isBuildingText(t){
@@ -2019,11 +2026,12 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       [/solair|solar|fotovolta|zonne|شمس/, " solaire panneau panneaux batterie energie régulateur"],
       [/chauff|driver|taxi|airport|aibd|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/, " chauffeur driver taxi aibd trajet transfert voiture"],
       [/chambre|logement|location|appart|room|flat|house|villa|lodg|accommodation|hotel|habitaci|alojamiento|zimmer|wohnung|unterkunft|camera|alloggio|kamer|woning|غرفة|سكن|شقة|فندق/, " chambre appartement logement location villa dormir nuit hébergement hôtel"],
-      [/table|restaurant|dinner|lunch|mesa|comer|tisch|essen|tavolo|mangiare|ristorante|tafel|eten|طاولة|مطعم|عشاء/, " réserver reservation table restaurant manger diner"],
+      [/table|restaurant|resto|dinner|lunch|dejeuner|déjeuner|j ai faim|j’ai faim|poisson grille|poisson grillé|a emporter|à emporter|mesa|comer|tisch|essen|tavolo|mangiare|ristorante|tafel|eten|طاولة|مطعم|عشاء/, " réserver reservation table restaurant resto manger diner déjeuner repas poisson"],
       [/reserv|booking|book|prenot|buchen|reserveren|حجز/, " réserver reservation"],
-      [/boutique|commerce|produit|shop|store|market|product|buy|towel|sheet|bathrobe|bed linen|home linen|tienda|comprar|toalla|sabana|albornoz|ropa de cama|geschaft|laden|produkt|handtuch|bettwasche|bettlaken|bademantel|negozio|asciugaman|lenzuol|accappatoio|biancheria|winkel|handdoek|laken|beddengoed|badjas|متجر|منتج|شراء|منشفة|مناشف|ملاءة|ملاءات|رداء حمام|مفروشات|بياضات/, " boutique market produit acheter serviette serviettes drap draps peignoir linge commerce"],
+      [/boutique|commerce|produit|shop|store|market|product|buy|towel|sheet|bathrobe|bed linen|home linen|vetement|vêtement|chaussure|robe|polo|tee shirt|t-shirt|tissu|telephone|téléphone|accessoire|tienda|comprar|toalla|sabana|albornoz|ropa de cama|geschaft|laden|produkt|handtuch|bettwasche|bettlaken|bademantel|negozio|asciugaman|lenzuol|accappatoio|biancheria|winkel|handdoek|laken|beddengoed|badjas|متجر|منتج|شراء|منشفة|مناشف|ملاءة|ملاءات|رداء حمام|مفروشات|بياضات/, " boutique market produit acheter serviette serviettes drap draps peignoir linge vêtements chaussures robe polo tissu téléphone accessoires commerce"],
       [/emploi|travail|mission|job|work|employment|trabajo|empleo|arbeit|auftrag|lavoro|incarico|werk|opdracht|عمل|وظيفة|مهمة/, " emploi travail job mission recrute postuler"],
-      [/sortie|visite|decouvr|activit|outing|visit|discover|tour|salida|ausflug|entdecken|uscita|scoprire|uitstap|ontdekken|نزهة|زيارة|اكتشاف/, " sortie visite découvrir idée activité explore petite cote"],
+      [/excursion|sortie|visite|visiter|decouvr|activit|balade|promenade|peche|pêche|sortie en mer|guide touristique|outing|visit|discover|tour|salida|ausflug|entdecken|uscita|scoprire|uitstap|ontdekken|نزهة|زيارة|اكتشاف/, " excursion sortie visite découvrir idée activité balade promenade guide explore petite cote"],
+      [/immobilier|immobiliere|immobilière|agence immobiliere|agence immobilière|agent immobilier|acheter maison|maison a vendre|maison à vendre|acheter appartement|appartement a vendre|appartement à vendre|acheter terrain|terrain a vendre|terrain à vendre|parcelle a vendre|parcelle à vendre|real estate|property for sale/, " immobilier agence immobilière acheter vendre maison appartement terrain parcelle"],
       [/paiement|argent|wave|preuve|payment|money|proof|pago|dinero|zahlung|geld|nachweis|pagamento|denaro|betaling|bewijs|دفع|مال|إثبات/, " paiement pay argent wave preuve reçu"],
       [/adresse|route|venir|address|direction|map|direccion|ruta|kommen|weg|strada|indirizzo|adres|طريق|عنوان|خريطة/, " adresse route venir carte localisation"],
       [/annonce|reseau|publier|announcement|network|publish|anuncio|red|anzeige|netzwerk|annuncio|rete|advertentie|netwerk|إعلان|شبكة|نشر/, " annonce réseau publier visibilité"],
@@ -2080,9 +2088,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(/\b(room|apartment|flat|house|villa|lodging|accommodation|hotel|sleep|night|weekend|week-end)\b/.test(t)) extra += " chambre appartement logement location villa dormir nuit hébergement hôtel";
     if(/\b(table|restaurant|dinner|lunch|eat)\b/.test(t)) extra += " réserver reservation réservation table restaurant manger diner";
     if(/\b(book|booking|reserve|reservation)\b/.test(t)) extra += " réserver reservation réservation";
-    if(/\b(shop|store|market|product|buy|towel|towels|sheet|sheets|boutique)\b/.test(t)) extra += " boutique market produit acheter serviette serviettes drap commerce";
+    if(/\b(shop|store|market|product|buy|towel|towels|sheet|sheets|boutique|clothes|shoes|dress|shirt|phone|accessories)\b/.test(t)) extra += " boutique market produit acheter vêtements chaussures robe chemise téléphone accessoires commerce";
     if(/\b(job|work|mission|employment|hire|hiring)\b/.test(t)) extra += " emploi travail job mission recrute postuler";
-    if(/\b(outing|visit|discover|tour|activity|idea|place|petite cote|petite coast)\b/.test(t)) extra += " sortie visite découvrir idée activité explore petite cote";
+    if(/\b(excursion|outing|visit|discover|tour|activity|idea|place|fishing trip|boat trip|petite cote|petite coast)\b/.test(t)) extra += " excursion sortie visite découvrir idée activité balade guide explore petite cote";
+    if(/\b(real estate|property for sale|house for sale|apartment for sale|land for sale|buy a house|buy land)\b/.test(t)) extra += " immobilier agence immobilière acheter vendre maison appartement terrain parcelle";
     if(/\b(sarlat|perigord|dordogne)\b/.test(t)) extra += " sarlat périgord noir dordogne territoire";
     if(/\b(paris|ile de france|ile-de-france)\b/.test(t)) extra += " paris france ile de france territoire";
     if(/\b(miami|florida|floride|usa|u\.?s\.?a\.?|united states|united states of america|etats unis|etats-unis)\b/.test(t)) extra += " miami florida usa etats unis united states territoire";
