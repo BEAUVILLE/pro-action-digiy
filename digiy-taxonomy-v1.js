@@ -12,7 +12,7 @@
     LOC:{code:"LOC",label:"LOC",icon:"🏠",aliases:["loc","location","logement","hebergement","hébergement"]},
     RESA:{code:"RESA",label:"RÉSERVATION",icon:"📅",aliases:["resa","réservation","reservation","resto"]},
     BUILD:{code:"BUILD",label:"BÂTIMENT",icon:"🏗️",aliases:["build","bâtiment","batiment","artisan"]},
-    COMMERCE:{code:"COMMERCE",label:"MON COMMERCE",icon:"🛍️",aliases:["commerce","mon commerce","market","boutique","shopping"]},
+    COMMERCE:{code:"COMMERCE",label:"MON COMMERCE",icon:"🛍️",aliases:["commerce","mon commerce","market","pos","boutique","shopping","shop"]},
     JOBS:{code:"JOBS",label:"TRAVAIL",icon:"💼",aliases:["jobs","job","emploi","travail"]},
     EXPLORE:{code:"EXPLORE",label:"EXPLORE",icon:"🗺️",aliases:["explore","sortie","visite","activité","activite"]},
     CARNET:{code:"CARNET",label:"CARNET",icon:"💳",aliases:["carnet","pay","paiement","wave"]},
