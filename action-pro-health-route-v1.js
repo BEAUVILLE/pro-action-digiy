@@ -40,7 +40,13 @@
   }
   function lang(){var q=new URLSearchParams(location.search),l=(q.get('lang')||document.documentElement.lang||'fr').slice(0,2).toLowerCase();return ['fr','en','es','pt','de','it','nl','ar'].indexOf(l)>=0?l:'fr'}
   function target(v){var u=new URL('https://digiylyfe.com/sante-master.html'),z=territory(v);if(z)u.searchParams.set('territory',z);u.searchParams.set('lang',lang());return u.toString()}
-  function route(v){if(!isHealth(v))return false;location.href=target(v);return true}
+  function route(v){
+    var matched=isHealth(v);
+    if(window.DIGIY_OBS)window.DIGIY_OBS.log("router:health",{matched:matched,target:matched?target(v):"",input:v});
+    if(!matched)return false;
+    location.href=target(v);
+    return true;
+  }
 
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('button,a,[role="button"]');if(!b)return;
