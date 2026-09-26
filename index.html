@@ -1308,7 +1308,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
      Doctrine : demande précise = fiches précises.
      Pas de PIN ici. Pas de cockpit. PRO et partenaires restent distingués.
   */
-  const SECTEURS = [
+  const SECTEURS_FALLBACK = [
     {label:"Saly", keys:["saly"]},
     {label:"Mbour", keys:["mbour"]},
     {label:"Dakar", keys:["dakar"]},
@@ -1321,6 +1321,17 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {label:"Miami · USA", keys:["miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","etats unis","états unis","etats-unis","états-unis","estados unidos","vereinigte staaten","stati uniti","verenigde staten","الولايات المتحدة"]},
     {label:"Petite Côte", keys:["petite cote","petite côte"]}
   ];
+
+  const SECTEURS = (function(){
+    const common = window.DIGIY_TAXONOMY && window.DIGIY_TAXONOMY.territories;
+    if(!common) return SECTEURS_FALLBACK;
+    const order=["saly","mbour","dakar","thies","aibd","ngaparou","somone","sarlat","paris","miami","petite-cote"];
+    const rows=order.map(function(slug){
+      const x=common[slug];
+      return x ? {label:x.label,keys:(x.markers||[]).slice()} : null;
+    }).filter(Boolean);
+    return rows.length ? rows : SECTEURS_FALLBACK;
+  })();
 
   const FICHES_DIRECTES = [
     {
@@ -1731,7 +1742,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   function isOnlyZoneWord(k){
     const z = clean(k);
-    return ["saly","mbour","dakar","thies","thiès","ngaparou","somone","sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne","paris","paris france","ile de france","île de france","ile-de-france","île-de-france","miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","etats unis","états unis","etats-unis","états-unis","petite cote","petite côte"].includes(z);
+    return SECTEURS_PUBLICS.some(function(zone){
+      return zone.keys.some(function(key){return clean(key)===z});
+    });
   }
 
   function isRestaurantReservationText(t){
