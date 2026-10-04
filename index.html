@@ -708,7 +708,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <div class="consignesLine" aria-label="Consignes téléphone">
         <button id="consigneBtn" class="consigneBtn" type="button" aria-label="Écouter les consignes">🎧 Consignes</button>
-        <span>📱 Besoin d’aide ? Choisis d’abord <b>PAYS</b>, puis <b>ZONE</b>. Ensuite appuie sur <b>GO</b> pour parler, puis sur <b>VOIR</b>.</span>
+        <span>📱 Besoin d’aide ? Appuie sur <b>GO</b> pour lancer la discussion ou parler. Puis touche <b>VOIR</b> — DIGIY parle et les fiches remontent.</span>
       </div>
     </section>
 
@@ -736,7 +736,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 <button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter les consignes téléphone">🎧 <span>GO</span></button>
 
 <p id="audioText" class="sr-only">
-Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, puis ta zone. Ensuite tu peux appuyer sur GO pour parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
+Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./digiy-taxonomy-v1.js?v=20260926-taxonomy-services-v2"></script>
@@ -1008,25 +1008,6 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
   const $ = (id) => document.getElementById(id);
   const q = $("q");
   const voiceCorrectionBtn = $("voiceCorrectionBtn");
-  const VOICE_TERRITORY_SLUGS = new Set(["petite-cote","dakar","vallee-dordogne","bordeaux","paris","casablanca","marrakech","miami"]);
-  function currentVoiceTerritory(){
-    try{
-      const p=new URLSearchParams(location.search);
-      const t=p.get("territory")||p.get("zone")||"";
-      return VOICE_TERRITORY_SLUGS.has(t)?t:"";
-    }catch(_){return "";}
-  }
-  function requireVoiceTerritory(){
-    if(currentVoiceTerritory()) return true;
-    setStatus("📍", digiyLang()==="en" ? "Choose country and area before GO" : "Choisissez le pays puis la zone avant GO");
-    const rail=document.getElementById("digiyVoiceTerritoryRail");
-    rail?.scrollIntoView({behavior:"smooth",block:"center"});
-    if(rail){
-      rail.style.outline="3px solid rgba(246,196,83,.75)";
-      setTimeout(()=>{rail.style.outline=""},1200);
-    }
-    return false;
-  }
   const cards = $("cards");
   const resultsSummary = $("resultsSummary");
   const resultsSwipeHint = $("resultsSwipeHint");
@@ -1039,8 +1020,8 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
   const askPanel = document.querySelector(".ask");
   const audioTextFr = ($("audioText")?.textContent || "").trim();
   const audioTextEn = "Welcome to La Voix du Business by DIGIY. Here, you have three simple paths. Tap GO to start the discussion or speak naturally. You can also tap a quick icon: driver, outing, lodging, booking, building, shop, market, jobs, network, carnet, audio or assistant. On mobile, the rule is simple: tap GO to speak or start, then tap SEE. DIGIY speaks and the right cards appear. If you do not know how to ask yet, open the red Examples box. Choose a model sentence in English or Wolof. DIGIY fills the request, then the useful cards appear directly. No long scroll. No complication. Voice or click catches the need, the right door answers, and contact stays direct. DIGIY prepares. The professional validates. The field keeps control.";
-  const consigneTextFr = "Consigne téléphone. Choisis d’abord ton pays, puis ta zone. Ensuite appuie sur GO pour parler. Puis appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
-  const consigneTextEn = "Phone guide. Choose your country, then your area. Then tap GO to speak. Then tap SEE. DIGIY speaks, the cards appear, and you can tap the card, WhatsApp or call directly.";
+  const consigneTextFr = "Consigne téléphone. Appuie sur GO pour lancer la discussion ou parler. Ensuite appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
+  const consigneTextEn = "Phone guide. Tap GO to start the discussion or speak. Then tap SEE. DIGIY speaks, the cards appear, and you can tap the card, WhatsApp or call directly.";
   function getAudioText(){ return digiyLang() === "en" ? audioTextEn : audioTextFr; }
   function getConsigneText(){ return digiyLang() === "en" ? consigneTextEn : consigneTextFr; }
 
@@ -1161,7 +1142,7 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
       consigneArea:"Consignes téléphone",
       consigneBtn:"🎧 Consignes",
       consigneBtnLabel:"Écouter les consignes",
-      consigneLine:"📱 Besoin d’aide ? Choisis d’abord <b>PAYS</b>, puis <b>ZONE</b>. Ensuite appuie sur <b>GO</b> pour parler, puis sur <b>VOIR</b>.",
+      consigneLine:"📱 Besoin d’aide ? Appuie sur <b>GO</b> pour lancer la discussion ou parler. Puis touche <b>VOIR</b> — DIGIY parle et les fiches remontent.",
       results:"Résultats directs",
       resultTitle:"Fiches qui remontent",
       resultIntro:"Les résultats remontent directement après la demande.",
@@ -1201,7 +1182,7 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
       consigneArea:"Phone guide",
       consigneBtn:"🎧 Guide",
       consigneBtnLabel:"Listen to the guide",
-      consigneLine:"📱 Need help? Choose <b>COUNTRY</b>, then <b>AREA</b>. Then tap <b>GO</b> to speak, then <b>SEE</b>.",
+      consigneLine:"📱 Need help? Tap <b>GO</b> to start or speak. Then tap <b>SEE</b> — DIGIY speaks and the cards appear.",
       results:"Direct results",
       resultTitle:"Cards that appear",
       resultIntro:"Results appear directly after the request.",
@@ -2580,7 +2561,6 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
   }
 
   function speechListen(){
-    if(!requireVoiceTerritory()) return;
     const listenButton = $("listenBtn");
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -3023,7 +3003,6 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
   }
 
   function startSevenLangRecognition(){
-    if(!requireVoiceTerritory()) return;
     const field=document.getElementById("q");
     const button=document.getElementById("listenBtn");
     window.__DIGIY_VOICE_QUERY_START__?.();
