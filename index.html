@@ -144,24 +144,6 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   font-weight:900;
 }
 #voiceCorrectionBtn[hidden]{display:none!important}
-.voiceTerritoryGate{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  padding:10px;
-  border-radius:22px;
-  border:2px solid rgba(22,129,67,.24);
-  background:linear-gradient(135deg,rgba(216,255,230,.64),rgba(255,242,191,.54));
-}
-.voiceTerritoryGate label{display:grid;gap:5px;color:#102f24;font-size:10px;font-weight:1000;letter-spacing:.07em;text-transform:uppercase}
-.voiceTerritoryGate select{
-  width:100%;min-height:48px;border-radius:16px;border:1px solid rgba(18,60,45,.18);
-  background:rgba(255,255,255,.9);color:#102f24;padding:0 10px;font:900 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;
-}
-.voiceTerritoryGate select:disabled{opacity:.48}
-.voiceTerritoryHint{grid-column:1/-1;margin:0;color:rgba(16,47,36,.7);font-size:11px;line-height:1.35;font-weight:900;text-align:center}
-#listenBtn:disabled{opacity:.42;filter:grayscale(.35);cursor:not-allowed;transform:none}
-@media(max-width:390px){.voiceTerritoryGate{grid-template-columns:1fr}}
 .quickGrid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -679,23 +661,6 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
       <textarea id="q" autocomplete="off" rows="2" placeholder="GO" aria-label="Parler ici ou dicter ton besoin"></textarea>
       <button id="voiceCorrectionBtn" type="button" hidden>✏️ Corriger ma demande</button>
 
-      <div class="voiceTerritoryGate" id="voiceTerritoryGate" aria-label="Contexte territorial obligatoire avant GO">
-        <label for="voiceCountry"><span>1 · Pays</span>
-          <select id="voiceCountry" aria-label="Choisir le pays">
-            <option value="">Choisir le pays</option>
-            <option value="sn">🇸🇳 Sénégal</option>
-            <option value="fr">🇫🇷 France</option>
-            <option value="us">🇺🇸 États-Unis</option>
-          </select>
-        </label>
-        <label for="voiceZone"><span>2 · Zone</span>
-          <select id="voiceZone" aria-label="Choisir la zone" disabled>
-            <option value="">Choisir d’abord le pays</option>
-          </select>
-        </label>
-        <p class="voiceTerritoryHint" id="voiceTerritoryHint">Choisissez le pays puis la zone. GO s’active ensuite.</p>
-      </div>
-
       <div class="quickGrid" aria-label="Choix rapides — portes publiques">
         <button class="chip" type="button" data-q="Je veux dire ma recherche à DIGIY" aria-label="VOIX">🎙️</button>
         <button class="chip" type="button" data-q="Je veux découvrir les adresses de Sarlat" aria-label="SARLAT">🏰</button>
@@ -1043,70 +1008,25 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
   const $ = (id) => document.getElementById(id);
   const q = $("q");
   const voiceCorrectionBtn = $("voiceCorrectionBtn");
-  const voiceCountry = $("voiceCountry");
-  const voiceZone = $("voiceZone");
-  const voiceTerritoryHint = $("voiceTerritoryHint");
-  const VOICE_TERRITORIES = {
-    sn:[
-      {value:"petite-cote",label:"Petite Côte"},
-      {value:"dakar",label:"Dakar"}
-    ],
-    fr:[
-      {value:"vallee-dordogne",label:"Vallée de la Dordogne"},
-      {value:"bordeaux",label:"Bordeaux"},
-      {value:"paris",label:"Paris"}
-    ],
-    us:[
-      {value:"miami",label:"Miami"}
-    ]
-  };
-  function voiceSelectedText(select){
-    if(!select || !select.value) return "";
-    return select.options[select.selectedIndex]?.textContent?.replace(/^[^\p{L}\p{N}]+/u,"").trim() || "";
-  }
-  function voiceTerritoryReady(){
-    return !!(voiceCountry?.value && voiceZone?.value);
-  }
-  function updateVoiceGoState(){
-    const btn=$("listenBtn");
-    const ready=voiceTerritoryReady();
-    if(btn) btn.disabled=!ready;
-    if(voiceTerritoryHint){
-      voiceTerritoryHint.textContent=ready
-        ? "Territoire prêt : " + voiceSelectedText(voiceCountry) + " · " + voiceSelectedText(voiceZone) + ". Vous pouvez appuyer sur GO."
-        : (voiceCountry?.value ? "Choisissez maintenant votre zone. GO reste verrouillé." : "Choisissez le pays puis la zone. GO s’active ensuite.");
-    }
-  }
-  function fillVoiceZones(){
-    if(!voiceZone) return;
-    const zones=VOICE_TERRITORIES[voiceCountry?.value] || [];
-    voiceZone.replaceChildren(new Option(voiceCountry?.value ? "Choisir la zone" : "Choisir d’abord le pays",""));
-    zones.forEach(zone=>voiceZone.add(new Option(zone.label,zone.value)));
-    voiceZone.disabled=!voiceCountry?.value;
-    updateVoiceGoState();
+  const VOICE_TERRITORY_SLUGS = new Set(["petite-cote","dakar","vallee-dordogne","bordeaux","paris","casablanca","marrakech","miami"]);
+  function currentVoiceTerritory(){
+    try{
+      const p=new URLSearchParams(location.search);
+      const t=p.get("territory")||p.get("zone")||"";
+      return VOICE_TERRITORY_SLUGS.has(t)?t:"";
+    }catch(_){return "";}
   }
   function requireVoiceTerritory(){
-    if(voiceTerritoryReady()) return true;
+    if(currentVoiceTerritory()) return true;
     setStatus("📍", digiyLang()==="en" ? "Choose country and area before GO" : "Choisissez le pays puis la zone avant GO");
-    $("voiceTerritoryGate")?.scrollIntoView({behavior:"smooth",block:"center"});
-    updateVoiceGoState();
+    const rail=document.getElementById("digiyVoiceTerritoryRail");
+    rail?.scrollIntoView({behavior:"smooth",block:"center"});
+    if(rail){
+      rail.style.outline="3px solid rgba(246,196,83,.75)";
+      setTimeout(()=>{rail.style.outline=""},1200);
+    }
     return false;
   }
-  function applyVoiceTerritoryToQuery(text){
-    const raw=String(text||"").trim();
-    if(!raw || !voiceTerritoryReady()) return raw;
-    const country=voiceSelectedText(voiceCountry);
-    const zone=voiceSelectedText(voiceZone);
-    const normalized=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-    const current=normalized(raw);
-    const extras=[];
-    if(zone && !current.includes(normalized(zone))) extras.push(zone);
-    if(country && !current.includes(normalized(country))) extras.push(country);
-    return extras.length ? raw + " · " + extras.join(" · ") : raw;
-  }
-  voiceCountry?.addEventListener("change",fillVoiceZones);
-  voiceZone?.addEventListener("change",updateVoiceGoState);
-  fillVoiceZones();
   const cards = $("cards");
   const resultsSummary = $("resultsSummary");
   const resultsSwipeHint = $("resultsSwipeHint");
@@ -2717,7 +2637,6 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
         listenButton?.classList.remove("listening");
         activeRecognition = null;
         if(q && q.value.trim()){
-          q.value = applyVoiceTerritoryToQuery(q.value.trim());
           if(recognizedTranscript) markVoiceQueryForCollapse();
           const reponse = digiyBuildReply(q.value.trim());
           digiyShowBox(reponse);
@@ -3152,7 +3071,6 @@ Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, 
         button?.classList.remove("listening");
         sevenLangRecognition=null;
         if(field&&field.value.trim()){
-          field.value=applyVoiceTerritoryToQuery(field.value.trim());
           if(recognizedTranscript)window.__DIGIY_VOICE_QUERY_RECOGNIZED__?.();
           document.getElementById("searchBtn")?.click();
         }else{
