@@ -144,6 +144,24 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
   font-weight:900;
 }
 #voiceCorrectionBtn[hidden]{display:none!important}
+.voiceTerritoryGate{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:10px;
+  border-radius:22px;
+  border:2px solid rgba(22,129,67,.24);
+  background:linear-gradient(135deg,rgba(216,255,230,.64),rgba(255,242,191,.54));
+}
+.voiceTerritoryGate label{display:grid;gap:5px;color:#102f24;font-size:10px;font-weight:1000;letter-spacing:.07em;text-transform:uppercase}
+.voiceTerritoryGate select{
+  width:100%;min-height:48px;border-radius:16px;border:1px solid rgba(18,60,45,.18);
+  background:rgba(255,255,255,.9);color:#102f24;padding:0 10px;font:900 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.voiceTerritoryGate select:disabled{opacity:.48}
+.voiceTerritoryHint{grid-column:1/-1;margin:0;color:rgba(16,47,36,.7);font-size:11px;line-height:1.35;font-weight:900;text-align:center}
+#listenBtn:disabled{opacity:.42;filter:grayscale(.35);cursor:not-allowed;transform:none}
+@media(max-width:390px){.voiceTerritoryGate{grid-template-columns:1fr}}
 .quickGrid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -661,6 +679,23 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
       <textarea id="q" autocomplete="off" rows="2" placeholder="GO" aria-label="Parler ici ou dicter ton besoin"></textarea>
       <button id="voiceCorrectionBtn" type="button" hidden>✏️ Corriger ma demande</button>
 
+      <div class="voiceTerritoryGate" id="voiceTerritoryGate" aria-label="Contexte territorial obligatoire avant GO">
+        <label for="voiceCountry"><span>1 · Pays</span>
+          <select id="voiceCountry" aria-label="Choisir le pays">
+            <option value="">Choisir le pays</option>
+            <option value="sn">🇸🇳 Sénégal</option>
+            <option value="fr">🇫🇷 France</option>
+            <option value="us">🇺🇸 États-Unis</option>
+          </select>
+        </label>
+        <label for="voiceZone"><span>2 · Zone</span>
+          <select id="voiceZone" aria-label="Choisir la zone" disabled>
+            <option value="">Choisir d’abord le pays</option>
+          </select>
+        </label>
+        <p class="voiceTerritoryHint" id="voiceTerritoryHint">Choisissez le pays puis la zone. GO s’active ensuite.</p>
+      </div>
+
       <div class="quickGrid" aria-label="Choix rapides — portes publiques">
         <button class="chip" type="button" data-q="Je veux dire ma recherche à DIGIY" aria-label="VOIX">🎙️</button>
         <button class="chip" type="button" data-q="Je veux découvrir les adresses de Sarlat" aria-label="SARLAT">🏰</button>
@@ -708,7 +743,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <div class="consignesLine" aria-label="Consignes téléphone">
         <button id="consigneBtn" class="consigneBtn" type="button" aria-label="Écouter les consignes">🎧 Consignes</button>
-        <span>📱 Besoin d’aide ? Appuie sur <b>GO</b> pour lancer la discussion ou parler. Puis touche <b>VOIR</b> — DIGIY parle et les fiches remontent.</span>
+        <span>📱 Besoin d’aide ? Choisis d’abord <b>PAYS</b>, puis <b>ZONE</b>. Ensuite appuie sur <b>GO</b> pour parler, puis sur <b>VOIR</b>.</span>
       </div>
     </section>
 
@@ -736,7 +771,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 <button class="floatingHint" id="audioFloat" type="button" aria-label="Écouter les consignes téléphone">🎧 <span>GO</span></button>
 
 <p id="audioText" class="sr-only">
-Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
+Bienvenue dans La Voix du Business DIGIY. Avant GO, choisis d’abord ton pays, puis ta zone. Ensuite tu peux appuyer sur GO pour parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./digiy-taxonomy-v1.js?v=20260926-taxonomy-services-v2"></script>
@@ -1008,6 +1043,70 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const $ = (id) => document.getElementById(id);
   const q = $("q");
   const voiceCorrectionBtn = $("voiceCorrectionBtn");
+  const voiceCountry = $("voiceCountry");
+  const voiceZone = $("voiceZone");
+  const voiceTerritoryHint = $("voiceTerritoryHint");
+  const VOICE_TERRITORIES = {
+    sn:[
+      {value:"petite-cote",label:"Petite Côte"},
+      {value:"dakar",label:"Dakar"}
+    ],
+    fr:[
+      {value:"vallee-dordogne",label:"Vallée de la Dordogne"},
+      {value:"bordeaux",label:"Bordeaux"},
+      {value:"paris",label:"Paris"}
+    ],
+    us:[
+      {value:"miami",label:"Miami"}
+    ]
+  };
+  function voiceSelectedText(select){
+    if(!select || !select.value) return "";
+    return select.options[select.selectedIndex]?.textContent?.replace(/^[^\p{L}\p{N}]+/u,"").trim() || "";
+  }
+  function voiceTerritoryReady(){
+    return !!(voiceCountry?.value && voiceZone?.value);
+  }
+  function updateVoiceGoState(){
+    const btn=$("listenBtn");
+    const ready=voiceTerritoryReady();
+    if(btn) btn.disabled=!ready;
+    if(voiceTerritoryHint){
+      voiceTerritoryHint.textContent=ready
+        ? "Territoire prêt : " + voiceSelectedText(voiceCountry) + " · " + voiceSelectedText(voiceZone) + ". Vous pouvez appuyer sur GO."
+        : (voiceCountry?.value ? "Choisissez maintenant votre zone. GO reste verrouillé." : "Choisissez le pays puis la zone. GO s’active ensuite.");
+    }
+  }
+  function fillVoiceZones(){
+    if(!voiceZone) return;
+    const zones=VOICE_TERRITORIES[voiceCountry?.value] || [];
+    voiceZone.replaceChildren(new Option(voiceCountry?.value ? "Choisir la zone" : "Choisir d’abord le pays",""));
+    zones.forEach(zone=>voiceZone.add(new Option(zone.label,zone.value)));
+    voiceZone.disabled=!voiceCountry?.value;
+    updateVoiceGoState();
+  }
+  function requireVoiceTerritory(){
+    if(voiceTerritoryReady()) return true;
+    setStatus("📍", digiyLang()==="en" ? "Choose country and area before GO" : "Choisissez le pays puis la zone avant GO");
+    $("voiceTerritoryGate")?.scrollIntoView({behavior:"smooth",block:"center"});
+    updateVoiceGoState();
+    return false;
+  }
+  function applyVoiceTerritoryToQuery(text){
+    const raw=String(text||"").trim();
+    if(!raw || !voiceTerritoryReady()) return raw;
+    const country=voiceSelectedText(voiceCountry);
+    const zone=voiceSelectedText(voiceZone);
+    const normalized=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    const current=normalized(raw);
+    const extras=[];
+    if(zone && !current.includes(normalized(zone))) extras.push(zone);
+    if(country && !current.includes(normalized(country))) extras.push(country);
+    return extras.length ? raw + " · " + extras.join(" · ") : raw;
+  }
+  voiceCountry?.addEventListener("change",fillVoiceZones);
+  voiceZone?.addEventListener("change",updateVoiceGoState);
+  fillVoiceZones();
   const cards = $("cards");
   const resultsSummary = $("resultsSummary");
   const resultsSwipeHint = $("resultsSwipeHint");
@@ -1020,8 +1119,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const askPanel = document.querySelector(".ask");
   const audioTextFr = ($("audioText")?.textContent || "").trim();
   const audioTextEn = "Welcome to La Voix du Business by DIGIY. Here, you have three simple paths. Tap GO to start the discussion or speak naturally. You can also tap a quick icon: driver, outing, lodging, booking, building, shop, market, jobs, network, carnet, audio or assistant. On mobile, the rule is simple: tap GO to speak or start, then tap SEE. DIGIY speaks and the right cards appear. If you do not know how to ask yet, open the red Examples box. Choose a model sentence in English or Wolof. DIGIY fills the request, then the useful cards appear directly. No long scroll. No complication. Voice or click catches the need, the right door answers, and contact stays direct. DIGIY prepares. The professional validates. The field keeps control.";
-  const consigneTextFr = "Consigne téléphone. Appuie sur GO pour lancer la discussion ou parler. Ensuite appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
-  const consigneTextEn = "Phone guide. Tap GO to start the discussion or speak. Then tap SEE. DIGIY speaks, the cards appear, and you can tap the card, WhatsApp or call directly.";
+  const consigneTextFr = "Consigne téléphone. Choisis d’abord ton pays, puis ta zone. Ensuite appuie sur GO pour parler. Puis appuie sur VOIR. DIGIY parle, les fiches remontent, et tu peux cliquer directement sur la fiche, WhatsApp ou appel.";
+  const consigneTextEn = "Phone guide. Choose your country, then your area. Then tap GO to speak. Then tap SEE. DIGIY speaks, the cards appear, and you can tap the card, WhatsApp or call directly.";
   function getAudioText(){ return digiyLang() === "en" ? audioTextEn : audioTextFr; }
   function getConsigneText(){ return digiyLang() === "en" ? consigneTextEn : consigneTextFr; }
 
@@ -1142,7 +1241,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       consigneArea:"Consignes téléphone",
       consigneBtn:"🎧 Consignes",
       consigneBtnLabel:"Écouter les consignes",
-      consigneLine:"📱 Besoin d’aide ? Appuie sur <b>GO</b> pour lancer la discussion ou parler. Puis touche <b>VOIR</b> — DIGIY parle et les fiches remontent.",
+      consigneLine:"📱 Besoin d’aide ? Choisis d’abord <b>PAYS</b>, puis <b>ZONE</b>. Ensuite appuie sur <b>GO</b> pour parler, puis sur <b>VOIR</b>.",
       results:"Résultats directs",
       resultTitle:"Fiches qui remontent",
       resultIntro:"Les résultats remontent directement après la demande.",
@@ -1182,7 +1281,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       consigneArea:"Phone guide",
       consigneBtn:"🎧 Guide",
       consigneBtnLabel:"Listen to the guide",
-      consigneLine:"📱 Need help? Tap <b>GO</b> to start or speak. Then tap <b>SEE</b> — DIGIY speaks and the cards appear.",
+      consigneLine:"📱 Need help? Choose <b>COUNTRY</b>, then <b>AREA</b>. Then tap <b>GO</b> to speak, then <b>SEE</b>.",
       results:"Direct results",
       resultTitle:"Cards that appear",
       resultIntro:"Results appear directly after the request.",
@@ -2561,6 +2660,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function speechListen(){
+    if(!requireVoiceTerritory()) return;
     const listenButton = $("listenBtn");
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -2617,6 +2717,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         listenButton?.classList.remove("listening");
         activeRecognition = null;
         if(q && q.value.trim()){
+          q.value = applyVoiceTerritoryToQuery(q.value.trim());
           if(recognizedTranscript) markVoiceQueryForCollapse();
           const reponse = digiyBuildReply(q.value.trim());
           digiyShowBox(reponse);
@@ -3003,6 +3104,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   }
 
   function startSevenLangRecognition(){
+    if(!requireVoiceTerritory()) return;
     const field=document.getElementById("q");
     const button=document.getElementById("listenBtn");
     window.__DIGIY_VOICE_QUERY_START__?.();
@@ -3050,6 +3152,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         button?.classList.remove("listening");
         sevenLangRecognition=null;
         if(field&&field.value.trim()){
+          field.value=applyVoiceTerritoryToQuery(field.value.trim());
           if(recognizedTranscript)window.__DIGIY_VOICE_QUERY_RECOGNIZED__?.();
           document.getElementById("searchBtn")?.click();
         }else{
