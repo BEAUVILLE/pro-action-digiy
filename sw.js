@@ -1,4 +1,4 @@
-const CACHE_NAME='action-pro-pwa-20260926-p4-v2';
+const CACHE_NAME='action-pro-pwa-20261004-voice-restore-v1';
 const APP_SHELL=[
   '/',
   '/index.html',
