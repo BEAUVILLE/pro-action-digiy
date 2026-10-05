@@ -21,7 +21,7 @@ var PAP={
   phone:"221784547029",
   whatsapp:"221784547029",
   url:"https://digiylyfe.com/fiches/pap-piscine-saly.html",
-  cardImageUrl:"https://digiylyfe.com/assets/pap-piscine-fiche-final.svg",
+  cardImageUrl:"https://digiylyfe.com/assets/pap-piscine-fiche-officielle.webp",
   description:"Entretien de piscines, nettoyage, traitement de l’eau, rénovation, réparation et jardinage chez les particuliers à Saly et alentours.",
   keys:[
     "pap piscine","piscine","pisciniste","entretien piscine","nettoyage piscine","traitement eau piscine",
