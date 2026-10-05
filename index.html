@@ -739,6 +739,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./voice-terrain-dictionary-v1.js?v=20261005-world8-v2"></script>
 <script src="./digiy-taxonomy-v1.js?v=20260926-taxonomy-services-v2"></script>
 <script src="./annuaire-public-digiy.js?v=20260926-terrain-pack-v14"></script>
 <script>
@@ -2024,7 +2025,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       [/macon|mason|builder|alban|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/, " macon maçon maçonnerie batisseur bâtisseur construction"],
       [/electric|elektrik|elettric|elektricien|كهرب/, " electricien électricien electricite électricité courant"],
       [/solair|solar|fotovolta|zonne|شمس/, " solaire panneau panneaux batterie energie régulateur"],
-      [/chauff|driver|taxi|airport|aibd|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/, " chauffeur driver taxi aibd trajet transfert voiture"],
+      [/chauff|driver|taxi|airport|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/, " chauffeur driver taxi aibd trajet transfert voiture"],
       [/chambre|logement|location|appart|room|flat|house|villa|lodg|accommodation|hotel|habitaci|alojamiento|zimmer|wohnung|unterkunft|camera|alloggio|kamer|woning|غرفة|سكن|شقة|فندق/, " chambre appartement logement location villa dormir nuit hébergement hôtel"],
       [/table|restaurant|resto|dinner|lunch|dejeuner|déjeuner|j ai faim|j’ai faim|poisson grille|poisson grillé|a emporter|à emporter|mesa|comer|tisch|essen|tavolo|mangiare|ristorante|tafel|eten|طاولة|مطعم|عشاء/, " réserver reservation table restaurant resto manger diner déjeuner repas poisson"],
       [/reserv|booking|book|prenot|buchen|reserveren|حجز/, " réserver reservation"],
@@ -2100,7 +2101,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(/\b(announcement|ad|network|publish|visibility)\b/.test(t)) extra += " annonce réseau publier visibilité";
     if(/\b(audio|listen|vision)\b/.test(t)) extra += " audio écouter vision";
     if(/\b(assistant|guide|help)\b/.test(t)) extra += " assistant aide guide";
-    return raw + extra;
+    /* NFD décompose سائق en ساي + hamza combinée + ق : préserver la reconnaissance DRIVER en arabe. */
+    if(/(?:^|[^\u0600-\u06ff])ساي\u0654?ق(?:$|[^\u0600-\u06ff])/.test(t) && !/chauffeur/.test(extra)) extra += " chauffeur driver taxi aibd trajet transfert voiture";
+    const terrain = window.DIGIY_VOICE_TERRAIN ? window.DIGIY_VOICE_TERRAIN.resolve(raw).map(r=>r.expand).join(" ") : "";
+    return raw + extra + (terrain ? " " + terrain : "");
   }
 
   function setStatus(icon, label){
@@ -2376,6 +2380,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       total:list.length,
       results:list.map(function(x){return {title:x.title||"",kind:x.kind||"",metier:x.metier||"",categorie:x.categorie||"",secteur:x.secteur||""}})
     });
+    if(!list.length && window.DIGIY_VOICE_TERRAIN) window.DIGIY_VOICE_TERRAIN.unmatched.record(val,{language:document.documentElement.lang,territory:new URLSearchParams(location.search).get("territory")});
     render(list, val);
     collapseVoiceQueryAfterResult();
     if(move) bringResultsIntoView();
@@ -2422,7 +2427,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     const en = digiyLang() === "en";
     const t = clean(digiyExpandQuery(raw || ""));
-    if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi")||t.includes("aibd"))
+    if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi"))
       return en ? "I understood: you are looking for a driver. I bring up DRIVER cards, then transport partners if needed. Direct contact, the field keeps control." : "J'ai compris : tu cherches un chauffeur. Je remonte les fiches DRIVER, puis les partenaires transport si besoin. Contact direct, le terrain garde la main.";
     if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa")||t.includes("manger")||t.includes("diner"))
       return en ? "I understood: you want to book or eat. I bring up RESERVATION cards. DIGIY prepares, the professional confirms." : "J'ai compris : tu veux réserver ou manger. Je remonte les fiches RÉSERVATION. DIGIY prépare, le pro confirme.";
@@ -2491,7 +2496,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g,"");
 
-    if(t.includes("chauffeur") || t.includes("driver") || t.includes("aibd")) titre = "DRIVER";
+    if(t.includes("chauffeur") || t.includes("driver")) titre = "DRIVER";
     else if(t.includes("plombier") || t.includes("artisan") || t.includes("macon") || t.includes("electricien") || t.includes("build") || t.includes("batiment") || t.includes("bâtiment")) titre = "BÂTIMENT";
     else if(t.includes("logement") || t.includes("location") || t.includes("chambre")) titre = "LOC";
     else if(t.includes("reserver") || t.includes("reservation") || t.includes("restaurant") || t.includes("table")) titre = "RÉSERVATION";
@@ -2825,7 +2830,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     [/maçon|macon|mason|builder|albañ|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/,"macon maçon maçonnerie batisseur bâtisseur construction"],
     [/électric|electric|elektrik|elettric|كهربائي|strom|corrente/,"electricien électricien electricite électricité courant"],
     [/solair|solar|fotovolta|zonne|طاقة شمسية|ألواح شمسية/,"solaire panneau panneaux batterie energie régulateur"],
-    [/chauff|driver|taxi|airport|aibd|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/,"chauffeur driver taxi aibd trajet transfert voiture"],
+    [/chauff|driver|taxi|airport|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/,"chauffeur driver taxi aibd trajet transfert voiture"],
     [/chambre|logement|location|appart|room|flat|house|villa|lodg|accommodation|hotel|habitaci|alojamiento|zimmer|wohnung|unterkunft|camera|alloggio|kamer|woning|غرفة|سكن|شقة|فندق/,"chambre appartement logement location villa dormir nuit hébergement hôtel"],
     [/table|restaurant|dinner|lunch|mesa|comer|tisch|essen|tavolo|mangiare|tafel|eten|طاولة|مطعم|عشاء/,"réserver reservation table restaurant manger diner"],
     [/réserv|reserv|booking|book|prenotar|حجز/,"réserver reservation"],
