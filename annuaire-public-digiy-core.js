@@ -19,6 +19,10 @@
   );
 
   document.write(
+    '<script src="./pap-piscine-action-pro-patch.js?v=20261005-terrain-v1"></script>'
+  );
+
+  document.write(
     '<script src="./action-pro-service-intents.js?v=20260808-service-intents-v1"></script>'
   );
 
