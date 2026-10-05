@@ -23,6 +23,10 @@
   );
 
   document.write(
+    '<script src="./pap-piscine-example-label-fix.js?v=20261005-label-fix-v1"></script>'
+  );
+
+  document.write(
     '<script src="./action-pro-service-intents.js?v=20260808-service-intents-v1"></script>'
   );
 
