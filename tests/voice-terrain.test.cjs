@@ -10,7 +10,8 @@ const cases=[
 ['emploi','jobs'],['qui recrute à Mbour','jobs'],['petit boulot','jobs'],['dama wut liggéey','jobs'],
 ['bonne affaire','announcements'],['bonnes affaires','announcements'],['je vends mon vélo','announcements'],['ocasion','announcements'],
 ['boutique','commerce'],['où acheter des chaussures','commerce'],['boutik','commerce'],['dama begg jend','commerce'],
-['services pro','services'],['aide pour mes papiers','services'],['médecin','health'],['medcin','health']];
+['services pro','services'],['aide pour mes papiers','services'],['médecin','health'],['medcin','health'],
+['entretien piscine à Saly','pool'],['pisciniste à Saly','pool'],['jardinier à Saly','gardening'],['tonte de pelouse','gardening'],['taille de haies','gardening']];
 for(const [phrase,intent] of cases)assert(d.resolve(phrase).some(r=>r.intent===intent),phrase);
 for(const phrase of ['bonjour','merci','tableau','course','déposer','ramener','occasionnel','taxidermie','la porte est ouverte'])assert.equal(d.resolve(phrase).length,0,phrase);
 assert.equal(d.resolve('chauffeur et chambre à Saly').length,2);
