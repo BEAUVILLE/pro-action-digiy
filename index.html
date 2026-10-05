@@ -670,6 +670,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
         <button class="chip" type="button" data-q="Je cherche une chambre ce week-end à Saly" aria-label="LOC">🏠</button>
         <button class="chip" type="button" data-q="Je veux réserver une table ce soir" aria-label="RÉSERVATION">📅</button>
         <button class="chip" type="button" data-q="J’ai besoin d’un artisan pour une réparation" aria-label="BÂTIMENT">🏗️</button>
+        <button class="chip" type="button" data-q="Je cherche un entretien piscine à Saly" aria-label="PISCINE ET JARDINAGE">💧</button>
         <button class="chip" type="button" data-q="Je veux voir les commerces locaux" aria-label="COMMERCE">👜</button>
         <button class="chip" type="button" data-q="Je cherche un produit dans une boutique" aria-label="BOUTIQUE">🛍️</button>
         <button class="chip" type="button" data-q="Je cherche un emploi ou une mission" aria-label="TRAVAIL">💼</button>
@@ -683,6 +684,8 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 
       <button class="examplesToggle" id="examplesToggle" type="button" aria-expanded="false" aria-controls="examplesPanel">🟥 EXEMPLES POUR PARLER</button>
       <div class="examplesPanel" id="examplesPanel" hidden aria-label="Exemples de phrases terrain pour les fiches partenaires DIGIY">
+        <button class="examplePhrase" type="button" data-q="Je cherche un entretien piscine à Saly"><span class="mod">💧 PAP PISCINE</span><span class="fr">Je cherche un entretien piscine à Saly</span><span class="wo">Damaa wut ku may toppatoo piscine bi ci Saly.</span></button>
+        <button class="examplePhrase" type="button" data-q="Je cherche un jardinier à Saly"><span class="mod">🌿 PAP JARDINAGE</span><span class="fr">Je cherche un jardinier à Saly</span><span class="wo">Damaa wut jardinier ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche un plombier à Saly"><span class="mod">🔧 TROUVER UN PLOMBIER</span><span class="fr">Je cherche un plombier à Saly</span><span class="wo">Damaa wut plombier ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche un entrepreneur maçon à Saly"><span class="mod">🧱 MBAYE</span><span class="fr">Je cherche un entrepreneur maçon à Saly</span><span class="wo">Damaa wut entrepreneur maçon ci Saly.</span></button>
         <button class="examplePhrase" type="button" data-q="Je cherche un électricien à Saly"><span class="mod">⚡ KOURANT</span><span class="fr">Je cherche un électricien à Saly</span><span class="wo">Damaa wut électricien ci Saly.</span></button>
@@ -1336,6 +1339,32 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   const FICHES_DIRECTES = [
     {
+      id:"pap-piscine-saly",
+      kind:"directory",
+      public:true,
+      priority:140,
+      priorite:140,
+      icon:"💧",
+      title:"PAP Piscine — Piscine & jardinage à Saly",
+      titre:"PAP Piscine — Piscine & jardinage à Saly",
+      nom:"PAP Piscine",
+      metier:"pisciniste · jardinier",
+      activite:"Entretien piscine · rénovation · jardinage · espaces verts",
+      categorie:"TERRAIN",
+      sousCategorie:"piscine-jardinage",
+      secteur:"Saly et alentours",
+      zones:["Saly","Ngaparou","Somone","Mbour","Petite Côte"],
+      statut:"fiche_officielle",
+      labelStatut:"Fiche officielle DIGIYLYFE · Services terrain",
+      phone:"221784547029",
+      whatsapp:"221784547029",
+      keys:["pap piscine","piscine","pisciniste","entretien piscine","nettoyage piscine","traitement piscine","filtration piscine","réparation piscine","reparation piscine","jardin","jardinage","jardinier","entretien jardin","espaces verts","tonte","pelouse","taille haies","taille de haies","désherbage","desherbage","palmier","palmiers"],
+      mots:["pap piscine","piscine","pisciniste","entretien piscine","nettoyage piscine","traitement piscine","filtration piscine","réparation piscine","reparation piscine","jardin","jardinage","jardinier","entretien jardin","espaces verts","tonte","pelouse","taille haies","taille de haies","désherbage","desherbage","palmier","palmiers"],
+      description:"PAP Piscine à Saly : entretien, nettoyage, traitement, rénovation et réparation de piscines, plus jardinage et entretien des espaces verts.",
+      url:"https://digiylyfe.com/fiches/pap-piscine-saly.html",
+      wa:"Bonjour PAP Piscine, je vous contacte depuis DIGIYLYFE pour une prestation piscine ou jardinage."
+    },
+    {
       id:"babacar-plombier-pro-saly",
       kind:"directory",
       public:true,
@@ -1780,7 +1809,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return [
       "artisan","plombier","electricien","électricien","menuisier","menuiserie","macon","maçon","travaux","reparer","réparer",
       "reparation","réparation","chantier","construction","batiment","bâtiment","porte","fenetre","fenêtre","fuite","canalisation","canalisation bouchée","canalisation bouchee","évier","evier","lavabo","robinet","douche","wc","toilettes","débouchage","debouchage","désengorgement","desengorgement","évacuation","evacuation","tuyau","tuyauterie","sanitaire","maçonnerie","maconnerie",
-      "solaire","panneau","panneaux","batterie","energie","énergie","regulateur","régulateur"
+      "solaire","panneau","panneaux","batterie","energie","énergie","regulateur","régulateur",
+      "piscine","pisciniste","entretien piscine","nettoyage piscine","jardin","jardinage","jardinier","pelouse","tonte","haie","haies","espaces verts"
     ].some(k => t.includes(clean(k)));
   }
 
@@ -1958,6 +1988,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         return en
           ? "I understood: you are looking for clothing in Saly. I bring up the BCHEIKH public shop with its products, prices and direct storefront."
           : "J’ai compris : tu cherches des vêtements à Saly. Je te remonte la boutique publique BCHEIKH avec ses produits, ses prix et sa vitrine directe.";
+      }
+      if(titleClean.includes("pap piscine")){
+        return en
+          ? "I understood: you are looking for pool maintenance or gardening" + zone + ". I bring up PAP Piscine with direct contact."
+          : "J’ai compris : tu cherches un entretien piscine ou un jardinier" + zone + ". Je te remonte PAP Piscine avec contact direct.";
       }
       if(titleClean.includes("solaire")){
         return en
@@ -2143,7 +2178,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {fr:{singular:"plombier", plural:"plombiers"}, en:{singular:"plumber", plural:"plumbers"}, variants:["plombier","plomier","plombir","plombié","plumber","plumbing"]},
     {fr:{singular:"électricien", plural:"électriciens"}, en:{singular:"electrician", plural:"electricians"}, variants:["électricien","electricien","electrician"]},
     {fr:{singular:"maçon", plural:"maçons"}, en:{singular:"builder", plural:"builders"}, variants:["maçon","macon","bâtisseur","batisseur","mason","builder"]},
-    {fr:{singular:"chauffeur", plural:"chauffeurs"}, en:{singular:"driver", plural:"drivers"}, variants:["chauffeur","driver","taxi"]}
+    {fr:{singular:"chauffeur", plural:"chauffeurs"}, en:{singular:"driver", plural:"drivers"}, variants:["chauffeur","driver","taxi"]},
+    {fr:{singular:"pisciniste", plural:"piscinistes"}, en:{singular:"pool specialist", plural:"pool specialists"}, variants:["pisciniste","piscine","entretien piscine"]},
+    {fr:{singular:"jardinier", plural:"jardiniers"}, en:{singular:"gardener", plural:"gardeners"}, variants:["jardinier","jardinage","entretien jardin","espaces verts"]}
   ];
 
   const PROFESSIONAL_RESULT_VARIANTS = RESULT_PROFESSION_INTENTS
