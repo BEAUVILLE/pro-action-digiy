@@ -14,7 +14,20 @@ const cases=[
 for(const [phrase,intent] of cases)assert(d.resolve(phrase).some(r=>r.intent===intent),phrase);
 for(const phrase of ['bonjour','merci','tableau','course','déposer','ramener','occasionnel','taxidermie','la porte est ouverte'])assert.equal(d.resolve(phrase).length,0,phrase);
 assert.equal(d.resolve('chauffeur et chambre à Saly').length,2);
-assert.equal(d.resolve('emploi dans un restaurant').length,2);
+function intents(phrase){return Array.from(d.resolve(phrase),r=>r.intent).sort()}
+const targeted=[
+ ['chauffeur AIBD',['driver']],
+ ['quelqu’un pour me chercher à AIBD',['driver']],
+ ['je dois aller à AIBD',['driver']],
+ ['restaurant AIBD',['resto']],
+ ['chambre AIBD',['loc']],
+ ['emploi AIBD',['jobs']],
+ ['AIBD',[]],
+ ['emploi dans un restaurant',['jobs']],
+ ['je cherche un emploi dans un restaurant',['jobs']],
+ ['je cherche une chambre et j’ai besoin d’un chauffeur',['driver','loc']]
+];
+for(const [phrase,wanted] of targeted)assert.deepEqual(intents(phrase),wanted,phrase);
 assert(d.resolve('ramener à Mbour').some(r=>r.stage==='signals'));
 assert(d.expand('récupérer à AIBD').includes('chauffeur'));
 assert.equal(d.expand(d.expand('boutik')),d.expand('boutik')+' commerce boutique');
@@ -40,3 +53,19 @@ vm.runInContext(filter.slice(filter.indexOf('  function detectNeeds(){'),filter.
 for(const [phrase,intent] of cases){if(intent==='health')continue;query=phrase;const r=d.rules.find(r=>r.intent===intent);assert(fctx.detectNeeds().some(n=>n.family===r.family&&(!r.specialty||n.specialty===r.specialty)),phrase)}
 const health=fs.readFileSync('action-pro-health-route-v1.js','utf8'),hctx={window,norm:d.norm,WORDS:[]};vm.createContext(hctx);vm.runInContext(health.slice(health.indexOf('  function isHealth(v){'),health.indexOf('  function territory(v){')),hctx);assert(hctx.isHealth('medcin'));assert(!hctx.isHealth('boutique'));
 console.log('Actual territory filter and health matcher integration: PASS');
+
+// Exercise the real core and WORLD8 wrapper plus final raw and expanded filters.
+vm.runInContext(html.slice(html.indexOf('  const RULES=['),html.indexOf('  function safe(value)')),ctx);
+ctx.window.digiyExpandQuery=ctx.digiyExpandQuery;
+vm.runInContext(html.slice(html.indexOf('  function normalize(value){'),html.indexOf('  /* DIGIY LANGUAGE PASSPORT')),ctx);
+for(const [phrase,wanted] of targeted){
+ const mapped=wanted.map(id=>d.rules.find(r=>r.intent===id)).map(r=>r.family+':'+r.specialty).sort();
+ query=phrase;const actual=Array.from(fctx.detectNeeds(),r=>r.family+':'+r.specialty).sort();
+ assert.deepEqual(actual,mapped,phrase+' final raw filter');
+ const expanded=ctx.window.digiyExpandQuery(phrase);
+ if(['restaurant AIBD','chambre AIBD','emploi AIBD','AIBD'].includes(phrase))assert(!expanded.includes('chauffeur'),phrase+' expansion must not add DRIVER');
+ if(phrase.includes('emploi dans un restaurant'))assert(!d.resolve(expanded).some(r=>r.intent==='resto'),phrase+' expansion sector');
+
+}
+assert(!d.rules.find(r=>r.intent==='driver').direct.includes('aibd'));
+console.log('AIBD context, employment restaurant sector and true LOC + DRIVER: 10 dictionary + 10 real raw-filter checks + 6 expansion checks PASS');

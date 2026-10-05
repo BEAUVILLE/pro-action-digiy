@@ -66,7 +66,7 @@
        (has(t,['appartement','villa','maison','house','apartment','flat']) && !explicitBuilding && !explicitRealEstate))
       push('accommodation');
 
-    if(has(t,['chauffeur','driver','taxi','vtc','aibd','aeroport','aéroport','airport','trajet','course','ride','trip','transfert','transfer','transport']))
+    if(has(t,['chauffeur','driver','taxi','vtc','aeroport','aéroport','airport','trajet','course','ride','trip','transfert','transfer','transport']))
       push('transport');
 
     if(has(t,['plombier','plomberie','fuite','canalisation','canalisation bouchée','canalisation bouchee','débouchage','debouchage','désengorgement','desengorgement','évacuation','evacuation','tuyau','tuyauterie','robinet','sanitaire','plumber','plumbing']))
@@ -94,13 +94,13 @@
     if(has(t,['artisan','travaux','reparation','réparation','depannage','dépannage'])&&!needs.some(function(n){return n.family==='artisan'}))
       push('artisan');
 
-    if(has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie','j ai faim','j’ai faim','on a faim','dejeuner','déjeuner','petit dejeuner','petit déjeuner','manger du poisson','poisson grille','poisson grillé','prendre un verre','boire un verre','a emporter','à emporter','livraison repas','table pour deux','table pour 2']))
+    if(!(window.DIGIY_VOICE_TERRAIN&&window.DIGIY_VOICE_TERRAIN.isJobsRestaurantContext(t)) && has(t,['restaurant','resto','manger','eat','table','diner','dîner','dinner','repas','meal','snack','traiteur','caterer','boulangerie','bakery','patisserie','pâtisserie','j ai faim','j’ai faim','on a faim','dejeuner','déjeuner','petit dejeuner','petit déjeuner','manger du poisson','poisson grille','poisson grillé','prendre un verre','boire un verre','a emporter','à emporter','livraison repas','table pour deux','table pour 2']))
       push('food');
     if(has(t,['excursion','excursions','sortie','sorties','visite','visiter','decouvrir','découvrir','balade','promenade','guide touristique','guide local','tour guide','activite','activité','activites','activités','peche','pêche','sortie en mer','ile de goree','île de gorée','reserve de bandia','réserve de bandia','lac rose','safari']))
       push('explore');
     if(explicitRealEstate || has(t,['agence immobiliere','agence immobilière','agent immobilier','maison a vendre','maison à vendre','appartement a vendre','appartement à vendre','terrain a vendre','terrain à vendre','parcelle a vendre','parcelle à vendre','acheter un bien','vendre un bien','vente immobiliere','vente immobilière']))
       push('realestate');
-    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','faire mes ongles','faire les ongles','manucure','pedicure','pédicure','soin des pieds','pieds','vernis','pose gel','faux ongles','massage','bien etre','bien-être','wellness','coiffure','coiffeur','coiffeuse','me faire coiffer','faire coiffer','tresses','tresser','nattes','cheveux','couper mes cheveux','coupe cheveux','brushing','hair','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna','soin','soins']))
+    if(has(t,['beaute','beauté','beauty','onglerie','ongles','nails','faire mes ongles','faire les ongles','manucure','pedicure','pédicure','soin des pieds','pieds','vernis','pose gel','faux ongles','massage','bien etre','bien-être','wellness','coiffure','coiffeur','coiffeuse','me faire coiffer','faire coiffer','tresses','tresser','nattes','cheveux','couper mes cheveux','coupe cheveux','brushing','hair','salon de beauté','salon de beaute','salon de coiffure','spa','hammam','sauna']) || /(?:^|[^a-z])soins?(?:$|[^a-z])/.test(t))
       push('beauty');
     if(has(t,['emploi','job','jobs','mission','travail','recrute','recrutement','postuler','candidature']))
       push('jobs');

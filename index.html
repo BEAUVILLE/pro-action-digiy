@@ -2025,7 +2025,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       [/macon|mason|builder|alban|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/, " macon maçon maçonnerie batisseur bâtisseur construction"],
       [/electric|elektrik|elettric|elektricien|كهرب/, " electricien électricien electricite électricité courant"],
       [/solair|solar|fotovolta|zonne|شمس/, " solaire panneau panneaux batterie energie régulateur"],
-      [/chauff|driver|taxi|airport|aibd|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/, " chauffeur driver taxi aibd trajet transfert voiture"],
+      [/chauff|driver|taxi|airport|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/, " chauffeur driver taxi aibd trajet transfert voiture"],
       [/chambre|logement|location|appart|room|flat|house|villa|lodg|accommodation|hotel|habitaci|alojamiento|zimmer|wohnung|unterkunft|camera|alloggio|kamer|woning|غرفة|سكن|شقة|فندق/, " chambre appartement logement location villa dormir nuit hébergement hôtel"],
       [/table|restaurant|resto|dinner|lunch|dejeuner|déjeuner|j ai faim|j’ai faim|poisson grille|poisson grillé|a emporter|à emporter|mesa|comer|tisch|essen|tavolo|mangiare|ristorante|tafel|eten|طاولة|مطعم|عشاء/, " réserver reservation table restaurant resto manger diner déjeuner repas poisson"],
       [/reserv|booking|book|prenot|buchen|reserveren|حجز/, " réserver reservation"],
@@ -2427,7 +2427,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
     const en = digiyLang() === "en";
     const t = clean(digiyExpandQuery(raw || ""));
-    if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi")||t.includes("aibd"))
+    if(t.includes("chauffeur")||t.includes("driver")||t.includes("taxi"))
       return en ? "I understood: you are looking for a driver. I bring up DRIVER cards, then transport partners if needed. Direct contact, the field keeps control." : "J'ai compris : tu cherches un chauffeur. Je remonte les fiches DRIVER, puis les partenaires transport si besoin. Contact direct, le terrain garde la main.";
     if(t.includes("reserver")||t.includes("reservation")||t.includes("table")||t.includes("restaurant")||t.includes("resa")||t.includes("manger")||t.includes("diner"))
       return en ? "I understood: you want to book or eat. I bring up RESERVATION cards. DIGIY prepares, the professional confirms." : "J'ai compris : tu veux réserver ou manger. Je remonte les fiches RÉSERVATION. DIGIY prépare, le pro confirme.";
@@ -2496,7 +2496,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g,"");
 
-    if(t.includes("chauffeur") || t.includes("driver") || t.includes("aibd")) titre = "DRIVER";
+    if(t.includes("chauffeur") || t.includes("driver")) titre = "DRIVER";
     else if(t.includes("plombier") || t.includes("artisan") || t.includes("macon") || t.includes("electricien") || t.includes("build") || t.includes("batiment") || t.includes("bâtiment")) titre = "BÂTIMENT";
     else if(t.includes("logement") || t.includes("location") || t.includes("chambre")) titre = "LOC";
     else if(t.includes("reserver") || t.includes("reservation") || t.includes("restaurant") || t.includes("table")) titre = "RÉSERVATION";
@@ -2830,7 +2830,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     [/maçon|macon|mason|builder|albañ|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/,"macon maçon maçonnerie batisseur bâtisseur construction"],
     [/électric|electric|elektrik|elettric|كهربائي|strom|corrente/,"electricien électricien electricite électricité courant"],
     [/solair|solar|fotovolta|zonne|طاقة شمسية|ألواح شمسية/,"solaire panneau panneaux batterie energie régulateur"],
-    [/chauff|driver|taxi|airport|aibd|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/,"chauffeur driver taxi aibd trajet transfert voiture"],
+    [/chauff|driver|taxi|airport|conductor|chofer|fahrer|flughafen|autista|aeroporto|luchthaven|سائق|مطار|توصيل/,"chauffeur driver taxi aibd trajet transfert voiture"],
     [/chambre|logement|location|appart|room|flat|house|villa|lodg|accommodation|hotel|habitaci|alojamiento|zimmer|wohnung|unterkunft|camera|alloggio|kamer|woning|غرفة|سكن|شقة|فندق/,"chambre appartement logement location villa dormir nuit hébergement hôtel"],
     [/table|restaurant|dinner|lunch|mesa|comer|tisch|essen|tavolo|mangiare|tafel|eten|طاولة|مطعم|عشاء/,"réserver reservation table restaurant manger diner"],
     [/réserv|reserv|booking|book|prenotar|حجز/,"réserver reservation"],

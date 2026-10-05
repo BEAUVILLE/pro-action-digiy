@@ -68,8 +68,7 @@ const rules=[
     "direct": [
       "chauffeur",
       "taxi",
-      "driver",
-      "aibd"
+      "driver"
     ],
     "synonyms": [
       "transport",
@@ -79,6 +78,7 @@ const rules=[
     "expressions": [
       "quelqu un pour me ramener",
       "quelqu un pour me récupérer",
+      "quelqu un pour me chercher",
       "viens me chercher",
       "me déposer",
       "me ramener de l aéroport",
@@ -93,6 +93,7 @@ const rules=[
     ],
     "signals": [
       [
+        "aller",
         "récupérer",
         "ramener",
         "déposer"
@@ -420,9 +421,12 @@ const rules=[
 ];
 function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\u0600-\u06ff]+/g,' ').replace(/\s+/g,' ').trim()}
 function contains(t,w){return !!w&&(' '+t+' ').includes(' '+norm(w)+' ')}
+// Règle ciblée : restaurant est le secteur de l’emploi demandé, pas un repas.
+function isJobsRestaurantContext(value){return /\b(?:emploi|travail|job|boulot)\s+(?:dans|dans un|dans une|dans le|dans la|en|au)\s+(?:restaurant|resto)\b/.test(norm(value))}
 function resolve(value){
  const t=norm(value);if(!t)return [];
  return rules.flatMap(r=>{
+  if(r.intent==='resto'&&isJobsRestaurantContext(t))return [];
   if(r.negative.some(w=>contains(t,w)))return [];
   let score=0,stage='',matched='';
   for(const [name,weight] of [['direct',100],['synonyms',85],['expressions',80],['variants',75]]){
@@ -443,5 +447,5 @@ function record(value,context){
  const row={id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),phrase,transcription_raw:phrase,language:context.language||null,territory:context.territory||null,date:new Date().toISOString(),returned_intent:context.returnedIntent||null,score:null,corrected_intent:null};
  rows.push(row);try{global.sessionStorage.setItem(KEY,JSON.stringify(rows.slice(-50)))}catch(_){}return row;
 }
-global.DIGIY_VOICE_TERRAIN={version:'20261005-world8-v2',rules,norm,resolve,expand,unmatched:{enable(v){enabled=v===true},record,list:read,clear(){try{global.sessionStorage.removeItem(KEY)}catch(_){}}}};
+global.DIGIY_VOICE_TERRAIN={version:'20261005-world8-v2',rules,norm,resolve,expand,isJobsRestaurantContext,unmatched:{enable(v){enabled=v===true},record,list:read,clear(){try{global.sessionStorage.removeItem(KEY)}catch(_){}}}};
 })(window);
