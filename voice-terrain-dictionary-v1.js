@@ -355,6 +355,36 @@ const rules=[
     "territory": null
   },
   {
+    "intent": "pool",
+    "family": "artisan",
+    "specialty": "piscine",
+    "canonical": "pisciniste",
+    "expand": "piscine entretien pisciniste",
+    "direct": ["piscine","pisciniste"],
+    "synonyms": ["entretien piscine","nettoyage piscine","traitement piscine","filtration piscine"],
+    "expressions": ["ma piscine est sale","entretenir ma piscine","nettoyer la piscine","eau de piscine verte","réparer ma piscine"],
+    "variants": ["piscines","piscinistes"],
+    "signals": [["piscine","bassin"],["entretien","nettoyage","traitement","réparer","reparer"]],
+    "negative": [],
+    "languages": ["fr","wo"],
+    "territory": null
+  },
+  {
+    "intent": "gardening",
+    "family": "artisan",
+    "specialty": "jardinage",
+    "canonical": "jardinier",
+    "expand": "jardinage jardinier espaces verts",
+    "direct": ["jardinier","jardinage"],
+    "synonyms": ["entretien jardin","espaces verts","tonte","taille de haies","désherbage"],
+    "expressions": ["tondre ma pelouse","tailler mes haies","entretenir mon jardin","nettoyer mon jardin"],
+    "variants": ["jardiniers","jardins"],
+    "signals": [["jardin","pelouse","haie","arbuste","palmier"],["tondre","tailler","entretenir","désherber","nettoyer"]],
+    "negative": [],
+    "languages": ["fr","wo"],
+    "territory": null
+  },
+  {
     "intent": "services",
     "family": "services",
     "specialty": "",
@@ -447,5 +477,5 @@ function record(value,context){
  const row={id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),phrase,transcription_raw:phrase,language:context.language||null,territory:context.territory||null,date:new Date().toISOString(),returned_intent:context.returnedIntent||null,score:null,corrected_intent:null};
  rows.push(row);try{global.sessionStorage.setItem(KEY,JSON.stringify(rows.slice(-50)))}catch(_){}return row;
 }
-global.DIGIY_VOICE_TERRAIN={version:'20261005-world8-v2',rules,norm,resolve,expand,isJobsRestaurantContext,unmatched:{enable(v){enabled=v===true},record,list:read,clear(){try{global.sessionStorage.removeItem(KEY)}catch(_){}}}};
+global.DIGIY_VOICE_TERRAIN={version:'20261005-terrain-pap-v3',rules,norm,resolve,expand,isJobsRestaurantContext,unmatched:{enable(v){enabled=v===true},record,list:read,clear(){try{global.sessionStorage.removeItem(KEY)}catch(_){}}}};
 })(window);
