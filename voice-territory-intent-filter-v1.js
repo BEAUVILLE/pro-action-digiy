@@ -219,10 +219,22 @@
     return'';
   }
 
+  function isPapPiscineCard(card){
+    var links=card.querySelectorAll('a[href]');
+    for(var i=0;i<links.length;i++){
+      try{
+        var u=new URL(links[i].href,location.href);
+        if(u.hostname==='digiylyfe.com'&&u.pathname==='/fiches/pap-piscine-saly.html')return true;
+      }catch(e){}
+    }
+    return clean(card.textContent||'').indexOf('pap piscine')>=0;
+  }
+
   function compatibleNeed(need,module,card){
     if(!need)return true;
     if(!compatibleFamily(need.family,module))return false;
     if(need.family==='artisan'&&need.specialty){
+      if(isPapPiscineCard(card) && (need.specialty==='piscine'||need.specialty==='jardinage'))return true;
       return artisanSpecialty(card)===need.specialty;
     }
     if(need.family==='services'&&need.specialty){
@@ -250,14 +262,14 @@
   function labelForNeed(need){
     if(!need)return'';
     if(need.family==='artisan'&&need.specialty){
-      var s={plumber:'PLOMBIER',electrician:'ÉLECTRICIEN',carpenter:'MENUISERIE',mason:'MAÇON',solar:'SOLAIRE'};
-      return s[need.specialty]||'BUILD';
+      var s={plumber:'PLOMBIER',electrician:'ÉLECTRICIEN',carpenter:'MENUISERIE',mason:'MAÇON',solar:'SOLAIRE',piscine:'PISCINE',jardinage:'JARDINAGE'};
+      return s[need.specialty]||'SERVICES TERRAIN';
     }
     if(need.family==='services'&&need.specialty){
       var p={architect:'ARCHITECTE',surveyor:'GÉOMÈTRE',lawyer:'AVOCAT',bailiff:'HUISSIER',mechanic:'MÉCANICIEN',accountant:'COMPTABLE'};
       return p[need.specialty]||'SERVICES';
     }
-    var names={accommodation:'LOC',transport:'DRIVER',artisan:'BUILD',services:'SERVICES',food:'MANGER / RÉSA',explore:'EXCURSION / EXPLORE',realestate:'IMMOBILIER',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
+    var names={accommodation:'LOC',transport:'DRIVER',artisan:'SERVICES TERRAIN',services:'SERVICES',food:'MANGER / RÉSA',explore:'EXCURSION / EXPLORE',realestate:'IMMOBILIER',shopping:'COMMERCE',beauty:'BEAUTÉ',jobs:'EMPLOI',announcements:'ANNONCES',resa:'RÉSA MULTI'};
     return names[need.family]||String(need.family||'').toUpperCase();
   }
 

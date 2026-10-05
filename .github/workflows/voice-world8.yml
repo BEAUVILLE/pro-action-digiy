@@ -28,6 +28,8 @@ jobs:
         run: node tests/voice-terrain.test.cjs
       - name: PAP Piscine terrain routing
         run: node tests/voice-pap-terrain.test.cjs
+      - name: PAP pool vs plumber collision
+        run: node tests/voice-pap-filter-collision.test.cjs
       - name: JavaScript syntax
         run: |
           node --check voice-terrain-dictionary-v1.js

@@ -744,7 +744,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./voice-terrain-dictionary-v1.js?v=20261005-pap-terrain-v3"></script>
 <script src="./digiy-taxonomy-v1.js?v=20261005-taxonomy-terrain-v3"></script>
-<script src="./annuaire-public-digiy.js?v=20261005-pap-terrain-v1"></script>
+<script src="./annuaire-public-digiy.js?v=20261005-pap-filter-v2"></script>
 <script>
 (function(){
   "use strict";
@@ -2470,6 +2470,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       return en ? "I understood: you want to book or eat. I bring up RESERVATION cards. DIGIY prepares, the professional confirms." : "J'ai compris : tu veux réserver ou manger. Je remonte les fiches RÉSERVATION. DIGIY prépare, le pro confirme.";
     if(t.includes("chambre")||t.includes("logement")||t.includes("louer")||t.includes("location")||t.includes("appartement")||t.includes("nuit")||t.includes("dormir"))
       return en ? "I understood: you are looking for lodging. I bring up LOC cards. The client sees, the professional validates, direct relationship." : "J'ai compris : tu cherches un logement. Je remonte les fiches LOC. Le client voit, le pro valide, relation directe.";
+    if(t.includes("piscine")||t.includes("pisciniste")||t.includes("entretien piscine")||t.includes("nettoyage piscine"))
+      return en ? "I understood: you are looking for pool maintenance. I bring up PAP Piscine with direct contact." : "J’ai compris : tu cherches un entretien piscine. Je te remonte PAP Piscine avec contact direct.";
+    if(t.includes("jardin")||t.includes("jardinage")||t.includes("jardinier")||t.includes("pelouse")||t.includes("haie")||t.includes("espaces verts"))
+      return en ? "I understood: you are looking for gardening. I bring up PAP Piscine gardening service with direct contact." : "J’ai compris : tu cherches un jardinier. Je te remonte PAP Piscine avec contact direct.";
     if(t.includes("artisan")||t.includes("plombier")||t.includes("electricien")||t.includes("build")||t.includes("travaux"))
       return en ? "I understood: you are looking for an artisan. I bring up trade cards first, then the partner directory. BUILDING stays as backup." : "J'ai compris : tu cherches un artisan. Je remonte les fiches métier d'abord, puis l'annuaire partenaire. BÂTIMENT reste en secours.";
     if(t.includes("produit")||t.includes("boutique")||t.includes("acheter")||t.includes("market")||t.includes("magasin"))
