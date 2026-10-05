@@ -23,6 +23,7 @@
     return String(el&&(el.value||el.textContent)||'').trim();
   }
   function isHealth(v){
+    if(window.DIGIY_VOICE_TERRAIN && window.DIGIY_VOICE_TERRAIN.resolve(v).some(function(r){return r.family==='health'}))return true;
     var t=' '+norm(v).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ')+' ';
     return WORDS.some(function(w){
       var x=' '+norm(w).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ')+' ';

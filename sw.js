@@ -1,4 +1,4 @@
-const CACHE_NAME='action-pro-pwa-20261004-voice-restore-v1';
+const CACHE_NAME='action-pro-pwa-20261005-terrain-v1';
 const APP_SHELL=[
   '/',
   '/index.html',
@@ -6,6 +6,7 @@ const APP_SHELL=[
   '/offline.html',
   '/icon-action-pro.svg',
   '/digiy-taxonomy-v1.js',
+  '/voice-terrain-dictionary-v1.js',
   '/annuaire-public-digiy.js',
   '/annuaire-public-digiy-core.js',
   '/voice-territory-rails-v1.js',

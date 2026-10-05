@@ -58,6 +58,8 @@
       }
     }
 
+    if(window.DIGIY_VOICE_TERRAIN) window.DIGIY_VOICE_TERRAIN.resolve(t).forEach(function(n){if(n.family!=='health')push(n.family,n.specialty)});
+
     var explicitBuilding=has(t,['architecte','architecture','plans','plan de maison','concevoir','construction','construire','chantier','menuisier','menuiserie','porte','fenetre','fenêtre']);
     var explicitRealEstate=has(t,['immobilier','immobiliere','immobilière','agence immobiliere','agence immobilière','bien immobilier','acheter maison','acheter une maison','maison a vendre','maison à vendre','vendre maison','acheter appartement','appartement a vendre','appartement à vendre','vendre appartement','acheter terrain','terrain a vendre','terrain à vendre','vendre terrain','vente terrain','parcelle a vendre','parcelle à vendre']);
     if(has(t,['chambre','logement','studio','louer','location','dormir','nuit','hebergement','hébergement','hotel','hôtel','room','lodging','stay','rental','rent','night']) ||

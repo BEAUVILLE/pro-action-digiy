@@ -739,6 +739,7 @@ textarea:focus{border-color:rgba(246,196,83,.72);box-shadow:0 0 0 4px rgba(246,1
 Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu peux appuyer sur GO pour lancer la discussion ou parler naturellement. Tu peux aussi toucher une icône rapide : chauffeur, SARLAT, sortie, logement, réservation, bâtiment, commerce, boutique, travail, réseau, carnet, audio ou assistant. Sur téléphone, la règle est simple : appuie sur GO pour parler ou lancer la discussion, puis appuie sur VOIR. DIGIY parle et les fiches remontent. Et si tu ne sais pas encore comment formuler ta demande, ouvre le grand cadre rouge Exemples pour parler. Tu choisis une phrase modèle en français ou en wolof. Au clic, DIGIY remplit la demande, puis les fiches remontent directement sous tes yeux. Pas de long scroll. Pas de complication. La voix ou le clic capte le besoin, la bonne porte répond, et le contact reste direct. DIGIY prépare. Le professionnel valide. Le terrain garde la main.
 </p>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./voice-terrain-dictionary-v1.js?v=20261005-v1"></script>
 <script src="./digiy-taxonomy-v1.js?v=20260926-taxonomy-services-v2"></script>
 <script src="./annuaire-public-digiy.js?v=20260926-terrain-pack-v14"></script>
 <script>
@@ -2100,7 +2101,8 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     if(/\b(announcement|ad|network|publish|visibility)\b/.test(t)) extra += " annonce réseau publier visibilité";
     if(/\b(audio|listen|vision)\b/.test(t)) extra += " audio écouter vision";
     if(/\b(assistant|guide|help)\b/.test(t)) extra += " assistant aide guide";
-    return raw + extra;
+    const terrain = window.DIGIY_VOICE_TERRAIN ? window.DIGIY_VOICE_TERRAIN.resolve(raw).map(r=>r.expand).join(" ") : "";
+    return raw + extra + (terrain ? " " + terrain : "");
   }
 
   function setStatus(icon, label){
@@ -2376,6 +2378,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       total:list.length,
       results:list.map(function(x){return {title:x.title||"",kind:x.kind||"",metier:x.metier||"",categorie:x.categorie||"",secteur:x.secteur||""}})
     });
+    if(!list.length && window.DIGIY_VOICE_TERRAIN) window.DIGIY_VOICE_TERRAIN.unmatched.record(val,{language:document.documentElement.lang,territory:new URLSearchParams(location.search).get("territory")});
     render(list, val);
     collapseVoiceQueryAfterResult();
     if(move) bringResultsIntoView();
