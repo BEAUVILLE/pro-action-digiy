@@ -91,6 +91,10 @@
       push('artisan','mason');
     if(has(t,['solaire','panneau solaire','batterie solaire','energie solaire','énergie solaire']))
       push('artisan','solar');
+    if(has(t,['piscine','pisciniste','entretien piscine','nettoyage piscine','traitement piscine','filtration piscine']))
+      push('artisan','piscine');
+    if(has(t,['jardin','jardinage','jardinier','tonte','pelouse','haie','haies','espaces verts','désherbage','desherbage','palmier','palmiers']))
+      push('artisan','jardinage');
     if(has(t,['artisan','travaux','reparation','réparation','depannage','dépannage'])&&!needs.some(function(n){return n.family==='artisan'}))
       push('artisan');
 
@@ -149,6 +153,7 @@
         if(u.hostname==='digiylyfe.com'&&u.pathname==='/module-territoire.html'){
           var m=u.searchParams.get('module')||'';if(m)return m;
         }
+        if(u.hostname==='digiylyfe.com'&&u.pathname==='/fiches/pap-piscine-saly.html')return'artisan';
         if(HOST_MODULE[u.hostname])return HOST_MODULE[u.hostname];
       }catch(e){}
     }
@@ -177,6 +182,11 @@
         if(host==='kourant.digiylyfe.com')return'electrician';
         if(host==='mbaye-macon.digiylyfe.com')return'mason';
         if(host==='digiy-solaire.digiylyfe.com')return'solar';
+        var u=new URL(links[i].href,location.href);
+        if(u.hostname==='digiylyfe.com'&&u.pathname==='/fiches/pap-piscine-saly.html'){
+          var tx=clean(card.textContent||'');
+          return has(tx,['jardin','jardinage','jardinier'])?'jardinage':'piscine';
+        }
       }catch(e){}
     }
     var t=clean(card.textContent||'');
@@ -186,6 +196,8 @@
     if(has(t,['menuisier','menuiserie','porte','fenetre en bois','fenêtre en bois']))return'carpenter';
     if(has(t,['macon','maçon','batisseur','bâtisseur','construction']))return'mason';
     if(has(t,['solaire','panneau solaire']))return'solar';
+    if(has(t,['piscine','pisciniste','entretien piscine']))return'piscine';
+    if(has(t,['jardin','jardinage','jardinier','tonte','pelouse','haie','espaces verts']))return'jardinage';
     return'';
   }
 
