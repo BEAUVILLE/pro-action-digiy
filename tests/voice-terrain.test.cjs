@@ -30,7 +30,7 @@ const start=html.indexOf('  function digiyExpandQuery(text){'),end=html.indexOf(
 const ctx={window,clean:d.norm};vm.createContext(ctx);vm.runInContext(html.slice(start,end),ctx);
 for(const [phrase,intent] of cases){const token=d.rules.find(r=>r.intent===intent).expand;assert(ctx.digiyExpandQuery(phrase).includes(token),phrase)}
 // Legacy expansions must remain present (WORLD8 and existing métiers).
-const old=require('node:child_process').execFileSync('git',['show','HEAD:index.html'],{encoding:'utf8'});
+const old=require('node:child_process').execFileSync('git',['show','2412f5a70473f7c9151a736afed22a7ddafc4842:index.html'],{encoding:'utf8'});
 const a=old.indexOf('  function digiyExpandQuery(text){'),b=old.indexOf('\n  function setStatus',a),legacy={window:{},clean:d.norm};vm.createContext(legacy);vm.runInContext(old.slice(a,b),legacy);
 for(const phrase of ['plombier à Saly','électricien','maçon','solaire','chauffeur pour AIBD','chambre ce weekend','réserver une table','emploi ou mission','plumber','fontanero','canalizador','idraulico','Klempner','loodgieter','سباك','dama wut plombier'])assert(ctx.digiyExpandQuery(phrase).includes(legacy.digiyExpandQuery(phrase)),phrase);
 console.log('Terrain: 35 positive cases, 9 unknown/ambiguous cases, multi-intent, privacy, bounded collection, real expansion, 16 legacy expansions: PASS');

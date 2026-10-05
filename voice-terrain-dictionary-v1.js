@@ -95,8 +95,7 @@ const rules=[
       [
         "récupérer",
         "ramener",
-        "déposer",
-        "chercher"
+        "déposer"
       ],
       [
         "aéroport",
@@ -444,5 +443,5 @@ function record(value,context){
  const row={id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),phrase,transcription_raw:phrase,language:context.language||null,territory:context.territory||null,date:new Date().toISOString(),returned_intent:context.returnedIntent||null,score:null,corrected_intent:null};
  rows.push(row);try{global.sessionStorage.setItem(KEY,JSON.stringify(rows.slice(-50)))}catch(_){}return row;
 }
-global.DIGIY_VOICE_TERRAIN={version:'20261005-v1',rules,norm,resolve,expand,unmatched:{enable(v){enabled=v===true},record,list:read,clear(){try{global.sessionStorage.removeItem(KEY)}catch(_){}}}};
+global.DIGIY_VOICE_TERRAIN={version:'20261005-world8-v2',rules,norm,resolve,expand,unmatched:{enable(v){enabled=v===true},record,list:read,clear(){try{global.sessionStorage.removeItem(KEY)}catch(_){}}}};
 })(window);

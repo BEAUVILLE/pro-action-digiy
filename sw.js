@@ -1,4 +1,4 @@
-const CACHE_NAME='action-pro-pwa-20261005-terrain-v1';
+const CACHE_NAME='action-pro-pwa-20261005-terrain-world8-v2';
 const APP_SHELL=[
   '/',
   '/index.html',

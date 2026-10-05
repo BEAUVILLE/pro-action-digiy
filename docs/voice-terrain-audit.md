@@ -27,3 +27,6 @@ Schéma: id, phrase expurgée, transcription_raw expurgée, language déclarée 
 ## Validation
 `node tests/voice-terrain.test.cjs`: expressions anciennes/nouvelles, fautes, courtes, FR/Wolof, cas ambigus, multi-intentions, absence d'intention, confidentialité, borne de session, vraie fonction inline d'expansion, 16 expansions historiques WORLD8 conservées, vrai filtre territorial et matcher santé.
 Pas de validation microphone, transcription acoustique, rendu mobile ni contacts réels. WORLD8 complet non déclaré. Aucune fusion/déploiement/migration.
+
+## Contrôle WORLD8 ajouté avant fusion
+Voir [voice-world8-control.md](voice-world8-control.md) : huit langues identifiées et testées explicitement, 80 demandes + 16 négatifs, collision DRIVER corrigée, reconnaissance arabe NFD réparée. FR/Wolof enrichis; autres langues historiquement compatibles. Le filtre final sur saisie brute présente des lacunes historiques documentées; WORLD8 complet reste non validé.
