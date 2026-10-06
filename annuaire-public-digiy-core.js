@@ -15,6 +15,10 @@
   );
 
   document.write(
+    '<script src="./cainack-golf-action-pro-patch.js?v=20261006-golf-saly-v1"></script>'
+  );
+
+  document.write(
     '<script src="./nazir-action-pro-patch.js?v=20260801-nazir-driver"></script>'
   );
 
