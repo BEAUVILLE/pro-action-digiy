@@ -307,7 +307,7 @@
     var summary=document.getElementById('resultsSummary');
     var empty=document.getElementById('empty');
     /* La zone et le compteur ne sont publiés qu'après le filtre final. */
-    if(!cards.dataset.digiySearchRendered)return;
+    if(!cards.dataset||!cards.dataset.digiySearchRendered)return;
 
     if(remaining){
       if(empty)empty.style.display='none';
