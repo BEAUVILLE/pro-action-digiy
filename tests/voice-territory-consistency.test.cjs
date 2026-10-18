@@ -105,4 +105,50 @@ assert.equal(r.visible.length,1);
 r=runCase('chauffeur pour AIBD','petite-cote',[driver(),room()]);
 assert.equal(r.visible.length,1);
 
-console.log('Territorial voice V1: raw zone, Bordeaux/AIBD isolation, Saly, Dakar, Sarlat, LOC+DRIVER, post-filter count and empty state PASS');
+/* V1.1 : une ville explicitement écrite ne doit pas être remplacée
+   par la zone sélectionnée, ni faire annoncer un chauffeur hors lieu. */
+r=runCase('chauffeur à Bordeaux','petite-cote',[driver(),room()]);
+assert.equal(r.visible.length,0,'Bordeaux with Petite Côte rail must never surface Lamine');
+assert.match(r.message,/Zone sélectionnée : PETITE CÔTE/);
+assert.match(r.message,/La demande mentionne : BORDEAUX/);
+assert(!/résultat utile|disponible/i.test(r.message),'No misleading count or availability in conflict');
+assert(r.summary.children.some(x=>x.href&&x.href.includes('territory=bordeaux')),'Direct correction link to Bordeaux');
+assert.equal(r.empty.style.display,'none','A contradiction is not proof of an empty directory');
+
+r=runCase('chauffeur à Saly','bordeaux',[driver(),sarlat()]);
+assert.equal(r.visible.length,0,'Reverse mismatch must also be blocked');
+assert.match(r.message,/La demande mentionne : PETITE CÔTE/);
+assert(r.summary.children.some(x=>x.href&&x.href.includes('territory=petite-cote')));
+
+r=runCase('transfert AIBD–Saly','petite-cote',[driver()]);
+assert.equal(r.visible.length,1,'Two local places in same zone must not trigger conflict');
+
+r=runCase('chambre et chauffeur à Saly','petite-cote',[room(),driver()]);
+assert.equal(r.visible.length,2,'LOC + DRIVER must survive the V1.1 change');
+
+r=runCase('chauffeur à Bordeaux','',[driver()]);
+assert.equal(r.visible.length,0,'Explicit territory without selection must filter out AIBD');
+
+r=runCase('transfert AIBD–Dakar','petite-cote',[driver()]);
+assert.equal(r.visible.length,0,'Conflicting active zones require explicit choice rather than fabricated matching');
+assert.match(r.message,/La demande mentionne : DAKAR/);
+
+/* Le vrai guard du rail est exécuté sur des fixtures, sans réécrire la saisie. */
+const railStart=rails.indexOf('  var TERRITORIES={');
+const railEnd=rails.indexOf('  var COUNTRY_ZONES=',railStart);
+const guardStart=rails.indexOf('  function queryHasKnownTerritory(');
+const guardEnd=rails.indexOf('  function itemText(',guardStart);
+assert(railStart>=0&&railEnd>railStart&&guardStart>=0&&guardEnd>guardStart);
+const railsCtx={};
+vm.createContext(railsCtx);
+vm.runInContext(rails.slice(railStart,railEnd)+
+  "\\nfunction clean(v){return String(v||'').normalize('NFD').replace(/[\\\\u0300-\\\\u036f]/g,'').toLowerCase()}\\n"+
+  rails.slice(guardStart,guardEnd),railsCtx);
+for(const phrase of ['chauffeur à Bordeaux','transfert AIBD–Saly','chambre à Sarlat','un taxi à Dakar']){
+  railsCtx.phrase=phrase;
+  assert.equal(vm.runInContext('!!queryHasKnownTerritory(phrase)',railsCtx),true,phrase+' has an explicit place');
+}
+assert.equal(vm.runInContext('!!queryHasKnownTerritory("je cherche un chauffeur")',railsCtx),false,'No chosen area in plain driver intent');
+assert.equal(vm.runInContext('!!queryHasKnownTerritory("chauffeur dans une casamance inconnue")',railsCtx),false,'Casa must not match Casamance');
+
+console.log('Territorial voice V1.1: Bordeaux/AIBD, zones contradictoires, AIBD-Saly, LOC+DRIVER et rail de saisie PASS');
