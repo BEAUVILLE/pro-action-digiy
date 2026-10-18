@@ -141,9 +141,10 @@ const guardEnd=rails.indexOf('  function itemText(',guardStart);
 assert(railStart>=0&&railEnd>railStart&&guardStart>=0&&guardEnd>guardStart);
 const railsCtx={};
 vm.createContext(railsCtx);
-vm.runInContext(rails.slice(railStart,railEnd)+
-  "\\nfunction clean(v){return String(v||'').normalize('NFD').replace(/[\\\\u0300-\\\\u036f]/g,'').toLowerCase()}\\n"+
-  rails.slice(guardStart,guardEnd),railsCtx);
+const cleanStart=rails.indexOf('  function clean(v){');
+assert(cleanStart>=0&&cleanStart<guardStart);
+vm.runInContext(rails.slice(railStart,railEnd)+String.fromCharCode(10)+
+  rails.slice(cleanStart,guardStart)+rails.slice(guardStart,guardEnd),railsCtx);
 for(const phrase of ['chauffeur à Bordeaux','transfert AIBD–Saly','chambre à Sarlat','un taxi à Dakar']){
   railsCtx.phrase=phrase;
   assert.equal(vm.runInContext('!!queryHasKnownTerritory(phrase)',railsCtx),true,phrase+' has an explicit place');
