@@ -40,19 +40,28 @@
     return TERRITORIES[t]?t:'';
   }
 
-  function territoryFromQuery(){
-    var t=queryText();if(!t)return'';
-    if(has(t,TERRITORIES.bordeaux.markers))return'bordeaux';
-    if(has(t,TERRITORIES['vallee-dordogne'].markers))return'vallee-dordogne';
-    if(has(t,TERRITORIES.paris.markers))return'paris';
-    if(has(t,TERRITORIES.dakar.markers))return'dakar';
-    if(has(t,TERRITORIES['petite-cote'].markers))return'petite-cote';
-    if(has(t,TERRITORIES.casablanca.markers))return'casablanca';
-    if(has(t,TERRITORIES.marrakech.markers))return'marrakech';
-    if(has(t,TERRITORIES.miami.markers))return'miami';
-    return'';
+  /* Les mentions de lieu proviennent UNIQUEMENT des mots de la demande,
+     jamais de l'expansion d'intention ou d'un lien de fiche. */
+  function normalizedPlaceText(v){
+    return ' '+clean(v).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ').replace(/\s+/g,' ').trim()+' ';
   }
-
+  function mentionedTerritories(){
+    var t=normalizedPlaceText(queryText());
+    if(!t.trim())return[];
+    return Object.keys(TERRITORIES).filter(function(slug){
+      return TERRITORIES[slug].markers.some(function(marker){
+        var word=normalizedPlaceText(marker);
+        return word.trim()&&t.indexOf(word)>=0;
+      });
+    });
+  }
+  function territoryFromQuery(){return mentionedTerritories()[0]||''}
+  function territoryConflict(){
+    var selected=territoryFromUrl();
+    if(!selected)return null;
+    var outside=mentionedTerritories().filter(function(slug){return slug!==selected});
+    return outside.length?{selected:selected,outside:outside}:null;
+  }
   function territory(){return territoryFromUrl()||territoryFromQuery()}
 
   function detectNeeds(){
@@ -296,8 +305,11 @@
     var slug=territory();
     if(!slug)return;
     var needs=detectNeeds();
+    var conflict=territoryConflict();
 
     Array.prototype.forEach.call(cards.querySelectorAll('.card'),function(card){
+      /* En cas de contradiction, ne présenter aucune fiche comme pertinente. */
+      if(conflict){card.remove();return}
       var module=moduleFromCard(card);
       if(needs.length&&(!module||!needs.some(function(need){return compatibleNeed(need,module,card)}))){card.remove();return}
       if(!cardMatchesTerritory(card,slug)){card.remove()}
@@ -308,6 +320,34 @@
     var empty=document.getElementById('empty');
     /* La zone et le compteur ne sont publiés qu'après le filtre final. */
     if(!cards.dataset||!cards.dataset.digiySearchRendered)return;
+
+    if(conflict){
+      if(empty)empty.style.display='none';
+      if(summary){
+        var language=(qs().get('lang')||document.documentElement.lang||'fr').slice(0,2).toLowerCase();
+        var words={
+          fr:['Zone sélectionnée','La demande mentionne','Choisir la zone demandée','Modifier la zone'],
+          en:['Selected area','Your request mentions','Choose requested area','Change area'],
+          es:['Zona seleccionada','La búsqueda menciona','Elegir la zona solicitada','Cambiar zona'],
+          pt:['Zona selecionada','O pedido menciona','Escolher a zona pedida','Alterar zona'],
+          it:['Zona selezionata','La richiesta menziona','Scegli la zona richiesta','Cambia zona'],
+          de:['Gewähltes Gebiet','Die Anfrage nennt','Gewünschtes Gebiet wählen','Gebiet ändern'],
+          nl:['Gekozen gebied','Je zoekopdracht noemt','Kies het gevraagde gebied','Wijzig gebied'],
+          ar:['المنطقة المختارة','الطلب يذكر','اختر المنطقة المطلوبة','تغيير المنطقة']
+        };
+        var copy=words[language]||words.fr;
+        var detail=document.createElement('strong');
+        var names=conflict.outside.map(function(slug){return TERRITORIES[slug].label}).join(' / ');
+        detail.textContent=copy[0]+' : '+TERRITORIES[conflict.selected].label+'. '+copy[1]+' : '+names+'. ';
+        var link=document.createElement('a');
+        var single=conflict.outside.length===1?conflict.outside[0]:'';
+        link.href='./?lang='+encodeURIComponent(language)+(single?'&territory='+encodeURIComponent(single):'')+'#digiyVoiceTerritoryRail';
+        link.textContent=(single?copy[2]:copy[3])+' →';
+        summary.replaceChildren(detail,link);
+        summary.hidden=false;
+      }
+      return;
+    }
 
     if(remaining){
       if(empty)empty.style.display='none';
