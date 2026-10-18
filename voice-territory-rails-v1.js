@@ -38,6 +38,17 @@
   function territory(){var p=qs(),t=p.get('territory')||p.get('zone')||'';return TERRITORIES[t]?t:''}
   function local(){return qs().get('local')||''}
   function clean(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+  /* Ne pas imposer automatiquement la zone choisie si une autre zone
+     est déjà explicitement nommée par la personne. */
+  function queryHasKnownTerritory(value){
+    var text=' '+clean(value).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ').replace(/\s+/g,' ').trim()+' ';
+    return Object.keys(TERRITORIES).some(function(slug){
+      return TERRITORIES[slug].markers.some(function(marker){
+        var word=' '+clean(marker).replace(/[^a-z0-9\u0600-\u06ff]+/g,' ').replace(/\s+/g,' ').trim()+' ';
+        return word.trim()&&text.indexOf(word)>=0;
+      });
+    });
+  }
   function itemText(item){return clean([item&&item.secteur].concat(item&&item.zones||[],item&&item.title,item&&item.titre,item&&item.nom,item&&item.url).filter(Boolean).join(' '))}
   function matchesTerritory(item,t){
     var meta=TERRITORIES[t];if(!meta)return false;
@@ -234,7 +245,7 @@
       });
     }else{
       Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){
-        var v=el.getAttribute('data-q')||'';if(v&&clean(v).indexOf(clean(meta.queryZone))<0)el.setAttribute('data-q',v+suffix);
+        var v=el.getAttribute('data-q')||'';if(v&&!queryHasKnownTerritory(v))el.setAttribute('data-q',v+suffix);
       });
     }
 
@@ -244,7 +255,7 @@
         var b=e.target.closest&&e.target.closest('#searchBtn');if(!b)return;
         var active=territory(),activeMeta=TERRITORIES[active];if(!activeMeta)return;
         var q=document.getElementById('q');if(!q||!q.value.trim())return;
-        if(!activeMeta.markers.some(function(m){return clean(q.value).indexOf(clean(m))>=0;}))q.value=q.value.trim()+' '+activeMeta.queryZone;
+        if(!queryHasKnownTerritory(q.value))q.value=q.value.trim()+' '+activeMeta.queryZone;
       },true);
     }
   }
