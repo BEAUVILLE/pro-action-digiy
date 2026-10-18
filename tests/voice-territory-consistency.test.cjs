@@ -30,6 +30,7 @@ function serves(text,item){
   return vm.runInContext('digiyCardServesSector(item,detectSecteurFromCleanText(clean(rawQuery)))',zoneContext);
 }
 const lamine={secteur:'AIBD · Saly',zones:['AIBD','Saly','Dakar'],zoneAffichage:'Petite Côte'};
+console.log('Debug sector Bordeaux:',vm.runInContext('detectSecteurFromCleanText(clean("chauffeur à Bordeaux"))',zoneContext), 'sector labels:',vm.runInContext('SECTEURS_PUBLICS.map(x=>x.label)',zoneContext));
 assert.equal(serves('chauffeur à Bordeaux',lamine),false,'AIBD must not prove Bordeaux');
 assert.equal(serves('chauffeur pour AIBD',lamine),true,'AIBD real service must remain');
 assert.equal(serves('chauffeur à Saly',lamine),true,'Saly driver must remain');
