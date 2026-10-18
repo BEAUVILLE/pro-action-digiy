@@ -1321,6 +1321,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     {label:"Ngaparou", keys:["ngaparou"]},
     {label:"Somone", keys:["somone"]},
     {label:"Sarlat", keys:["sarlat","sarlat la caneda","sarlat-la-caneda","perigord noir","périgord noir","dordogne"]},
+    {label:"Bordeaux", keys:["bordeaux"]},
     {label:"Paris · France", keys:["paris","paris france","ile de france","île de france","ile-de-france","île-de-france"]},
     {label:"Miami · USA", keys:["miami","miami florida","miami floride","florida","floride","usa","u.s.a","united states","united states of america","etats unis","états unis","etats-unis","états-unis","estados unidos","vereinigte staaten","stati uniti","verenigde staten","الولايات المتحدة"]},
     {label:"Petite Côte", keys:["petite cote","petite côte"]}
@@ -1329,7 +1330,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   const SECTEURS = (function(){
     const common = window.DIGIY_TAXONOMY && window.DIGIY_TAXONOMY.territories;
     if(!common) return SECTEURS_FALLBACK;
-    const order=["saly","mbour","dakar","thies","aibd","ngaparou","somone","sarlat","paris","miami","petite-cote"];
+    const order=["saly","mbour","dakar","thies","aibd","ngaparou","somone","sarlat","bordeaux","paris","miami","petite-cote"];
     const rows=order.map(function(slug){
       const x=common[slug];
       return x ? {label:x.label,keys:(x.markers||[]).slice()} : null;
@@ -1770,6 +1771,17 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     return SECTEURS_PUBLICS.find(z => z.keys.some(k => t.includes(clean(k)))) || null;
   }
 
+  /* Les mots ajoutés pour reconnaître le métier ne prouvent jamais la zone.
+     Seuls secteur/zones/zoneAffichage déclarés par la fiche font foi. */
+  function digiyCardServesSector(item, secteur){
+    if(!secteur) return true;
+    const declared = " " + clean([item.secteur, item.zoneAffichage].concat(item.zones || []).filter(Boolean).join(" ")).replace(/[^a-z0-9]+/g, " ") + " ";
+    return secteur.keys.some(key => {
+      const marker = clean(key).replace(/[^a-z0-9]+/g, " ").trim();
+      return marker && declared.includes(" " + marker + " ");
+    });
+  }
+
   function isOnlyZoneWord(k){
     const z = clean(k);
     return SECTEURS_PUBLICS.some(function(zone){
@@ -1895,9 +1907,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function matchDirectFiches(text){
     const rawT = clean(text);
     const t = clean(digiyExpandQuery(text));
-    const secteur = detectSecteurFromCleanText(t);
+    const secteur = detectSecteurFromCleanText(rawT);
     const scored = FICHES_PUBLICS
-      .filter(item => item && item.public !== false)
+      .filter(item => item && item.public !== false && !String(item.sourceId || "").startsWith("voice-rail-"))
+      .filter(item => digiyCardServesSector(item, secteur))
       .map(item => ({item, relevance: directRelevance(item, t, secteur, rawT)}))
       .filter(x => x.relevance)
       .sort((a,b) =>
@@ -2233,7 +2246,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     const detectedIntent = detectResultsProfessionIntent(queryText);
     const professionalQuery = !!detectedIntent || isGenericProfessionalSearch(clean(expandedQuery));
     const intent = listMatchesProfessionIntent(professionalResults, detectedIntent) ? detectedIntent : null;
-    const secteur = detectSecteurFromCleanText(clean(expandedQuery));
+    const secteur = detectSecteurFromCleanText(clean(queryText || ""));
     const en = digiyLang() === "en";
 
     if(professionalQuery && professionalResults.length){
@@ -2244,13 +2257,13 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
         : (en ? (count === 1 ? "professional" : "professionals") : (count === 1 ? "professionnel" : "professionnels"));
       const zone = secteur ? (en ? " in " : " à ") + secteur.label : "";
       resultsSummary.innerHTML = en
-        ? "<strong>" + count + " " + profession + " available" + zone + "</strong>Open the cards and choose freely."
-        : "<strong>" + count + " " + profession + " disponible" + (count > 1 ? "s" : "") + zone + "</strong>Consultez les fiches et choisissez librement votre professionnel.";
+        ? "<strong>" + count + " " + profession + " listed" + zone + "</strong>Open the cards and contact the professional directly."
+        : "<strong>" + count + " " + profession + " référencé" + (count > 1 ? "s" : "") + zone + "</strong>Consultez les fiches et contactez directement les professionnels.";
     }else{
       const count = list.length;
       resultsSummary.innerHTML = en
-        ? "<strong>" + count + " result" + (count > 1 ? "s" : "") + " available</strong>Open the available result" + (count > 1 ? "s" : "") + "."
-        : "<strong>" + count + " résultat" + (count > 1 ? "s" : "") + " disponible" + (count > 1 ? "s" : "") + "</strong>Ouvrez le" + (count > 1 ? "s" : "") + " résultat" + (count > 1 ? "s" : "") + " disponible" + (count > 1 ? "s" : "") + ".";
+        ? "<strong>" + count + " result" + (count > 1 ? "s" : "") + " shown</strong>Open the result cards."
+        : "<strong>" + count + " résultat" + (count > 1 ? "s" : "") + " affiché" + (count > 1 ? "s" : "") + "</strong>Consultez les fiches correspondantes.";
     }
     resultsSummary.hidden = false;
   }
@@ -2267,6 +2280,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function render(list, queryText){
     if(!cards) return;
     cards.innerHTML = "";
+    cards.dataset.digiySearchRendered = "1";
     updateResultsSummary(list, queryText || "");
     if(!list.length){
       if(empty) empty.style.display = "block";
