@@ -27,6 +27,8 @@ jobs:
         run: node tests/voice-world8.test.cjs
       - name: Terrain and privacy regressions
         run: node tests/voice-terrain.test.cjs
+      - name: DRIVER direct WhatsApp handoff
+        run: node tests/voice-driver-whatsapp.test.cjs
       - name: Territorial coherence Bordeaux/AIBD + LOC/DRIVER
         run: node tests/voice-territory-consistency.test.cjs
       - name: PAP Piscine terrain routing
