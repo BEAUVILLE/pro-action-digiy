@@ -1,7 +1,7 @@
 /* DIGIYLYFE — LA VOIX · FILTRE INTENTION + TERRITOIRE V2
  * Une seule règle publique : besoin -> métier -> territoire -> fiches.
  * Le lieu écrit dans la demande peut activer le territoire sans clic préalable.
- * Sénégal + Maroc + USA ici ; France reste gérée par son rail existant.
+ * Tous les territoires du rail (Sénégal, France, Maroc, USA) sont filtrés ici.
  */
 (function(){
   'use strict';
@@ -11,6 +11,9 @@
   var TERRITORIES={
     'petite-cote':{label:'PETITE CÔTE',markers:['saly','mbour','thies','thiès','aibd','ngaparou','somone','petite cote','petite côte']},
     'dakar':{label:'DAKAR',markers:['dakar']},
+    'vallee-dordogne':{label:'VALLÉE DE LA DORDOGNE',markers:['sarlat','dordogne','perigord','périgord']},
+    'bordeaux':{label:'BORDEAUX',markers:['bordeaux']},
+    'paris':{label:'PARIS',markers:['paris','ile de france','île de france','ile-de-france','île-de-france']},
     'casablanca':{label:'CASABLANCA',markers:['casablanca','casa']},
     'marrakech':{label:'MARRAKECH',markers:['marrakech','marrakesh']},
     'miami':{label:'MIAMI',markers:['miami','florida','floride','usa','united states','etats unis','états unis','etats-unis','états-unis']}
@@ -39,6 +42,9 @@
 
   function territoryFromQuery(){
     var t=queryText();if(!t)return'';
+    if(has(t,TERRITORIES.bordeaux.markers))return'bordeaux';
+    if(has(t,TERRITORIES['vallee-dordogne'].markers))return'vallee-dordogne';
+    if(has(t,TERRITORIES.paris.markers))return'paris';
     if(has(t,TERRITORIES.dakar.markers))return'dakar';
     if(has(t,TERRITORIES['petite-cote'].markers))return'petite-cote';
     if(has(t,TERRITORIES.casablanca.markers))return'casablanca';
@@ -253,10 +259,22 @@
 
   function cardMatchesTerritory(card,slug){
     if(!slug||!TERRITORIES[slug])return true;
+    /* Un lien de module généré avec ?territory= ne prouve PAS qu'une
+       fiche professionnelle dessert ce territoire. */
     var t=clean(card.textContent||'');
     var links=card.querySelectorAll('a[href]');
-    for(var i=0;i<links.length;i++)t+=' '+clean(links[i].href||'');
-    return has(t,TERRITORIES[slug].markers);
+    for(var i=0;i<links.length;i++){
+      try{
+        var u=new URL(links[i].href,location.href);
+        if(u.hostname==='digiylyfe.com'&&u.pathname==='/module-territoire.html')continue;
+        t+=' '+clean(u.hostname+' '+u.pathname);
+      }catch(e){}
+    }
+    var normalized=' '+t.replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ')+' ';
+    return TERRITORIES[slug].markers.some(function(marker){
+      var m=clean(marker).replace(/[^a-z0-9]+/g,' ').trim();
+      return m&&normalized.indexOf(' '+m+' ')>=0;
+    });
   }
 
   function labelForNeed(need){
@@ -288,11 +306,14 @@
     var remaining=cards.querySelectorAll('.card').length;
     var summary=document.getElementById('resultsSummary');
     var empty=document.getElementById('empty');
+    /* La zone et le compteur ne sont publiés qu'après le filtre final. */
+    if(!cards.dataset.digiySearchRendered)return;
 
     if(remaining){
       if(empty)empty.style.display='none';
       if(summary){
         var strong=summary.querySelector('strong');
+        if(!strong){strong=document.createElement('strong');summary.replaceChildren(strong)}
         if(strong){
           var parts=[remaining+' résultat'+(remaining>1?'s':'')+' utile'+(remaining>1?'s':'')];
           var needLabels=Array.from(new Set(needs.map(labelForNeed).filter(Boolean)));
@@ -303,8 +324,28 @@
         summary.hidden=false;
       }
     }else{
-      if(summary)summary.hidden=true;
       if(empty)empty.style.display='block';
+      if(summary){
+        var language=(qs().get('lang')||document.documentElement.lang||'fr').slice(0,2).toLowerCase();
+        var words={
+          fr:['Aucun résultat correspondant pour','Modifier la zone'],
+          en:['No matching results for','Change area'],
+          es:['Sin resultados coincidentes para','Cambiar zona'],
+          pt:['Nenhum resultado correspondente para','Alterar zona'],
+          it:['Nessun risultato corrispondente per','Cambia zona'],
+          de:['Keine passenden Ergebnisse für','Gebiet ändern'],
+          nl:['Geen overeenkomende resultaten voor','Wijzig gebied'],
+          ar:['لا توجد نتائج مطابقة في','تغيير المنطقة']
+        };
+        var copy=words[language]||words.fr;
+        var line=document.createElement('strong');
+        line.textContent=copy[0]+' '+TERRITORIES[slug].label+'. ';
+        var link=document.createElement('a');
+        link.href='./?lang='+encodeURIComponent(language)+'#digiyVoiceTerritoryRail';
+        link.textContent=copy[1]+' →';
+        summary.replaceChildren(line,link);
+        summary.hidden=false;
+      }
     }
   }
 
