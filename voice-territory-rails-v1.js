@@ -274,7 +274,8 @@
         var country='';Array.prototype.forEach.call(card.querySelectorAll('a[href]'),function(a){try{var u=new URL(a.href,location.href);if(SN.indexOf(u.hostname)>=0)country='sn';if(FR.indexOf(u.hostname)>=0)country='fr';var mod=map[u.hostname];if(mod)a.href=moduleUrl(mod,t)}catch(e){}});
         if(country&&country!==TERRITORIES[t].country)card.remove();
       });
-      var summary=document.getElementById('resultsSummary');if(summary&&cards.querySelector('.card')){summary.hidden=false;summary.innerHTML='<strong>'+((TXT[lang()]||TXT.fr).context)+' · '+TERRITORIES[t].flag+' '+TERRITORIES[t].countryLabel+' → '+TERRITORIES[t].zoneLabel+'</strong>'+(lang()==='en'?'Results are limited to this zone.':'Résultats limités à cette zone.');}
+      /* Le filtre final d'intention/territoire possède seul le résumé :
+         éviter toute réécriture avant la suppression des fiches hors zone. */
       busy=false;
     }
     apply();new MutationObserver(function(){setTimeout(apply,0)}).observe(cards,{childList:true,subtree:true});
