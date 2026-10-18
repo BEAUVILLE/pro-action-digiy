@@ -5,6 +5,7 @@ on:
       - 'index.html'
       - 'voice-terrain-dictionary-v1.js'
       - 'voice-territory-intent-filter-v1.js'
+      - 'voice-territory-rails-v1.js'
       - 'action-pro-health-route-v1.js'
       - 'tests/voice-*.test.cjs'
       - '.github/workflows/voice-world8.yml'
@@ -26,6 +27,8 @@ jobs:
         run: node tests/voice-world8.test.cjs
       - name: Terrain and privacy regressions
         run: node tests/voice-terrain.test.cjs
+      - name: Territorial coherence Bordeaux/AIBD + LOC/DRIVER
+        run: node tests/voice-territory-consistency.test.cjs
       - name: PAP Piscine terrain routing
         run: node tests/voice-pap-terrain.test.cjs
       - name: PAP pool vs plumber collision
@@ -36,5 +39,6 @@ jobs:
         run: |
           node --check voice-terrain-dictionary-v1.js
           node --check voice-territory-intent-filter-v1.js
+          node --check voice-territory-rails-v1.js
           node --check action-pro-health-route-v1.js
           node --check sw.js
