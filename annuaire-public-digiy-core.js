@@ -31,6 +31,10 @@
   );
 
   document.write(
+    '<script src="./jb-baptiste-apport-affaires-voix.js?v=20261107-pilote-v1"></script>'
+  );
+
+  document.write(
     '<script src="./action-pro-service-intents.js?v=20260808-service-intents-v1"></script>'
   );
 
