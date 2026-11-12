@@ -2921,7 +2921,18 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   META.zh={"Fiche officielle":"官方商家资料","Fiche publique":"公开商家资料","Partenaire qualifié":"认证合作伙伴","Référencé public":"公开展示","Secteur à préciser":"区域待确认","Catégorie":"类别","Secteur":"地区","FICHE":"资料","APPELER":"拨打电话","OUVRIR":"打开"};
 
+  // Additional recognition routes for typed Mandarin; never change validated professionals.
   const RULES=[
+    [/水管工|管道|漏水|修水龙头/," plombier plomberie fuite robinet"],
+    [/泥瓦工|砌筑|建筑工|盖房/," macon maçon construction"],
+    [/电工|电路维修|电气/," electricien électricien electricite"],
+    [/太阳能|光伏/," solaire panneaux énergie"],
+    [/司机|机场接送|接机/," chauffeur driver aibd trajet"],
+    [/房间|住宿|公寓|租房|酒店/," logement chambre location hotel"],
+    [/餐厅|订餐|订桌/," restaurant table reserver"],
+    [/商店|毛巾|床单|购买商品/," boutique commerce produit serviette draps"],
+    [/招聘|找工作|职位/," emploi travail job mission"],
+    [/旅游|出游|活动/," explore sortie visite activité"],
     [/(?:chez|che|sche)?\s*baptist|batist|باتيست/," chez baptiste logement chambre hébergement dormir"],
     [/plomb|plumb|fontaner|klempner|idraulic|loodgieter|سباك|تسرب/,"plombier plomberie fuite robinet wc sanitaire"],
     [/maçon|macon|mason|builder|albañ|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/,"macon maçon maçonnerie batisseur bâtisseur construction"],
@@ -3083,7 +3094,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     window.speechSynthesis.speak=function(utterance){
       const lang=actual();if(lang==="fr"||lang==="en"){try{utterance.lang=LOCALE[lang]}catch(_){}return nativeSpeak(utterance)}
       const text=(utterance&&utterance.text)||"";const replacement=/j.?ai compris|i understood/i.test(text)?(UI[lang]||UI.fr).reply:text;
-      const fresh=new NativeUtterance(replacement);fresh.lang=LOCALE[lang];fresh.rate=utterance&&utterance.rate?utterance.rate:(lang==="ar"?.84:.9);return nativeSpeak(fresh);
+      const fresh=new NativeUtterance(replacement);fresh.lang=LOCALE[lang];fresh.rate=utterance&&utterance.rate?utterance.rate:(lang==="ar"?.84:.9);
+      if(lang==="wo"||lang==="zh"){const voice=bestVoiceForLocale(fresh.lang);if(!voice){setVoiceStatus("⌨️","Voix de cette langue non disponible sur cet appareil.");return;}fresh.voice=voice;}
+      return nativeSpeak(fresh);
     };
   }
 
