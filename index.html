@@ -2852,10 +2852,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   if(window.__DIGIY_ACTION_7LANG_MONO__) return;
   window.__DIGIY_ACTION_7LANG_MONO__ = true;
 
-  const LANGS=["fr","en","es","pt","de","it","nl","ar"];
+  const LANGS=["fr","wo","zh","en","es","pt","de","it","nl","ar"];
   const KEY="digiy_action_lang_7";
   const LEGACY="digiy_voice_lang_v1";
-  const LOCALE={fr:"fr-FR",en:"en-US",es:"es-ES",pt:"pt-PT",de:"de-DE",it:"it-IT",nl:"nl-NL",ar:"ar-SA"};
+  const LOCALE={fr:"fr-FR",wo:"wo-SN",zh:"zh-CN",en:"en-US",es:"es-ES",pt:"pt-PT",de:"de-DE",it:"it-IT",nl:"nl-NL",ar:"ar-SA"};
   const NativeUtterance=window.SpeechSynthesisUtterance;
   let lastNativeQuery="";
   let applying=false;
@@ -2872,6 +2872,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   UI.pt={title:"A Voz do Negócio — DIGIYLYFE",desc:"A Voz do Negócio DIGIYLYFE — pedido simples, fichas diretas e contacto direto.",logo:"EU OUÇO",label:"Fala aqui ou escreve o que precisas",ask:"Pedido por voz ou escrito",placeholder:"GO",examples:"🟥 EXEMPLOS PARA FALAR",see:"VER",clear:"APAGAR",correction:"✏️ Corrigir o meu pedido",consigne:"🎧 Guia",consigneLine:"📱 Precisas de ajuda? Carrega em <b>GO</b> e fala. Depois toca em <b>VER</b> — a DIGIY entende e as fichas aparecem.",resultTitle:"Fichas disponíveis",resultIntro:"Os resultados aparecem diretamente após o pedido.",empty:"Ainda não existe uma ficha exata.",footer:"A Voz do Negócio — DIGIYLYFE",audio:"Bem-vindo à Voz do Negócio DIGIY. Carrega em GO para falar naturalmente ou escolhe um ícone rápido. Depois toca em VER. A DIGIY entende a necessidade e mostra as fichas úteis.",guide:"Guia do telefone. Carrega em GO e fala. Depois toca em VER. A DIGIY entende e as fichas aparecem.",reply:"Entendi o teu pedido. As fichas úteis estão prontas. A DIGIY prepara e o terreno mantém o controlo."};
 
+  // WO remains a reviewed pilot: untranslated fields stay in French, visibly labelled.
+  UI.wo={...UI.fr,title:"DIGIYLYFE — La Voix du Business · Wolof (pilote)",desc:"ACTION DIGIY · wolof en cours de validation. Recherche écrite disponible.",logo:"DÉGLU",label:"Bindal sa soxla / Écris ton besoin",ask:"Soxla / demande",examples:"🟥 MISAAL YI · exemples",see:"WONE",clear:"FAR",correction:"✏️ Corriger ma demande",consigne:"🎧 Ndimbal / aide",consigneLine:"📱 Wolof en cours de validation. Écris ta demande ou utilise le micro du clavier, puis appuie sur <b>WONE</b>.",resultTitle:"Résultats · njariñ",resultIntro:"Les fiches disponibles s'affichent après la demande.",empty:"Aucune fiche exacte pour le moment.",audio:"La navigation wolof est en cours de validation. Utilise le clavier pour ta demande.",guide:"Wolof en cours de validation. Écris ta demande puis appuie sur WONE.",reply:"Demande reçue. Vérifie les fiches affichées."};
+  UI.zh={title:"DIGIYLYFE — 商业之声",desc:"DIGIYLYFE 商业之声：输入需求，查看商家资料并直接联系。",logo:"我在听",label:"说出或输入你的需求",ask:"语音或文字需求",placeholder:"GO",examples:"🟥 需求示例",see:"查看",clear:"清除",correction:"✏️ 修改需求",consigne:"🎧 使用指南",consigneLine:"📱 输入需求，或点击 <b>GO</b> 尝试语音输入，然后点击 <b>查看</b>。语音功能取决于浏览器支持。",resultTitle:"找到的商家",resultIntro:"提交需求后，相关商家资料会显示在这里。",empty:"暂时没有完全匹配的商家。",footer:"DIGIYLYFE — 商业之声",audio:"欢迎使用 DIGIY 商业之声。输入你的需求，然后点击查看。",guide:"输入需求，点击查看。浏览器支持时可以尝试语音输入。",reply:"已收到你的需求，请查看相关商家资料。"};
+
   const QUICK={
     fr:["Je veux dire ma recherche à DIGIY","Je veux découvrir les adresses de Sarlat","Je veux une idée de sortie sur la Petite Côte","Je cherche un chauffeur pour AIBD demain matin","Je veux voir les chauffeurs disponibles","Je cherche une chambre ce week-end à Saly","Je veux réserver une table ce soir","J’ai besoin d’un artisan pour une réparation","Je veux voir les commerces locaux","Je cherche un produit dans une boutique","Je cherche un emploi ou une mission","Je veux publier une annonce dans le réseau","Je veux envoyer une preuve Wave","Je veux venir chez DIGIY ou trouver la route","Je cherche un logement avec option solidaire","Je veux écouter la vision DIGIYLYFE","Je veux être guidé par l’assistant DIGIY"],
     en:["I want to tell DIGIY what I am looking for","I want to discover places in Sarlat","I want an outing idea on the Petite Côte","I need a driver for AIBD tomorrow morning","I want to see available drivers","I need a room this weekend in Saly","I want to book a table tonight","I need an artisan for a repair","I want to see local shops","I am looking for a product in a shop","I am looking for a job or a mission","I want to publish an announcement in the network","I want to send a Wave payment proof","I want to come to DIGIY or find the route","I need lodging with a solidarity option","I want to listen to the DIGIYLYFE vision","I want guidance from the DIGIY assistant"],
@@ -2883,6 +2887,11 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   };
 
   QUICK.pt=["Quero dizer à DIGIY o que procuro","Quero descobrir endereços em Sarlat","Quero uma ideia de passeio na Petite Côte","Procuro um motorista para o AIBD amanhã de manhã","Quero ver os motoristas disponíveis","Procuro um quarto este fim de semana em Saly","Quero reservar uma mesa esta noite","Preciso de um artesão para uma reparação","Quero ver os comércios locais","Procuro um produto numa loja","Procuro um emprego ou uma missão","Quero publicar um anúncio na rede","Quero enviar um comprovativo de pagamento Wave","Quero ir até à DIGIY ou encontrar o caminho","Procuro alojamento com opção solidária","Quero ouvir a visão DIGIYLYFE","Quero ser orientado pelo assistente DIGIY"];
+
+  // The Wolof search suggestions are intentionally left in French pending native review.
+  // The UI discloses this limit; the original professional search routes stay untouched.
+  QUICK.wo=QUICK.fr;
+  QUICK.zh=["告诉 DIGIY 我需要什么","探索萨拉的商家","在小海岸寻找出游活动","明早需要去 AIBD 的司机","查看可用司机","本周末在萨利找房间","预订今晚的餐桌","找师傅维修","查看本地商店","在商店寻找商品","寻找工作或任务","在网络发布信息","发送 Wave 支付凭证","查找 DIGIY 地址和路线","寻找住宿","了解 DIGIYLYFE 的愿景","获得 DIGIY 助手的帮助"];
 
   const EXAMPLES={
     fr:["Je cherche un plombier à Saly","Je cherche un entrepreneur maçon à Saly","Je cherche un électricien à Saly","Je cherche du solaire à Dakar","Je cherche des serviettes à Saly","Je cherche un appartement à Saly pour 4 personnes","Je cherche un chauffeur pour AIBD","Je veux une idée de sortie sur la Petite Côte","Je veux réserver une table ce soir","Je cherche un restaurant à Sarlat","Je cherche une chambre à Sarlat","Je veux envoyer une preuve Wave"],
@@ -2896,6 +2905,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   EXAMPLES.pt=["Procuro um canalizador em Saly","Procuro um pedreiro em Saly","Procuro um eletricista em Saly","Procuro um serviço de energia solar em Dakar","Procuro toalhas em Saly","Procuro um apartamento em Saly para 4 pessoas","Procuro um motorista para o AIBD","Quero uma ideia de passeio na Petite Côte","Quero reservar uma mesa esta noite","Procuro um restaurante em Sarlat","Procuro um quarto em Sarlat","Quero enviar um comprovativo de pagamento Wave"];
 
+  EXAMPLES.wo=EXAMPLES.fr;
+  EXAMPLES.zh=["我在萨利找水管工","我在萨利找泥瓦工","我在萨利找电工","我在达喀尔找太阳能服务","我在萨利找毛巾","我在萨利找四人公寓","我需要去 AIBD 的司机","我想在小海岸出游","我想预订今晚的餐桌","我要发送 Wave 支付凭证"];
+
   const META={
     en:{"Fiche officielle":"Official card","Fiche publique":"Public card","Partenaire qualifié":"Qualified partner","Référencé public":"Public listing","Secteur à préciser":"Area to confirm","Catégorie":"Category","Secteur":"Area","FICHE":"CARD","APPELER":"CALL","OUVRIR":"OPEN"},
     es:{"Fiche officielle":"Ficha oficial","Fiche publique":"Ficha pública","Partenaire qualifié":"Socio cualificado","Référencé public":"Ficha pública","Secteur à préciser":"Zona por confirmar","Catégorie":"Categoría","Secteur":"Zona","FICHE":"FICHA","APPELER":"LLAMAR","OUVRIR":"ABRIR"},
@@ -2907,7 +2919,20 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
 
   META.pt={"Fiche officielle":"Ficha oficial","Fiche publique":"Ficha pública","Partenaire qualifié":"Parceiro qualificado","Référencé public":"Ficha pública","Secteur à préciser":"Zona a confirmar","Catégorie":"Categoria","Secteur":"Zona","FICHE":"FICHA","APPELER":"LIGAR","OUVRIR":"ABRIR"};
 
+  META.zh={"Fiche officielle":"官方商家资料","Fiche publique":"公开商家资料","Partenaire qualifié":"认证合作伙伴","Référencé public":"公开展示","Secteur à préciser":"区域待确认","Catégorie":"类别","Secteur":"地区","FICHE":"资料","APPELER":"拨打电话","OUVRIR":"打开"};
+
+  // Additional recognition routes for typed Mandarin; never change validated professionals.
   const RULES=[
+    [/水管工|管道|漏水|修水龙头/," plombier plomberie fuite robinet"],
+    [/泥瓦工|砌筑|建筑工|盖房/," macon maçon construction"],
+    [/电工|电路维修|电气/," electricien électricien electricite"],
+    [/太阳能|光伏/," solaire panneaux énergie"],
+    [/司机|机场接送|接机/," chauffeur driver aibd trajet"],
+    [/房间|住宿|公寓|租房|酒店/," logement chambre location hotel"],
+    [/餐厅|订餐|订桌/," restaurant table reserver"],
+    [/商店|毛巾|床单|购买商品/," boutique commerce produit serviette draps"],
+    [/招聘|找工作|职位/," emploi travail job mission"],
+    [/旅游|出游|活动/," explore sortie visite activité"],
     [/(?:chez|che|sche)?\s*baptist|batist|باتيست/," chez baptiste logement chambre hébergement dormir"],
     [/plomb|plumb|fontaner|klempner|idraulic|loodgieter|سباك|تسرب/,"plombier plomberie fuite robinet wc sanitaire"],
     [/maçon|macon|mason|builder|albañ|maurer|murator|metselaar|بنّاء|بناء|construction|construccion|costruzione/,"macon maçon maçonnerie batisseur bâtisseur construction"],
@@ -2948,7 +2973,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     [/ajuda|guia/," assistant aide guide"]
   );
 
-  function safe(value){const x=String(value||"").toLowerCase().split("-")[0];return LANGS.includes(x)?x:"fr"}
+  function safe(value){const x=String(value||"").toLowerCase().replace("zh-cn","zh").split("-")[0];return LANGS.includes(x)?x:"fr"}
   function actual(){try{return safe(new URLSearchParams(location.search).get("lang")||localStorage.getItem(KEY)||navigator.language)}catch(_){return"fr"}}
   function base(lang){return lang==="en"?"en":"fr"}
   function locale(){return LOCALE[actual()]||"fr-FR"}
@@ -2996,7 +3021,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
   function buildBar(){
     if(document.getElementById("digiyLang7"))return;
     const bar=document.createElement("nav");bar.id="digiyLang7";bar.setAttribute("aria-label","Choisir la langue");
-    const labels={fr:"🇫🇷 FR",en:"🇬🇧 EN",es:"🇪🇸 ES",pt:"🇵🇹 PT",de:"🇩🇪 DE",it:"🇮🇹 IT",nl:"🇳🇱 NL",ar:"🌙 AR"};
+    const labels={fr:"🇫🇷 FR",wo:"🇸🇳 WO",zh:"🇨🇳 中文",en:"🇬🇧 EN",es:"🇪🇸 ES",pt:"🇵🇹 PT",de:"🇩🇪 DE",it:"🇮🇹 IT",nl:"🇳🇱 NL",ar:"🌙 AR"};
     LANGS.forEach(function(lang){const b=document.createElement("button");b.type="button";b.dataset.lang7=lang;b.textContent=labels[lang];bar.appendChild(b)});
     (document.querySelector(".app")||document.body).prepend(bar);
   }
@@ -3055,6 +3080,7 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       u.pitch=1;
       u.volume=1;
       const selected=bestVoiceForLocale(u.lang);
+      if((actual()==="wo"||actual()==="zh")&&!selected){setVoiceStatus("⌨️","Voix de cette langue non disponible sur cet appareil : lecture audio désactivée.");return;}
       if(selected)u.voice=selected;
       (window.__DIGIY_NATIVE_SPEAK__||engine.speak.bind(engine))(u);
     };
@@ -3068,7 +3094,9 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
     window.speechSynthesis.speak=function(utterance){
       const lang=actual();if(lang==="fr"||lang==="en"){try{utterance.lang=LOCALE[lang]}catch(_){}return nativeSpeak(utterance)}
       const text=(utterance&&utterance.text)||"";const replacement=/j.?ai compris|i understood/i.test(text)?(UI[lang]||UI.fr).reply:text;
-      const fresh=new NativeUtterance(replacement);fresh.lang=LOCALE[lang];fresh.rate=utterance&&utterance.rate?utterance.rate:(lang==="ar"?.84:.9);return nativeSpeak(fresh);
+      const fresh=new NativeUtterance(replacement);fresh.lang=LOCALE[lang];fresh.rate=utterance&&utterance.rate?utterance.rate:(lang==="ar"?.84:.9);
+      if(lang==="wo"||lang==="zh"){const voice=bestVoiceForLocale(fresh.lang);if(!voice){setVoiceStatus("⌨️","Voix de cette langue non disponible sur cet appareil.");return;}fresh.voice=voice;}
+      return nativeSpeak(fresh);
     };
   }
 
@@ -3101,6 +3129,10 @@ Bienvenue dans La Voix du Business DIGIY. Ici, tu as trois chemins simples. Tu p
       return;
     }
 
+    if(actual()==="wo"){
+      setVoiceStatus("⌨️","Reconnaissance vocale wolof non vérifiée : écris ta demande ou utilise le micro du clavier.");
+      return;
+    }
     if(!NativeRecognition){
       setVoiceStatus("⌨️",actual()==="en"?"Browser microphone unavailable: use the keyboard microphone.":"Micro navigateur indisponible : utilise le micro du clavier.");
       return;

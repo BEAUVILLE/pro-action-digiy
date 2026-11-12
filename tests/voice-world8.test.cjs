@@ -15,9 +15,10 @@ function engine(source,terrain){
 }
 const old=engine(before,false),current=engine(html,true);
 const LANGS=vm.runInNewContext(section(html,'  const LANGS=','  const KEY=')+'LANGS');
-assert.deepEqual(Array.from(LANGS),['fr','en','es','pt','de','it','nl','ar']);
+const LEGACY_LANGS=['fr','en','es','pt','de','it','nl','ar'];
+assert.deepEqual(Array.from(LANGS),['fr','wo','zh','en','es','pt','de','it','nl','ar']);
 const LOCALE=vm.runInNewContext(section(html,'  const LOCALE=','  const NativeUtterance=')+'LOCALE');
-assert.deepEqual({...LOCALE},{fr:'fr-FR',en:'en-US',es:'es-ES',pt:'pt-PT',de:'de-DE',it:'it-IT',nl:'nl-NL',ar:'ar-SA'});
+assert.deepEqual({...LOCALE},{fr:'fr-FR',wo:'wo-SN',zh:'zh-CN',en:'en-US',es:'es-ES',pt:'pt-PT',de:'de-DE',it:'it-IT',nl:'nl-NL',ar:'ar-SA'});
 const expected={plumber:['artisan','plumber','plombier'],driver:['transport','','chauffeur'],loc:['accommodation','','logement'],resto:['food','','restaurant'],jobs:['jobs','','emploi']};
 // Two independently phrased requests per intent per language (80 in total).
 const matrix={
@@ -39,7 +40,7 @@ const newFilter=fs.readFileSync('voice-territory-intent-filter-v1.js','utf8'),ol
 function familySet(rows){return [...new Set(rows.map(r=>r.family+':'+r.specialty))].sort()}
 let count=0,negativeCount=0;const rawGaps=[];
 const repairedHistoricalGap="أبحث عن سائق في داكار";
-for(const lang of LANGS){
+for(const lang of LEGACY_LANGS){
  assert.equal(Object.keys(matrix[lang]).length,5);
  for(const [intent,phrases] of Object.entries(matrix[lang]))for(const phrase of phrases){
   const [family,specialty,token]=expected[intent],legacy=old.digiyExpandQuery(phrase),next=current.digiyExpandQuery(phrase);
@@ -68,4 +69,4 @@ for(const lang of LANGS){
 }
 assert.equal(count,80);assert.equal(negativeCount,16);
 console.log(`WORLD8 deterministic expansion gate: ${count} requests + ${negativeCount} negatives PASS; no new unrelated intent on this corpus.`);
-console.log('Historical raw-filter gaps by language (not certified end-to-end): '+JSON.stringify(Object.fromEntries(LANGS.map(lang=>[lang,rawGaps.filter(r=>r.lang===lang).length]))));
+console.log('Historical raw-filter gaps by language (not certified end-to-end): '+JSON.stringify(Object.fromEntries(LEGACY_LANGS.map(lang=>[lang,rawGaps.filter(r=>r.lang===lang).length]))));
